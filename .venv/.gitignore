@@ -1,0 +1,18 @@
+# venv
+.venv/
+
+# secrets
+.env
+.env.*
+
+# data
+data/**
+*.duckdb
+*.parquet
+*.csv
+
+# Power BI
+*.pbix
+
+# IDE
+.vscode/
