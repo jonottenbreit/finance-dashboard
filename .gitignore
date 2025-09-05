@@ -1,5 +1,6 @@
 # venv
 .venv/
+.venv/**
 
 # secrets
 .env
@@ -11,8 +12,9 @@ data/**
 *.parquet
 *.csv
 
-# Power BI
+# Power BI binary
 *.pbix
 
-# IDE
+# IDE noise
 .vscode/
+.ipynb_checkpoints/
