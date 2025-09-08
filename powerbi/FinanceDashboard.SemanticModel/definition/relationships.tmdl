@@ -1,0 +1,5 @@
+relationship d9b8ae76-fc65-43b8-8808-deb2c502816d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: monthly_cashflow.month
+	toColumn: LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b.Date
+

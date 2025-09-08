@@ -1,0 +1,59 @@
+table monthly_cashflow
+	lineageTag: fa436bde-5ce8-4fcb-9d64-cffed3a0a759
+
+	column month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d07c51b5-f298-461f-873d-160b26dfdeec
+		summarizeBy: none
+		sourceColumn: month
+
+		variation Variation
+			isDefault
+			relationship: d9b8ae76-fc65-43b8-8808-deb2c502816d
+			defaultHierarchy: LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column net_cashflow
+		dataType: double
+		lineageTag: ebaf82b5-f96f-4d28-9e35-6fd5fc3d8656
+		summarizeBy: sum
+		sourceColumn: net_cashflow
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column income
+		dataType: double
+		lineageTag: 8263cbf7-579c-4749-a812-9fb9ee798cf3
+		summarizeBy: sum
+		sourceColumn: income
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column spending
+		dataType: double
+		lineageTag: 15cc7c3c-5e5d-48b7-94b3-10731bf94a89
+		summarizeBy: sum
+		sourceColumn: spending
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_cashflow = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("file:///C:/Users/jo136/OneDrive/FinanceData/exports/monthly_cashflow.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+
