@@ -1,3 +1,16 @@
+"""
+Create (or open) finance.duckdb and ensure base tables exist.
+
+Tables created:
+- transactions: raw transaction feed (one row per transaction)
+
+Env:
+- DATA_DIR: folder where finance.duckdb lives (set in .env)
+
+Run:
+    python src/etl/init_db.py
+"""
+
 import os
 from pathlib import Path
 import duckdb

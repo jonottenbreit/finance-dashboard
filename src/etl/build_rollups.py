@@ -1,3 +1,14 @@
+"""
+Build monthly cash-flow rollups and export Parquet for BI.
+
+Creates/updates:
+- monthly_cashflow (month, income, spending, net_cashflow)
+- DATA_DIR/exports/monthly_cashflow.parquet
+
+Run:
+    python src/etl/build_rollups.py
+"""
+
 from pathlib import Path
 import os, duckdb
 from dotenv import load_dotenv

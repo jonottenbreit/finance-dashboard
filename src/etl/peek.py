@@ -1,3 +1,10 @@
+"""
+Quick inspection helper: print row counts and a small preview.
+
+Run:
+    python src/etl/peek.py
+"""
+
 import os
 from pathlib import Path
 import duckdb

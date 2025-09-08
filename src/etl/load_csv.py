@@ -1,3 +1,25 @@
+"""
+Load a CSV of transactions into DuckDB (idempotent).
+
+What it does:
+- Reads CSV at DATA_DIR/sample_transactions.csv
+- Normalizes headers and types
+- Builds a stable txn_id from (date, account_id, merchant_norm, amount_cents, dup_seq)
+- INSERT ... ON CONFLICT (txn_id) DO NOTHING
+
+Requires:
+- Unique index on transactions(txn_id) (created if missing)
+
+Inputs:
+- DATA_DIR/sample_transactions.csv
+
+Outputs:
+- Rows inserted into transactions
+
+Run:
+    python src/etl/load_csv.py
+"""
+
 import os, hashlib
 from pathlib import Path
 import duckdb, pandas as pd

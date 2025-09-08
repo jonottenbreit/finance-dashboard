@@ -1,3 +1,13 @@
+"""
+Migration 001: enforce uniqueness of transactions.txn_id.
+
+Adds:
+- UNIQUE INDEX ux_transactions_txn_id ON transactions(txn_id)
+
+Run once (safe to re-run):
+    python src/etl/migrate_001_add_unique_txn_id.py
+"""
+
 import os
 from pathlib import Path
 import duckdb
