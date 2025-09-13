@@ -1,0 +1,50 @@
+table Measures_Main
+	lineageTag: 617d435f-aedc-4e5d-b2b9-51256964853c
+
+	measure 'Budget Amount' =
+			
+			SUM(budget_monthly[amount])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: b14aea9f-d578-4bf1-a101-039212fc5dbe
+
+	measure 'Actual Amount' =
+			
+			VAR amt = SUM(monthly_actuals_by_category[actual_signed])
+			RETURN IF(SELECTEDVALUE(category_dim[top_bucket]) = "Income", amt, -amt)
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 385ea110-5d91-4ebf-8450-5865a466aab6
+
+	measure Variance = [Actual Amount] - [Budget Amount]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 7b43ded1-2798-4947-ad33-03d115da4c31
+
+	measure 'Variance %' = DIVIDE([Variance], [Budget Amount])
+		lineageTag: 8ba8b32b-bfd7-4769-96d3-d9b940c260af
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column1
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: db8b395b-7408-4703-bf41-a87dd22a80b7
+		summarizeBy: sum
+		sourceColumn: Column1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Measures_Main = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlCKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

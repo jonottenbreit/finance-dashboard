@@ -4,8 +4,8 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 0,
-        "y": 0
+        "x": 34.347642391397642,
+        "y": 253.64414781130662
       },
       "nodes": [
         {
@@ -19,7 +19,7 @@
             "height": 176,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 1
         },
         {
           "location": {
@@ -32,7 +32,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 2
         },
         {
           "location": {
@@ -45,7 +45,7 @@
             "height": 152,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 3
         },
         {
           "location": {
@@ -58,12 +58,12 @@
             "height": 248,
             "width": 234
           },
-          "zIndex": 0
+          "zIndex": 4
         },
         {
           "location": {
-            "x": 0,
-            "y": 25.492006141116448
+            "x": 681.89090909090908,
+            "y": 672.47382432293466
           },
           "nodeIndex": "month_dim",
           "nodeLineageTag": "536b79a2-7241-4a4c-80ba-5870ef46d5c4",
@@ -71,11 +71,49 @@
             "height": 104,
             "width": 234
           },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 952.78669085894364,
+            "y": 226.3293247729892
+          },
+          "nodeIndex": "Measures_Main",
+          "size": {
+            "height": 234.32727272727271,
+            "width": 520.25454545454545
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 161.5866908589436,
+            "y": 885.456597500262
+          },
+          "nodeIndex": "monthly_net_worth",
+          "nodeLineageTag": "3cc57ecc-c6df-42d9-ae1b-eff0fe742ec3",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 897.07759994985281,
+            "y": 909.82023386389824
+          },
+          "nodeIndex": "monthly_net_worth_by_group",
+          "nodeLineageTag": "28569f8f-dc8d-4e28-8ce8-585f2f539f27",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
           "zIndex": 0
         }
       ],
       "name": "All tables",
-      "zoomValue": 70.95554390096882,
+      "zoomValue": 60.557283670421292,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

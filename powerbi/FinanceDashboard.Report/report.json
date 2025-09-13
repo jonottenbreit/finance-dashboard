@@ -20,19 +20,37 @@
   "sections": [
     {
       "config": "{}",
-      "displayName": "Page 1",
+      "displayName": "Spending vs. Plan",
       "displayOption": 1,
       "filters": "[]",
       "height": 720.00,
       "name": "58460275bbc3ee952854",
       "visualContainers": [
         {
-          "config": "{\"name\":\"46414d8b8cfdbce266a2\",\"layouts\":[{\"id\":0,\"position\":{\"x\":9.605521030503024,\"y\":0,\"z\":0,\"width\":728.647381028158,\"height\":417.1540561818456,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"monthly_cashflow.month\",\"active\":true}],\"Y\":[{\"queryRef\":\"Sum(monthly_cashflow.income)\"},{\"queryRef\":\"Sum(monthly_cashflow.net_cashflow)\"},{\"queryRef\":\"Sum(monthly_cashflow.spending)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"monthly_cashflow\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"},\"Name\":\"monthly_cashflow.month\",\"NativeReferenceName\":\"month\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"income\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.income)\",\"NativeReferenceName\":\"Sum of income\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"net_cashflow\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.net_cashflow)\",\"NativeReferenceName\":\"Sum of net_cashflow\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"spending\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.spending)\",\"NativeReferenceName\":\"Sum of spending\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "config": "{\"name\":\"01358b81a0553838331c\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":551.6313506088879,\"z\":2,\"width\":687.4808623260021,\"height\":168.78272667883886,\"tabOrder\":2}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"month_dim.month\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"month_dim\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"},\"Name\":\"month_dim.month\",\"NativeReferenceName\":\"month\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{\"data\":[{\"properties\":{\"endDate\":{\"expr\":{\"Literal\":{\"Value\":\"datetime'2026-11-21T00:00:00'\"}}},\"mode\":{\"expr\":{\"Literal\":{\"Value\":\"'Basic'\"}}}}}],\"general\":[{\"properties\":{\"orientation\":{\"expr\":{\"Literal\":{\"Value\":\"1D\"}}}}}]}}}",
           "filters": "[]",
-          "height": 417.15,
-          "width": 728.65,
-          "x": 9.61,
-          "y": 0.00,
+          "height": 168.78,
+          "width": 687.48,
+          "x": 0.00,
+          "y": 551.63,
+          "z": 2.00
+        },
+        {
+          "config": "{\"name\":\"31254d8fef9564ceafc4\",\"layouts\":[{\"id\":0,\"position\":{\"x\":687.4808623260021,\"y\":109.77738320574885,\"z\":1,\"width\":592.7978693110438,\"height\":373.2431028995461,\"tabOrder\":1}}],\"singleVisual\":{\"visualType\":\"pivotTable\",\"projections\":{\"Rows\":[{\"queryRef\":\"category_dim.top_bucket\",\"active\":true},{\"queryRef\":\"category_dim.parent_category\"},{\"queryRef\":\"category_dim.category\"}],\"Values\":[{\"queryRef\":\"Measures_Main.Actual Amount\"},{\"queryRef\":\"Measures_Main.Budget Amount\"},{\"queryRef\":\"Measures_Main.Variance\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"c\",\"Entity\":\"category_dim\",\"Type\":0},{\"Name\":\"m1\",\"Entity\":\"Measures_Main\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"c\"}},\"Property\":\"category\"},\"Name\":\"category_dim.category\",\"NativeReferenceName\":\"category\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"c\"}},\"Property\":\"top_bucket\"},\"Name\":\"category_dim.top_bucket\",\"NativeReferenceName\":\"top_bucket\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"c\"}},\"Property\":\"parent_category\"},\"Name\":\"category_dim.parent_category\",\"NativeReferenceName\":\"parent_category\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m1\"}},\"Property\":\"Actual Amount\"},\"Name\":\"Measures_Main.Actual Amount\",\"NativeReferenceName\":\"Actual Amount\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m1\"}},\"Property\":\"Budget Amount\"},\"Name\":\"Measures_Main.Budget Amount\",\"NativeReferenceName\":\"Budget Amount\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m1\"}},\"Property\":\"Variance\"},\"Name\":\"Measures_Main.Variance\",\"NativeReferenceName\":\"Variance\"}]},\"drillFilterOtherVisuals\":true}}",
+          "filters": "[]",
+          "height": 373.24,
+          "width": 592.80,
+          "x": 687.48,
+          "y": 109.78,
+          "z": 1.00
+        },
+        {
+          "config": "{\"name\":\"46414d8b8cfdbce266a2\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":79.5886028241679,\"z\":0,\"width\":687.4808623260021,\"height\":429.50401179249235,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"monthly_cashflow.month\",\"active\":true}],\"Y\":[{\"queryRef\":\"Sum(monthly_cashflow.income)\"},{\"queryRef\":\"Sum(monthly_cashflow.net_cashflow)\"},{\"queryRef\":\"Sum(monthly_cashflow.spending)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"monthly_cashflow\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"},\"Name\":\"monthly_cashflow.month\",\"NativeReferenceName\":\"month\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"income\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.income)\",\"NativeReferenceName\":\"Sum of income\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"net_cashflow\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.net_cashflow)\",\"NativeReferenceName\":\"Sum of net_cashflow\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"spending\"}},\"Function\":0},\"Name\":\"Sum(monthly_cashflow.spending)\",\"NativeReferenceName\":\"Sum of spending\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"month\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true}}",
+          "filters": "[]",
+          "height": 429.50,
+          "width": 687.48,
+          "x": 0.00,
+          "y": 79.59,
           "z": 0.00
         }
       ],

@@ -1,0 +1,42 @@
+table monthly_net_worth_by_group
+	lineageTag: 28569f8f-dc8d-4e28-8ce8-585f2f539f27
+
+	column month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a3a842e7-a861-4372-8c08-67a3f9decf55
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column acct_group
+		dataType: string
+		lineageTag: 4044bd20-e053-45a6-994b-2cf0802df138
+		summarizeBy: none
+		sourceColumn: acct_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		lineageTag: 76680883-58d2-45c0-9839-e9cf635548c2
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_net_worth_by_group = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\monthly_net_worth_by_group.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

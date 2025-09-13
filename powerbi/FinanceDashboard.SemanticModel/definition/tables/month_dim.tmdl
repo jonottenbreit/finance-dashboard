@@ -3,7 +3,7 @@ table month_dim
 
 	column month
 		dataType: dateTime
-		formatString: Long Date
+		formatString: mmmm yyyy
 		lineageTag: a24c91e0-e283-487d-a187-62ec1c758201
 		summarizeBy: none
 		sourceColumn: month
@@ -11,6 +11,8 @@ table month_dim
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
 
 	partition month_dim = m
 		mode: import

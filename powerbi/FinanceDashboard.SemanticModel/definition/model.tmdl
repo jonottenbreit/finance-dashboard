@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["monthly_cashflow","budget_monthly","category_dim","monthly_actuals_by_category","month_dim"]
+annotation PBI_QueryOrder = ["monthly_cashflow","budget_monthly","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
@@ -21,6 +21,9 @@ ref table budget_monthly
 ref table category_dim
 ref table monthly_actuals_by_category
 ref table month_dim
+ref table Measures_Main
+ref table monthly_net_worth
+ref table monthly_net_worth_by_group
 
 ref cultureInfo en-US
 

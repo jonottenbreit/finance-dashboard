@@ -25,3 +25,13 @@ relationship d5e9781f-3be6-f72e-1d5f-e8bfa1452fe0
 	fromColumn: month_dim.month
 	toColumn: monthly_cashflow.month
 
+relationship 5fddccc3-2613-afee-d526-9309b80037b7
+	fromColumn: monthly_net_worth_by_group.month
+	toColumn: month_dim.month
+
+relationship c1a300d2-0b9d-67e0-0258-4106c0219f08
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: monthly_net_worth.month
+	toColumn: month_dim.month
+

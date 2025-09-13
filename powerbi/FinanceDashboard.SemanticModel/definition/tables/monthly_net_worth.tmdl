@@ -1,0 +1,74 @@
+table monthly_net_worth
+	lineageTag: 3cc57ecc-c6df-42d9-ae1b-eff0fe742ec3
+
+	column month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: dc5c0111-f725-4d23-9564-b7452f462b53
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column net_worth
+		dataType: double
+		lineageTag: 7c1172b4-4df4-4c23-8362-ea9b6107925e
+		summarizeBy: sum
+		sourceColumn: net_worth
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column assets
+		dataType: double
+		lineageTag: 79dd69e2-ffe9-4b2c-9226-ca789475e5cb
+		summarizeBy: sum
+		sourceColumn: assets
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column liabilities
+		dataType: double
+		lineageTag: a076a89e-04bc-44d9-8bee-c9080e71e8f4
+		summarizeBy: sum
+		sourceColumn: liabilities
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column liquid_net_worth
+		dataType: double
+		lineageTag: fedf480a-8941-428f-be2a-6bf15e2afaeb
+		summarizeBy: sum
+		sourceColumn: liquid_net_worth
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column investable_assets
+		dataType: double
+		lineageTag: 5a8e8d33-c90a-42e4-84e3-c49dab0fb617
+		summarizeBy: sum
+		sourceColumn: investable_assets
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_net_worth = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\monthly_net_worth.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+
