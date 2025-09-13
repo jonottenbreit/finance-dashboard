@@ -3,3 +3,25 @@ relationship d9b8ae76-fc65-43b8-8808-deb2c502816d
 	fromColumn: monthly_cashflow.month
 	toColumn: LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b.Date
 
+relationship AutoDetected_080d39aa-36cf-48a0-80e6-22b19a0393d4
+	fromColumn: budget_monthly.category
+	toColumn: category_dim.category
+
+relationship 4d73f450-2e08-4739-6712-1ff430f1d070
+	fromColumn: monthly_actuals_by_category.category
+	toColumn: category_dim.category
+
+relationship ea7c1fc0-2c63-9708-0175-e3ecf8e7e2eb
+	fromColumn: budget_monthly.month
+	toColumn: month_dim.month
+
+relationship 39d48d04-4a73-047f-5375-3f3653d37d8a
+	fromColumn: monthly_actuals_by_category.month
+	toColumn: month_dim.month
+
+relationship d5e9781f-3be6-f72e-1d5f-e8bfa1452fe0
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: month_dim.month
+	toColumn: monthly_cashflow.month
+

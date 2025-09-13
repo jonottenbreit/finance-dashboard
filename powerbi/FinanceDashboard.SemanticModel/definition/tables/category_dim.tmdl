@@ -1,0 +1,37 @@
+table category_dim
+	lineageTag: f3cce7e8-a129-4e9e-8a1c-586bc4374018
+
+	column category
+		dataType: string
+		lineageTag: b4bd15e5-9b3b-43f2-a258-575627962f42
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column parent_category
+		dataType: string
+		lineageTag: 6ca6ab22-1ad2-4477-a9b2-aa6087be5203
+		summarizeBy: none
+		sourceColumn: parent_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column top_bucket
+		dataType: string
+		lineageTag: 71faade0-e7a4-481f-840a-f78916c4b4b8
+		summarizeBy: none
+		sourceColumn: top_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	partition category_dim = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("file:///C:/Users/jo136/OneDrive/FinanceData/exports/category_dim.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

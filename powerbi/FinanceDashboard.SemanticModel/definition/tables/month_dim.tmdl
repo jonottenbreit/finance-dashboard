@@ -1,0 +1,24 @@
+table month_dim
+	lineageTag: 536b79a2-7241-4a4c-80ba-5870ef46d5c4
+
+	column month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a24c91e0-e283-487d-a187-62ec1c758201
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition month_dim = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("file:///C:/Users/jo136/OneDrive/FinanceData/exports/month_dim.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

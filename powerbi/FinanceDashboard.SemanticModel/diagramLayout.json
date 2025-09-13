@@ -11,7 +11,7 @@
         {
           "location": {
             "x": 0,
-            "y": 0
+            "y": 252
           },
           "nodeIndex": "monthly_cashflow",
           "nodeLineageTag": "fa436bde-5ce8-4fcb-9d64-cffed3a0a759",
@@ -20,10 +20,62 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 350.23865792022809,
+            "y": 383.4212890428571
+          },
+          "nodeIndex": "budget_monthly",
+          "nodeLineageTag": "34b2ea39-afec-4493-a19f-47500d46981b",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 659.32666015336133,
+            "y": 404.65864954597839
+          },
+          "nodeIndex": "category_dim",
+          "nodeLineageTag": "f3cce7e8-a129-4e9e-8a1c-586bc4374018",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 668.78669085894364,
+            "y": 0
+          },
+          "nodeIndex": "monthly_actuals_by_category",
+          "nodeLineageTag": "333eb1b7-c44b-4af5-8a40-e941c7561c22",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 25.492006141116448
+          },
+          "nodeIndex": "month_dim",
+          "nodeLineageTag": "536b79a2-7241-4a4c-80ba-5870ef46d5c4",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",
-      "zoomValue": 100,
+      "zoomValue": 70.95554390096882,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,
