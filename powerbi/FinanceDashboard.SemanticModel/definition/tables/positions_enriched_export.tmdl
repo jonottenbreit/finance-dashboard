@@ -1,0 +1,111 @@
+table positions_enriched_export
+	lineageTag: a73a51e7-45af-434f-bfba-06fe4e0e4675
+
+	column as_of_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d3c75642-996c-4059-890d-e43074cecff8
+		summarizeBy: none
+		sourceColumn: as_of_date
+
+		variation Variation
+			isDefault
+			relationship: eb7aaa11-e51d-4680-981d-2d9b5976ec1a
+			defaultHierarchy: LocalDateTable_9dd8e417-5962-40f4-83e2-98005e86c13a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column month
+		dataType: string
+		lineageTag: 4db87c89-5f6a-4138-9812-5e79630bfe2f
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_id
+		dataType: string
+		lineageTag: f70c96a8-ae59-47a2-82d1-440f52fa8a98
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column acct_group
+		dataType: string
+		lineageTag: e0866569-0b24-445a-8204-66327063d771
+		summarizeBy: none
+		sourceColumn: acct_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_bucket
+		dataType: string
+		lineageTag: c592df56-dbc8-4ed1-9b99-b45af15e9cf1
+		summarizeBy: none
+		sourceColumn: tax_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column liquidity
+		dataType: string
+		lineageTag: d54a28ec-276a-4e5a-bb8c-5e26e44e13a8
+		summarizeBy: none
+		sourceColumn: liquidity
+
+		annotation SummarizationSetBy = Automatic
+
+	column symbol
+		dataType: string
+		lineageTag: 7a7b7435-827c-4825-ad64-4b9583724855
+		summarizeBy: none
+		sourceColumn: symbol
+
+		annotation SummarizationSetBy = Automatic
+
+	column asset_class
+		dataType: string
+		lineageTag: 6c1b7e89-e9a2-4535-82c9-8cd5d5cb0d9a
+		summarizeBy: none
+		sourceColumn: asset_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: a15b1b83-418c-4fa5-afd0-955cc77c6691
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column style
+		dataType: string
+		lineageTag: 57a1bdf4-4262-4773-9892-2a1666ad2997
+		summarizeBy: none
+		sourceColumn: style
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		lineageTag: 848954a9-6002-465e-9516-8c32bd8fb86f
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition positions_enriched_export = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\positions_enriched_export.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

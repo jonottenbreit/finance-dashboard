@@ -1,0 +1,59 @@
+table allocation_vs_target
+	lineageTag: 5e4855cd-615d-46cc-bff1-7c46a9d3446d
+
+	column month
+		dataType: string
+		lineageTag: 94c0f142-1ce7-4caf-85ca-79aa94f0d341
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column asset_class
+		dataType: string
+		lineageTag: e3a09477-ac5c-414a-87aa-57b1887a8393
+		summarizeBy: none
+		sourceColumn: asset_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column actual_weight
+		dataType: double
+		lineageTag: 6a42beb7-a011-452a-b834-a33c95619815
+		summarizeBy: sum
+		sourceColumn: actual_weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column target_weight
+		dataType: double
+		lineageTag: 2ac8f812-9ef1-440e-8229-67792b915198
+		summarizeBy: sum
+		sourceColumn: target_weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column variance
+		dataType: double
+		lineageTag: 8252acfe-a905-4e0e-999c-b781024a3c7d
+		summarizeBy: sum
+		sourceColumn: variance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition allocation_vs_target = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\allocation_vs_target.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

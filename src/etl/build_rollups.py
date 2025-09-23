@@ -48,7 +48,7 @@ def safe_copy(table: str, filename: str):
 
 # -------------
 # Ensures rules are loaded
-# --------
+# -------------
 
 # --- ensure rule tables exist from CSVs if missing ---
 rules_dir = (Path(os.getenv("RULES_DIR")) if os.getenv("RULES_DIR") else Path(__file__).resolve().parents[2] / "rules")
@@ -300,6 +300,26 @@ if has_table(con, "positions"):
         print("INFO: allocation_vs_target skipped (no target_allocation)")
 
     print("Built allocation tables")
+
+    con.execute("""
+        CREATE OR REPLACE TABLE positions_enriched_export AS
+        SELECT
+            as_of_date,
+            month,
+            account_id,
+            acct_group,
+            tax_bucket,
+            liquidity,
+            symbol,
+            asset_class,
+            region,
+            style,
+            CAST(value AS DOUBLE) AS value
+        FROM positions_enriched
+        ORDER BY month, account_id, symbol
+    """)
+
+    print("Built allocation tables")
 else:
     print("SKIP allocation: positions table not found")
 
@@ -310,12 +330,14 @@ safe_copy("monthly_cashflow", "monthly_cashflow.parquet")
 safe_copy("monthly_actuals_by_category", "monthly_actuals_by_category.parquet")
 safe_copy("budget_monthly", "budget_monthly.parquet")
 safe_copy("category_dim", "category_dim.parquet")
+safe_copy("security_dim", "security_dim.parquet")
 safe_copy("month_dim", "month_dim.parquet")
 
 safe_copy("monthly_net_worth", "monthly_net_worth.parquet")
 safe_copy("monthly_net_worth_by_group", "monthly_net_worth_by_group.parquet")
 
 safe_copy("monthly_allocation", "monthly_allocation.parquet")
-safe_copy("allocation_vs_target", "allocation_vs_target.parquet")
+safe_copy("monthly_allocation", "monthly_allocation.parquet")
+safe_copy("positions_enriched_export", "positions_enriched_export.parquet")
 
 print("Done.")

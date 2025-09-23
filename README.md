@@ -14,8 +14,8 @@ Custom personal finance dashboard for my family.
 
 ## Repo layout
 ```
-src/etl/         # ETL scripts (init_db, load_csv, load_categories_and_budget, load_accounts_and_balances, build_rollups, ...)
-rules/           # category_dim.csv, budget_monthly.csv, account_dim.csv, (optional) security_dim.csv, target_allocation.csv
+src/etl/         # ETL scripts (init_db, load_rules, load_transactions, load_positions, load_accounts_and_balances, build_rollups, ...)
+rules/           # category_dim.csv, budget_monthly.csv, account_dim.csv, security_dim.csv, target_allocation.csv
 powerbi/         # Power BI project(s) (.pbip)
 docs/            # decisions, next_steps, scripts overview
 ```
@@ -27,6 +27,7 @@ docs/            # decisions, next_steps, scripts overview
 - **Transfers** (cc payments/internal moves) are excluded from P&L (tagging step coming).
 - **Balances:** liabilities may be typed positive in CSVs; loader normalizes them to **negative** using `account_dim.type`.
 - **Net worth in visuals:** do **not** sum across months; use end-of-period measures (see below).
+- **Allocations:** weights are derived from positions → grouped by asset_class, compared against targets.
 
 ---
 
@@ -42,12 +43,14 @@ Written to `C:\Users\jo136\OneDrive\FinanceData\exports\`:
 - **Net worth**
   - `monthly_net_worth.parquet`
   - `monthly_net_worth_by_group.parquet`
-- **(Optional, when positions are added)**
+- **Portfolio**
   - `monthly_allocation.parquet`
   - `allocation_vs_target.parquet`
+  - `security_dim.parquet`
+  - `positions_enriched.parquet`
 
 Regenerate (in powershell):
-``` 
+```powershell
 .\.venv\Scripts\Activate
 .\run_loaders.ps1
 ```
@@ -63,12 +66,18 @@ Create **single-direction, 1→*** relationships:
 - `category_dim[category]` → `budget_monthly[category]`
 - `category_dim[category]` → `monthly_actuals_by_category[category]`
 
+Optional portfolio joins:
+- `month_dim[month]` → `monthly_allocation[month]`
+- `month_dim[month]` → `allocation_vs_target[month]`
+- `positions_enriched[symbol]` → `security_dim[symbol]`
+- `month_dim[month]` → `positions_enriched[month]`
+
 Optional:
 - Table tools → **Mark `month_dim` as Date table**.
 - Hide the `month` columns on fact tables (use `month_dim[month]` in visuals).
 
 ## Measures (under `Measures_Main`)
-Use Display Folders (e.g., *Budget vs Actual*, *Cashflow*, *Net Worth*).
+Use Display Folders (e.g., *Budget vs Actual*, *Cashflow*, *Net Worth*, *Portfolio*).
 
 ```DAX
 -- Budget vs Actual
@@ -125,6 +134,13 @@ RETURN CALCULATE(SUM(monthly_net_worth_by_group[value]), 'month_dim'[month] = La
 NW Group % := DIVIDE([NW By Group (EOP)], [NW Total])
 ```
 
+For Portfolio tab:
+```DAX
+Actual Weight := AVERAGE(monthly_allocation[actual_weight])
+Target Weight := AVERAGE(allocation_vs_target[target_weight])
+Variance Weight := [Actual Weight] - [Target Weight]
+```
+
 ---
 
 ## Data inputs (CSVs)
@@ -137,39 +153,42 @@ NW Group % := DIVIDE([NW By Group (EOP)], [NW Total])
 - `rules/account_dim.csv` → `account_id,account_name,owner,type,acct_group,tax_bucket,liquidity,include_networth,include_liquid`
 - `C:\Users\jo136\OneDrive\FinanceData\balances\*.csv` → `as_of_date,account_id,balance`
 
-*(Optional) Holdings for allocation later:*
-- `rules/security_dim.csv` (symbol → asset_class, etc.)
-- `rules/target_allocation.csv` (asset_class targets summing to 1.0)
+### Holdings & allocation
+- `rules/security_dim.csv` → `symbol,asset_class,region,style`
+- `rules/target_allocation.csv` → `asset_class,target_weight` (sums to 1.0)
 - `C:\Users\jo136\OneDrive\FinanceData\positions\*.csv` → `as_of_date,account_id,symbol,shares,price,market_value`
+
+### Transactions
+- `C:\Users\jo136\OneDrive\FinanceData\transactions\*.csv` → `date,account_id,amount,description,category,subcategory,memo`  
+  (loader normalizes, computes txn_id, merchant_norm, amount_cents)
+
+---
 
 ## Quick start (local)
 ```powershell
 cd C:\Users\jo136\Projects\finance-dashboard
 .\.venv\Scripts\Activate
-python src\etl\init_db.py
-python src\etl\migrate_001_add_unique_txn_id.py       # safe to re-run
-python src\etl\load_csv.py                             # transactions
-python src\etl\load_categories_and_budget.py           # rules/
-python src\etl\load_accounts_and_balances.py           # rules/ + balances/
-# (optional) python src\etl\load_positions.py          # rules/ + positions/
-python src\etl\build_rollups.py                        # writes Parquet exports
+python src\etl\init_db.py                         # one-time
+python src\etl\load_rules.py                      # rules → dims
+python src\etl\load_transactions.py               # transactions
+python src\etl\load_positions.py                  # positions
+python src\etl\load_accounts_and_balances.py      # balances
+python src\etl\build_rollups.py                   # writes Parquet exports
 # then Refresh in Power BI
 ```
 
 ## What’s already done
 - `.env` points to OneDrive data dir
 - `finance.duckdb` created with `transactions` (+ unique index on `txn_id`)
-- CSV loader normalizes data and inserts idempotently
+- CSV loaders normalize data and insert idempotently
 - **Net worth** rollups + exports (monthly and by group)
+- **Portfolio** rollups + exports (allocation vs target, positions enriched, security_dim)
 - Power BI project saved locally (.pbip)
 
 ## Troubleshooting
 - **Unknown/null categories** → append to `rules/category_dim.csv` → reload loaders → rebuild rollups.
 - **Unknown account_id in balances** → add to `rules/account_dim.csv`.
-- **ON CONFLICT error** → ensure `migrate_001_add_unique_txn_id.py` was run (unique index on `txn_id`).
-- **Parquet shows one month** → add more sample txns/balances → re-run `build_rollups.py` → Refresh PBI.
+- **ON CONFLICT error** → ensure unique index exists on `txn_id`.
+- **Parquet shows one month** → add more sample txns/balances/positions → re-run loaders → rebuild rollups.
 - **Net worth cards sum months** → use the provided EOP measures, not raw SUMs.
-
-## Docs
-- Scripts overview: `docs/scripts.md`
-- What’s next: `docs/next_steps.md`
+- **Allocation not showing** → confirm positions + security_dim + target_allocation are loaded.

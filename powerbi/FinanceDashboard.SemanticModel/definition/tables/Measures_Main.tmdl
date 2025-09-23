@@ -123,7 +123,5 @@ table Measures_Main
 				in
 				    #"Changed Type"
 
-	changedProperty = Name
-
 	annotation PBI_ResultType = Table
 

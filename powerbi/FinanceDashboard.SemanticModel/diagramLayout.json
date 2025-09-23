@@ -5,7 +5,7 @@
       "ordinal": 0,
       "scrollPosition": {
         "x": 0,
-        "y": 169.8316211741801
+        "y": 69.580448576222892
       },
       "nodes": [
         {
@@ -110,10 +110,62 @@
             "width": 397.48157314783225
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1523.0412363134892,
+            "y": 461.01900698517863
+          },
+          "nodeIndex": "monthly_allocation",
+          "nodeLineageTag": "6f7f933a-a886-4706-b4dc-36a7d995706a",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1441.6594181316711,
+            "y": 759.27355243972409
+          },
+          "nodeIndex": "allocation_vs_target",
+          "nodeLineageTag": "5e4855cd-615d-46cc-bff1-7c46a9d3446d",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1760.4957817680347,
+            "y": 936.50991607608762
+          },
+          "nodeIndex": "security_dim",
+          "nodeLineageTag": "4407a1bf-7824-4c3d-a75d-e394a6450675",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1955.7807077182185,
+            "y": 321.25759851627163
+          },
+          "nodeIndex": "positions_enriched_export",
+          "nodeLineageTag": "a73a51e7-45af-434f-bfba-06fe4e0e4675",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",
-      "zoomValue": 60.557283670421292,
+      "zoomValue": 38.3249412393072,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

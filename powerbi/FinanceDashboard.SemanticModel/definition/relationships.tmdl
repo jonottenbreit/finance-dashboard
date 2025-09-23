@@ -35,3 +35,24 @@ relationship c1a300d2-0b9d-67e0-0258-4106c0219f08
 	fromColumn: monthly_net_worth.month
 	toColumn: month_dim.month
 
+relationship 47a54f77-c172-fb56-fefc-425276d4439e
+	fromColumn: monthly_allocation.month
+	toColumn: month_dim.month
+
+relationship d6c45785-e9b8-8927-2d37-a359b94790a0
+	fromColumn: allocation_vs_target.month
+	toColumn: month_dim.month
+
+relationship eb7aaa11-e51d-4680-981d-2d9b5976ec1a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: positions_enriched_export.as_of_date
+	toColumn: LocalDateTable_9dd8e417-5962-40f4-83e2-98005e86c13a.Date
+
+relationship AutoDetected_bdbef46a-06c2-4376-9b10-c54b441a3cfc
+	fromColumn: positions_enriched_export.asset_class
+	toColumn: security_dim.asset_class
+
+relationship 6d2a4daf-048d-1127-6b17-1e98d8ae7ac6
+	fromColumn: positions_enriched_export.month
+	toColumn: month_dim.month
+

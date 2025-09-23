@@ -1,0 +1,63 @@
+table monthly_allocation
+	lineageTag: 6f7f933a-a886-4706-b4dc-36a7d995706a
+
+	column month
+		dataType: string
+		lineageTag: 24776796-70ed-4b3a-8c87-9a2177f92da0
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column asset_class
+		dataType: string
+		lineageTag: 6fa5912f-aeda-4d04-93d1-b9e60a339ceb
+		summarizeBy: none
+		sourceColumn: asset_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 3757ded2-719b-4aa3-99bf-e6cbf7b289a3
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column style
+		dataType: string
+		lineageTag: b0f719f2-4e56-4e73-8438-d715166e4203
+		summarizeBy: none
+		sourceColumn: style
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_bucket
+		dataType: string
+		lineageTag: 9ee2304f-1cba-4269-ba0c-ec73e7a1b57f
+		summarizeBy: none
+		sourceColumn: tax_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		lineageTag: 50dfaa67-e855-40dd-bf67-9d4237f3f2a7
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_allocation = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\monthly_allocation.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

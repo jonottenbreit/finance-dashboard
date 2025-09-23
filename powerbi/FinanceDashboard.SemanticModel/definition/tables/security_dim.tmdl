@@ -1,0 +1,45 @@
+table security_dim
+	lineageTag: 4407a1bf-7824-4c3d-a75d-e394a6450675
+
+	column symbol
+		dataType: string
+		lineageTag: b599d178-7b8d-48df-9edf-c85793ec4601
+		summarizeBy: none
+		sourceColumn: symbol
+
+		annotation SummarizationSetBy = Automatic
+
+	column asset_class
+		dataType: string
+		lineageTag: 2e3e8d8a-8769-4c36-8c72-e90a29606ada
+		summarizeBy: none
+		sourceColumn: asset_class
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 489c840f-3482-4a63-94a7-f1c3fcd5b881
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	column style
+		dataType: string
+		lineageTag: 5bfc3fae-1147-43db-9108-297e5d3fd13e
+		summarizeBy: none
+		sourceColumn: style
+
+		annotation SummarizationSetBy = Automatic
+
+	partition security_dim = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\security_dim.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+
