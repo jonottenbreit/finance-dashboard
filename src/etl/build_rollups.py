@@ -1,152 +1,321 @@
 """
 Build reporting rollups and export Parquet snapshots.
-
-Exports (written under <DATA_DIR>/exports)
-- monthly_cashflow.parquet
-- monthly_actuals_by_category.parquet
-- budget_monthly.parquet              (if table exists)
-- category_dim.parquet                (if table exists)
-- month_dim.parquet
-- monthly_net_worth.parquet           (if account_dim + balance_snapshot exist)
-- monthly_net_worth_by_group.parquet  (if account_dim + balance_snapshot exist)
-
 Run:
     python src/etl/build_rollups.py
 """
+# src/etl/build_rollups.py
 from __future__ import annotations
 import os
 from pathlib import Path
-import duckdb
 from dotenv import load_dotenv
+import duckdb
 
+# -------------------------
+# ENV / PATHS
+# -------------------------
 load_dotenv()
+
 DATA_DIR = Path(os.getenv("DATA_DIR", r"C:\Users\jo136\OneDrive\FinanceData"))
-DB = DATA_DIR / "finance.duckdb"
-EXPORTS = DATA_DIR / "exports"
-EXPORTS.mkdir(exist_ok=True)
+DB_ENV = os.getenv("DUCKDB_PATH")
+DB_PATH = Path(DB_ENV) if DB_ENV else (DATA_DIR / "finance.duckdb")
+EXPORTS_DIR = DATA_DIR / "exports"
+EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
-def p(name: str) -> str:
-    return (EXPORTS / name).as_posix()
+con = duckdb.connect(str(DB_PATH))
 
-def has_table(con: duckdb.DuckDBPyConnection, table: str) -> bool:
-    q = "SELECT 1 FROM information_schema.tables WHERE table_schema IN ('main','temp') AND table_name = ? LIMIT 1"
-    return bool(con.execute(q, [table]).fetchone())
+# -------------------------
+# HELPERS
+# -------------------------
+def has_table(con: duckdb.DuckDBPyConnection, name: str) -> bool:
+    try:
+        return con.execute("SELECT 1 FROM information_schema.tables WHERE table_name = ? LIMIT 1", [name]).fetchone() is not None
+    except Exception:
+        return False
 
-with duckdb.connect(str(DB)) as con:
-    # --- monthly_cashflow from transactions (always built if transactions exists) ---
-    if has_table(con, "transactions"):
+def has_column(con: duckdb.DuckDBPyConnection, table: str, col: str) -> bool:
+    try:
+        return con.execute("SELECT 1 FROM information_schema.columns WHERE table_name = ? AND column_name = ? LIMIT 1", [table, col]).fetchone() is not None
+    except Exception:
+        return False
+
+def safe_copy(table: str, filename: str):
+    if has_table(con, table):
+        dst = (EXPORTS_DIR / filename).as_posix()
+        con.execute(f"COPY {table} TO '{dst}' (FORMAT PARQUET)")
+        print(f"Exported {table} -> {dst}")
+    else:
+        print(f"SKIP export {table}: table not found")
+
+# -------------
+# Ensures rules are loaded
+# --------
+
+# --- ensure rule tables exist from CSVs if missing ---
+rules_dir = (Path(os.getenv("RULES_DIR")) if os.getenv("RULES_DIR") else Path(__file__).resolve().parents[2] / "rules")
+
+if not has_table(con, "security_dim"):
+    sec_csv = rules_dir / "security_dim.csv"
+    if sec_csv.exists():
         con.execute("""
-            CREATE OR REPLACE TABLE monthly_cashflow AS
-            SELECT
-              date_trunc('month', date)::DATE AS month,
-              SUM(amount)                                        AS net_cashflow,
-              SUM(CASE WHEN amount > 0 THEN amount ELSE 0 END)   AS income,
-              SUM(CASE WHEN amount < 0 THEN amount ELSE 0 END)   AS spending
-            FROM transactions
-            GROUP BY 1
-            ORDER BY 1;
-        """)
-    else:
-        print("WARN: table 'transactions' not found; skipping monthly_cashflow.")
-
-    # --- actuals by category (joins category_dim if present) ---
-    if has_table(con, "transactions"):
-        left_join = "LEFT JOIN category_dim cd ON t.category = cd.category" if has_table(con, "category_dim") else "LEFT JOIN (SELECT NULL) cd ON FALSE"
-        con.execute(f"""
-            CREATE OR REPLACE TABLE monthly_actuals_by_category AS
-            SELECT
-              date_trunc('month', t.date)::DATE                      AS month,
-              COALESCE(cd.top_bucket, 'Unknown')                     AS top_bucket,
-              COALESCE(cd.parent_category, cd.top_bucket)            AS parent_category,
-              COALESCE(t.category, 'Uncategorized')                  AS category,
-              SUM(t.amount)                                          AS actual_signed,
-              SUM(CASE WHEN t.amount > 0 THEN t.amount ELSE 0 END)   AS income,
-              SUM(CASE WHEN t.amount < 0 THEN -t.amount ELSE 0 END)  AS spending
-            FROM transactions t
-            {left_join}
-            GROUP BY 1,2,3,4
-            ORDER BY 1,2,3,4;
-        """)
-    else:
-        print("WARN: table 'transactions' not found; skipping monthly_actuals_by_category.")
-
-    # --- month_dim (union whatever sources exist) ---
-    unions = []
-    if has_table(con, "transactions"):
-        unions.append("SELECT date_trunc('month', date)::DATE AS month FROM transactions")
-    if has_table(con, "budget_monthly"):
-        unions.append("SELECT month FROM budget_monthly")
-    if has_table(con, "balance_snapshot"):
-        unions.append("SELECT date_trunc('month', as_of_date)::DATE FROM balance_snapshot")
-
-    if unions:
-        union_sql = " UNION ALL ".join(unions)
-        con.execute(f"""
-            CREATE OR REPLACE TABLE month_dim AS
-            SELECT DISTINCT month FROM ({union_sql}) ORDER BY month;
-        """)
-    else:
-        # Guarantee the table exists (empty) so PBI relationships won't explode
-        con.execute("CREATE TABLE IF NOT EXISTS month_dim (month DATE);")
-
-    # --- net worth rollups (requires account_dim + balance_snapshot) ---
-    if has_table(con, "account_dim") and has_table(con, "balance_snapshot"):
-        con.execute("""
-            CREATE OR REPLACE TABLE monthly_net_worth AS
-            WITH b AS (
-              SELECT date_trunc('month', bs.as_of_date)::DATE AS month,
-                     bs.account_id,
-                     bs.balance
-              FROM balance_snapshot bs
+            CREATE TABLE security_dim (
+              symbol TEXT PRIMARY KEY,
+              asset_class TEXT,
+              region TEXT,
+              style TEXT
             )
-            SELECT
-              b.month,
-              SUM(CASE WHEN ad.include_networth THEN b.balance ELSE 0 END)                               AS net_worth,
-              SUM(CASE WHEN ad.include_networth AND ad.type = 'Asset' THEN b.balance ELSE 0 END)        AS assets,
-              SUM(CASE WHEN ad.include_networth AND ad.type = 'Liability' THEN -b.balance ELSE 0 END)   AS liabilities,
-              SUM(CASE WHEN ad.include_liquid THEN b.balance ELSE 0 END)                                AS liquid_net_worth,
-              SUM(CASE WHEN ad.include_networth AND ad.acct_group IN ('Liquid','RSU_Vested') THEN b.balance ELSE 0 END) AS investable_assets
-            FROM b
-            JOIN account_dim ad ON ad.account_id = b.account_id
-            GROUP BY 1
-            ORDER BY 1;
         """)
+        con.execute("INSERT INTO security_dim SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(sec_csv)])
+        print("Loaded security_dim from CSV")
 
+if not has_table(con, "target_allocation"):
+    targ_csv = rules_dir / "target_allocation.csv"
+    if targ_csv.exists():
         con.execute("""
-            CREATE OR REPLACE TABLE monthly_net_worth_by_group AS
-            WITH b AS (
-              SELECT date_trunc('month', bs.as_of_date)::DATE AS month,
-                     bs.account_id,
-                     bs.balance
-              FROM balance_snapshot bs
+            CREATE TABLE target_allocation (
+              asset_class TEXT PRIMARY KEY,
+              target_weight DOUBLE
             )
+        """)
+        con.execute("INSERT INTO target_allocation SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(targ_csv)])
+        print("Loaded target_allocation from CSV")
+
+# -------------------------
+# MONTH DIM (union of sources present)
+# -------------------------
+unions = []
+
+if has_table(con, "transactions") and has_column(con, "transactions", "date"):
+    unions.append("SELECT date_trunc('month', date)::DATE AS m FROM transactions")
+
+if has_table(con, "budget_monthly") and has_column(con, "budget_monthly", "month"):
+    unions.append("SELECT date_trunc('month', month)::DATE AS m FROM budget_monthly")
+
+# balances
+if has_table(con, "balance_snapshot") and has_column(con, "balance_snapshot", "as_of_date"):
+    unions.append("SELECT date_trunc('month', as_of_date)::DATE AS m FROM balance_snapshot")
+
+# positions
+if has_table(con, "positions") and has_column(con, "positions", "as_of_date"):
+    unions.append("SELECT date_trunc('month', as_of_date)::DATE AS m FROM positions")
+
+if unions:
+    con.execute(f"""
+        CREATE OR REPLACE TABLE month_dim AS
+        SELECT DISTINCT m::DATE AS month
+        FROM (
+            {' UNION ALL '.join(unions)}
+        )
+        ORDER BY 1;
+    """)
+    print("Built month_dim")
+else:
+    print("SKIP month_dim: no date-bearing sources found")
+
+# -------------------------
+# CASHFLOW ROLLUP
+# -------------------------
+if has_table(con, "transactions") and has_column(con, "transactions", "amount_cents") and has_column(con, "transactions", "date"):
+    # exclude transfers if column available
+    where_clause = "WHERE COALESCE(is_transfer, FALSE) = FALSE" if has_column(con, "transactions", "is_transfer") else ""
+
+    con.execute(f"""
+        CREATE OR REPLACE TABLE monthly_cashflow AS
+        WITH t AS (
+          SELECT
+            strftime('%Y-%m', date) AS month,
+            CAST(amount_cents/100.0 AS DOUBLE) AS amt
+          FROM transactions
+          {where_clause}
+        )
+        SELECT
+          month,
+          SUM(CASE WHEN amt > 0 THEN amt ELSE 0 END) AS income,
+          SUM(CASE WHEN amt < 0 THEN amt ELSE 0 END) AS spending,  -- negative
+          SUM(amt) AS net_cashflow
+        FROM t
+        GROUP BY 1
+        ORDER BY 1;
+    """)
+    print("Built monthly_cashflow")
+else:
+    print("SKIP monthly_cashflow: transactions table/columns not found")
+
+# -------------------------
+# ACTUALS BY CATEGORY (P&L detail)
+# -------------------------
+if has_table(con, "transactions") and has_column(con, "transactions", "category") and has_column(con, "transactions", "date") and has_column(con, "transactions", "amount_cents"):
+    where_clause = "WHERE COALESCE(is_transfer, FALSE) = FALSE" if has_column(con, "transactions", "is_transfer") else ""
+    con.execute(f"""
+        CREATE OR REPLACE TABLE monthly_actuals_by_category AS
+        WITH t AS (
+          SELECT
+            strftime('%Y-%m', date) AS month,
+            category,
+            CAST(amount_cents/100.0 AS DOUBLE) AS amt
+          FROM transactions
+          {where_clause}
+        )
+        SELECT
+          month,
+          category,
+          SUM(amt)                         AS actual_signed,         -- keep signs
+          SUM(CASE WHEN amt < 0 THEN -amt ELSE 0 END) AS spending   -- positive spend
+        FROM t
+        GROUP BY 1,2
+        ORDER BY 1,2;
+    """)
+    print("Built monthly_actuals_by_category")
+else:
+    print("SKIP monthly_actuals_by_category: category or needed columns missing")
+
+# -------------------------
+# NET WORTH ROLLUPS
+# -------------------------
+if has_table(con, "balance_snapshot") and has_table(con, "account_dim"):
+    # Normalize liabilities to negative per account_dim.type
+    # (If balances already normalized earlier, this is still safe.)
+    con.execute("""
+        CREATE OR REPLACE VIEW balances_enriched AS
+        SELECT
+          date_trunc('month', b.as_of_date)::DATE AS month_date,
+          strftime('%Y-%m', b.as_of_date)        AS month,
+          b.account_id,
+          a.account_name,
+          a.type,
+          a.acct_group,
+          a.tax_bucket,
+          a.liquidity,
+          a.include_networth,
+          a.include_liquid,
+          CASE WHEN LOWER(COALESCE(a.type,'')) = 'liability'
+               THEN -1.0 * CAST(b.balance AS DOUBLE)
+               ELSE CAST(b.balance AS DOUBLE)
+          END AS balance_norm
+        FROM balance_snapshot b
+        LEFT JOIN account_dim a USING(account_id);
+    """)
+    # Monthly totals
+    con.execute("""
+        CREATE OR REPLACE TABLE monthly_net_worth AS
+        SELECT
+          month,
+          SUM(CASE WHEN include_networth THEN balance_norm ELSE 0 END)                           AS net_worth,
+          SUM(CASE WHEN include_networth AND balance_norm > 0 THEN balance_norm ELSE 0 END)     AS assets,
+          SUM(CASE WHEN include_networth AND balance_norm < 0 THEN balance_norm ELSE 0 END)     AS liabilities,
+          SUM(CASE WHEN include_liquid    THEN balance_norm ELSE 0 END)                          AS liquid_net_worth,
+          SUM(CASE WHEN include_networth AND liquidity IN ('investable') THEN balance_norm ELSE 0 END) AS investable_assets
+        FROM balances_enriched
+        GROUP BY 1
+        ORDER BY 1;
+    """)
+    # By group (EOP-friendly)
+    con.execute("""
+        CREATE OR REPLACE TABLE monthly_net_worth_by_group AS
+        SELECT
+          month,
+          acct_group,
+          SUM(CASE WHEN include_networth THEN balance_norm ELSE 0 END) AS value
+        FROM balances_enriched
+        GROUP BY 1,2
+        ORDER BY 1,2;
+    """)
+    print("Built monthly_net_worth & monthly_net_worth_by_group")
+else:
+    print("SKIP net worth: balance_snapshot or account_dim missing")
+
+# -------------------------
+# ALLOCATION (positions + security_dim + account_dim)
+# -------------------------
+if has_table(con, "positions"):
+    join_sec = "LEFT JOIN security_dim s USING(symbol)" if has_table(con, "security_dim") else "LEFT JOIN (SELECT NULL) s ON FALSE"
+    join_acct = "LEFT JOIN account_dim a USING(account_id)" if has_table(con, "account_dim") else "LEFT JOIN (SELECT NULL) a ON FALSE"
+
+    con.execute(f"""
+        CREATE OR REPLACE VIEW positions_enriched AS
+        SELECT
+          p.as_of_date,
+          strftime('%Y-%m', p.as_of_date) AS month,
+          p.account_id,
+          COALESCE(a.acct_group, 'Unknown')  AS acct_group,
+          COALESCE(a.tax_bucket, 'Unknown')  AS tax_bucket,
+          COALESCE(a.liquidity, 'Unknown')   AS liquidity,
+          p.symbol,
+          COALESCE(s.asset_class, 'Unknown') AS asset_class,
+          COALESCE(s.region, 'Unknown')      AS region,
+          COALESCE(s.style, 'Unknown')       AS style,
+          CAST(p.market_value AS DOUBLE)     AS value
+        FROM positions p
+        {join_sec}
+        {join_acct};
+    """)
+
+    con.execute("""
+        CREATE OR REPLACE TABLE monthly_allocation AS
+        SELECT
+          month,
+          asset_class,
+          region,
+          style,
+          tax_bucket,
+          SUM(value) AS value
+        FROM positions_enriched
+        GROUP BY 1,2,3,4,5
+        ORDER BY 1,2;
+    """)
+
+    con.execute("""
+        CREATE OR REPLACE VIEW investable_by_month AS
+        SELECT month, SUM(value) AS investable_value
+        FROM positions_enriched
+        GROUP BY month;
+    """)
+
+    con.execute("""
+        CREATE OR REPLACE VIEW allocation_weights AS
+        SELECT
+          m.month,
+          m.asset_class,
+          SUM(m.value) AS value,
+          i.investable_value,
+          SUM(m.value) / NULLIF(i.investable_value, 0) AS actual_weight
+        FROM monthly_allocation m
+        JOIN investable_by_month i USING(month)
+        GROUP BY 1,2,4;
+    """)
+
+    if has_table(con, "target_allocation"):
+        con.execute("""
+            CREATE OR REPLACE TABLE allocation_vs_target AS
             SELECT
-              b.month,
-              ad.acct_group,
-              SUM(CASE WHEN ad.include_networth THEN b.balance ELSE 0 END) AS value
-            FROM b
-            JOIN account_dim ad ON ad.account_id = b.account_id
-            GROUP BY 1,2
-            ORDER BY 1,2;
+              w.month,
+              w.asset_class,
+              w.actual_weight,
+              t.target_weight,
+              w.actual_weight - t.target_weight AS variance
+            FROM allocation_weights w
+            LEFT JOIN target_allocation t USING(asset_class)
+            ORDER BY w.month, w.asset_class;
         """)
     else:
-        print("INFO: net worth skipped (need both 'account_dim' and 'balance_snapshot').")
+        print("INFO: allocation_vs_target skipped (no target_allocation)")
 
-    # --- Exports (COPY only if the table exists) ---
-    def safe_copy(table: str, filename: str) -> None:
-        if has_table(con, table):
-            con.execute(f"COPY {table} TO '{p(filename)}' (FORMAT PARQUET);")
-        else:
-            print(f"SKIP export: table '{table}' not found.")
+    print("Built allocation tables")
+else:
+    print("SKIP allocation: positions table not found")
 
-    safe_copy("monthly_cashflow", "monthly_cashflow.parquet")
-    if has_table(con, "budget_monthly"):
-        con.execute(f"COPY (SELECT * FROM budget_monthly) TO '{p('budget_monthly.parquet')}' (FORMAT PARQUET);")
-    if has_table(con, "category_dim"):
-        con.execute(f"COPY (SELECT * FROM category_dim)   TO '{p('category_dim.parquet')}'   (FORMAT PARQUET);")
-    safe_copy("monthly_actuals_by_category", "monthly_actuals_by_category.parquet")
-    safe_copy("month_dim", "month_dim.parquet")
-    safe_copy("monthly_net_worth", "monthly_net_worth.parquet")
-    safe_copy("monthly_net_worth_by_group", "monthly_net_worth_by_group.parquet")
+# -------------------------
+# EXPORTS (Parquet)
+# -------------------------
+safe_copy("monthly_cashflow", "monthly_cashflow.parquet")
+safe_copy("monthly_actuals_by_category", "monthly_actuals_by_category.parquet")
+safe_copy("budget_monthly", "budget_monthly.parquet")
+safe_copy("category_dim", "category_dim.parquet")
+safe_copy("month_dim", "month_dim.parquet")
 
-print("Exports written to:", EXPORTS)
+safe_copy("monthly_net_worth", "monthly_net_worth.parquet")
+safe_copy("monthly_net_worth_by_group", "monthly_net_worth_by_group.parquet")
+
+safe_copy("monthly_allocation", "monthly_allocation.parquet")
+safe_copy("allocation_vs_target", "allocation_vs_target.parquet")
+
+print("Done.")

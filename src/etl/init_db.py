@@ -24,16 +24,19 @@ DB.parent.mkdir(parents=True, exist_ok=True)
 con = duckdb.connect(str(DB))
 con.execute("""
 CREATE TABLE IF NOT EXISTS transactions (
-  txn_id TEXT,
-  date DATE,
-  account_id TEXT,
-  merchant TEXT,
-  memo TEXT,
-  amount DECIMAL(18,2),
-  category TEXT,
-  subcategory TEXT,
-  tags TEXT
-);
+    txn_id TEXT PRIMARY KEY,
+    date DATE,
+    account_id TEXT,
+    amount_cents BIGINT,
+    amount DOUBLE,
+    description TEXT,
+    merchant_norm TEXT,
+    category TEXT,
+    subcategory TEXT,
+    memo TEXT,
+    tags TEXT,
+    is_transfer BOOLEAN DEFAULT FALSE
+)
 """)
 con.close()
 print(f"DB ready at {DB}")

@@ -46,10 +46,10 @@ Written to `C:\Users\jo136\OneDrive\FinanceData\exports\`:
   - `monthly_allocation.parquet`
   - `allocation_vs_target.parquet`
 
-Regenerate:
-```powershell
+Regenerate (in powershell):
+``` 
 .\.venv\Scripts\Activate
-python src\etl\build_rollups.py
+.\run_loaders.ps1
 ```
 
 ## Power BI model (relationships)
