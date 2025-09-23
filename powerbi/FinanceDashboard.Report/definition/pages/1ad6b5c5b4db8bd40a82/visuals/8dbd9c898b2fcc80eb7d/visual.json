@@ -1,0 +1,74 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "8dbd9c898b2fcc80eb7d",
+  "position": {
+    "x": 603.77560763161864,
+    "y": 67.238647213521162,
+    "z": 3,
+    "height": 190.73820331998863,
+    "width": 306.00445568602493,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "NW Liabilities"
+                }
+              },
+              "queryRef": "Measures_Main.NW Liabilities",
+              "nativeQueryRef": "NW Liabilities"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "NW Liabilities"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b48ea1346ad24592e0fe",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "NW Liabilities"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

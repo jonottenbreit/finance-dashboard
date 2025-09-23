@@ -23,6 +23,85 @@ table Measures_Main
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'CF Income' = SUM(monthly_cashflow[income])
+		lineageTag: 1919880c-cc7c-4a25-8a6a-d13f5c85ac78
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CF Spending' = -SUM(monthly_cashflow[spending])
+		lineageTag: ff58ba96-e79c-43ba-b61e-886e3705bf6c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'CF Net' = SUM(monthly_cashflow[net_cashflow])
+		lineageTag: e2518873-7bc7-4be3-ae02-bcf0ba400da2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Total' =
+			
+			IF(
+			  HASONEVALUE('month_dim'[month]),
+			  SUM(monthly_net_worth[net_worth]),
+			  CALCULATE(SUM(monthly_net_worth[net_worth]), LASTDATE('month_dim'[month]))
+			)
+		lineageTag: 4c1aa16c-8fd0-4b80-886b-96ef0b0d29b1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Assets' =
+			
+			IF(HASONEVALUE('month_dim'[month]),
+			  SUM(monthly_net_worth[assets]),
+			  CALCULATE(SUM(monthly_net_worth[assets]), LASTDATE('month_dim'[month]))
+			)
+		lineageTag: 622a3381-1d36-49a4-88c8-c62107e76fd1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Liabilities' =
+			
+			IF(HASONEVALUE('month_dim'[month]),
+			  SUM(monthly_net_worth[liabilities]),
+			  CALCULATE(SUM(monthly_net_worth[liabilities]), LASTDATE('month_dim'[month]))
+			)
+		lineageTag: 95322fc3-9beb-4380-9697-0499ffcc34f0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Liquid' =
+			
+			IF(HASONEVALUE('month_dim'[month]),
+			  SUM(monthly_net_worth[liquid_net_worth]),
+			  CALCULATE(SUM(monthly_net_worth[liquid_net_worth]), LASTDATE('month_dim'[month]))
+			)
+		lineageTag: f1d57415-df3b-4d19-ada3-8ce3355ebfcb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Investable' =
+			
+			IF(HASONEVALUE('month_dim'[month]),
+			  SUM(monthly_net_worth[investable_assets]),
+			  CALCULATE(SUM(monthly_net_worth[investable_assets]), LASTDATE('month_dim'[month]))
+			)
+		lineageTag: e201518e-f973-4223-8e87-629628f531e6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW By Group (EOP)' =
+			
+			VAR LatestMonth = MAX('month_dim'[month])
+			RETURN CALCULATE(SUM(monthly_net_worth_by_group[value]), 'month_dim'[month] = LatestMonth)
+		lineageTag: 26969818-2935-4979-8d91-14ae3a5d71ec
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'NW Group %' = DIVIDE([NW By Group (EOP)], [NW Total])
+		lineageTag: a8a505f0-5093-4b65-bfd5-a1f2cf863808
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column Column1
 		dataType: int64
 		isHidden

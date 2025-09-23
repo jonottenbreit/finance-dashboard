@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "name": "dd26f0c76b1b5e707f44",
+  "position": {
+    "x": 12,
+    "y": 296.5,
+    "z": 5,
+    "height": 202,
+    "width": 290,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "monthly_net_worth_by_group"
+                    }
+                  },
+                  "Property": "acct_group"
+                }
+              },
+              "queryRef": "monthly_net_worth_by_group.acct_group",
+              "nativeQueryRef": "Count of acct_group",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "NW By Group (EOP)"
+                }
+              },
+              "queryRef": "Measures_Main.NW By Group (EOP)",
+              "nativeQueryRef": "NW By Group (EOP)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "NW By Group (EOP)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7dba25f1d07fbc0b4c1a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "monthly_net_worth_by_group"
+              }
+            },
+            "Property": "acct_group"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6973044d2de4e8e57a34",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "NW By Group (EOP)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

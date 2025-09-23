@@ -4,14 +4,14 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 34.347642391397642,
-        "y": 253.64414781130662
+        "x": 0,
+        "y": 169.8316211741801
       },
       "nodes": [
         {
           "location": {
             "x": 0,
-            "y": 252
+            "y": 671.4375715105997
           },
           "nodeIndex": "monthly_cashflow",
           "nodeLineageTag": "fa436bde-5ce8-4fcb-9d64-cffed3a0a759",
@@ -23,8 +23,8 @@
         },
         {
           "location": {
-            "x": 350.23865792022809,
-            "y": 383.4212890428571
+            "x": 275.92885194394074,
+            "y": 254.6176253506257
           },
           "nodeIndex": "budget_monthly",
           "nodeLineageTag": "34b2ea39-afec-4493-a19f-47500d46981b",
@@ -106,8 +106,8 @@
           "nodeIndex": "monthly_net_worth_by_group",
           "nodeLineageTag": "28569f8f-dc8d-4e28-8ce8-585f2f539f27",
           "size": {
-            "height": 152,
-            "width": 234
+            "height": 236.21778010645903,
+            "width": 397.48157314783225
           },
           "zIndex": 0
         }
