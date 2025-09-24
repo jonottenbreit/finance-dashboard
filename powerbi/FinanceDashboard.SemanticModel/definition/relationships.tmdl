@@ -1,8 +1,3 @@
-relationship d9b8ae76-fc65-43b8-8808-deb2c502816d
-	joinOnDateBehavior: datePartOnly
-	fromColumn: monthly_cashflow.month
-	toColumn: LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b.Date
-
 relationship AutoDetected_080d39aa-36cf-48a0-80e6-22b19a0393d4
 	fromColumn: budget_monthly.category
 	toColumn: category_dim.category
@@ -48,11 +43,11 @@ relationship eb7aaa11-e51d-4680-981d-2d9b5976ec1a
 	fromColumn: positions_enriched_export.as_of_date
 	toColumn: LocalDateTable_9dd8e417-5962-40f4-83e2-98005e86c13a.Date
 
-relationship AutoDetected_bdbef46a-06c2-4376-9b10-c54b441a3cfc
-	fromColumn: positions_enriched_export.asset_class
-	toColumn: security_dim.asset_class
-
 relationship 6d2a4daf-048d-1127-6b17-1e98d8ae7ac6
 	fromColumn: positions_enriched_export.month
 	toColumn: month_dim.month
+
+relationship b678808f-0faa-a474-456d-b443727a5438
+	fromColumn: positions_enriched_export.symbol
+	toColumn: security_dim.symbol
 

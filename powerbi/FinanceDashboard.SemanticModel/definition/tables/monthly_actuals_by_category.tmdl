@@ -2,29 +2,10 @@ table monthly_actuals_by_category
 	lineageTag: 333eb1b7-c44b-4af5-8a40-e941c7561c22
 
 	column month
-		dataType: dateTime
-		formatString: Long Date
+		dataType: string
 		lineageTag: b1c4dbe8-4c68-4084-b842-4e433b125b74
 		summarizeBy: none
 		sourceColumn: month
-
-		annotation SummarizationSetBy = Automatic
-
-		annotation UnderlyingDateTimeDataType = Date
-
-	column top_bucket
-		dataType: string
-		lineageTag: 287c919c-6c27-401b-abd7-87e58c2d133a
-		summarizeBy: none
-		sourceColumn: top_bucket
-
-		annotation SummarizationSetBy = Automatic
-
-	column parent_category
-		dataType: string
-		lineageTag: ff297159-80e1-473e-b6a7-4f7c9f69e716
-		summarizeBy: none
-		sourceColumn: parent_category
 
 		annotation SummarizationSetBy = Automatic
 
@@ -41,16 +22,6 @@ table monthly_actuals_by_category
 		lineageTag: 382ed535-c423-4574-9a3f-9b86218b6f0a
 		summarizeBy: sum
 		sourceColumn: actual_signed
-
-		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	column income
-		dataType: double
-		lineageTag: 4a1d2d93-f55b-4ab3-a453-e4f90af4b25e
-		summarizeBy: sum
-		sourceColumn: income
 
 		annotation SummarizationSetBy = Automatic
 

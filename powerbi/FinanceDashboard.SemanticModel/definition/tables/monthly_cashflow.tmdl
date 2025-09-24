@@ -2,20 +2,12 @@ table monthly_cashflow
 	lineageTag: fa436bde-5ce8-4fcb-9d64-cffed3a0a759
 
 	column month
-		dataType: dateTime
-		formatString: Long Date
+		dataType: string
 		lineageTag: d07c51b5-f298-461f-873d-160b26dfdeec
 		summarizeBy: none
 		sourceColumn: month
 
-		variation Variation
-			isDefault
-			relationship: d9b8ae76-fc65-43b8-8808-deb2c502816d
-			defaultHierarchy: LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b.'Date Hierarchy'
-
 		annotation SummarizationSetBy = Automatic
-
-		annotation UnderlyingDateTimeDataType = Date
 
 	column net_cashflow
 		dataType: double
@@ -56,4 +48,6 @@ table monthly_cashflow
 				    Source
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

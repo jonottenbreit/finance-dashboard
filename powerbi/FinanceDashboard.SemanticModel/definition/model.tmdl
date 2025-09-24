@@ -14,7 +14,6 @@ annotation PBI_ProTooling = ["DevMode"]
 
 ref table monthly_cashflow
 ref table DateTableTemplate_eefee4e2-260a-4519-84b9-889226bce18f
-ref table LocalDateTable_dd901621-cfc2-4059-9884-fd6694e52c8b
 ref table budget_monthly
 ref table category_dim
 ref table monthly_actuals_by_category

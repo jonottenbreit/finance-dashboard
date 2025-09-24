@@ -13,6 +13,8 @@ table positions_enriched_export
 			relationship: eb7aaa11-e51d-4680-981d-2d9b5976ec1a
 			defaultHierarchy: LocalDateTable_9dd8e417-5962-40f4-83e2-98005e86c13a.'Date Hierarchy'
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 		annotation UnderlyingDateTimeDataType = Date
@@ -23,6 +25,8 @@ table positions_enriched_export
 		summarizeBy: none
 		sourceColumn: month
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 	column account_id
@@ -30,6 +34,8 @@ table positions_enriched_export
 		lineageTag: f70c96a8-ae59-47a2-82d1-440f52fa8a98
 		summarizeBy: none
 		sourceColumn: account_id
+
+		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
 
@@ -39,6 +45,8 @@ table positions_enriched_export
 		summarizeBy: none
 		sourceColumn: acct_group
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 	column tax_bucket
@@ -46,6 +54,8 @@ table positions_enriched_export
 		lineageTag: c592df56-dbc8-4ed1-9b99-b45af15e9cf1
 		summarizeBy: none
 		sourceColumn: tax_bucket
+
+		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
 
@@ -55,6 +65,8 @@ table positions_enriched_export
 		summarizeBy: none
 		sourceColumn: liquidity
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 	column symbol
@@ -62,6 +74,8 @@ table positions_enriched_export
 		lineageTag: 7a7b7435-827c-4825-ad64-4b9583724855
 		summarizeBy: none
 		sourceColumn: symbol
+
+		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
 
@@ -71,6 +85,8 @@ table positions_enriched_export
 		summarizeBy: none
 		sourceColumn: asset_class
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 	column region
@@ -78,6 +94,8 @@ table positions_enriched_export
 		lineageTag: a15b1b83-418c-4fa5-afd0-955cc77c6691
 		summarizeBy: none
 		sourceColumn: region
+
+		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
 
@@ -87,6 +105,8 @@ table positions_enriched_export
 		summarizeBy: none
 		sourceColumn: style
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 	column value
@@ -94,6 +114,26 @@ table positions_enriched_export
 		lineageTag: 848954a9-6002-465e-9516-8c32bd8fb86f
 		summarizeBy: sum
 		sourceColumn: value
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column size
+		dataType: string
+		lineageTag: 7c0e3d5e-6821-45cb-93e2-dd26af54b068
+		summarizeBy: none
+		sourceColumn: size
+
+		annotation SummarizationSetBy = Automatic
+
+	column expense_ratio
+		dataType: double
+		lineageTag: afbaf0a7-122e-4c61-8d31-4b174a9b19e3
+		summarizeBy: sum
+		sourceColumn: expense_ratio
 
 		annotation SummarizationSetBy = Automatic
 
@@ -106,6 +146,8 @@ table positions_enriched_export
 				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\positions_enriched_export.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
 				in
 				    Source
+
+	changedProperty = IsHidden
 
 	annotation PBI_ResultType = Table
 

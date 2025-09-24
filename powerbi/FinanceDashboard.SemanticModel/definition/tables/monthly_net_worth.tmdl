@@ -2,15 +2,12 @@ table monthly_net_worth
 	lineageTag: 3cc57ecc-c6df-42d9-ae1b-eff0fe742ec3
 
 	column month
-		dataType: dateTime
-		formatString: Long Date
+		dataType: string
 		lineageTag: dc5c0111-f725-4d23-9564-b7452f462b53
 		summarizeBy: none
 		sourceColumn: month
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation UnderlyingDateTimeDataType = Date
 
 	column net_worth
 		dataType: double

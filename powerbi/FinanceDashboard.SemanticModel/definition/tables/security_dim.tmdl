@@ -33,6 +33,24 @@ table security_dim
 
 		annotation SummarizationSetBy = Automatic
 
+	column size
+		dataType: string
+		lineageTag: ca069541-9398-4e76-a703-e85177bd7780
+		summarizeBy: none
+		sourceColumn: size
+
+		annotation SummarizationSetBy = Automatic
+
+	column expense_ratio
+		dataType: double
+		lineageTag: 10948826-3744-4fbe-8906-ca59429e87a3
+		summarizeBy: none
+		sourceColumn: expense_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	partition security_dim = m
 		mode: import
 		source =
@@ -42,4 +60,6 @@ table security_dim
 				    Source
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

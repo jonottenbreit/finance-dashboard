@@ -80,7 +80,9 @@ load_csv_table(
       symbol TEXT PRIMARY KEY,
       asset_class TEXT,
       region TEXT,
-      style TEXT
+      style TEXT,
+      size TEXT,
+      expense_ratio DECIMAL(9,6)
     )
     """,
     "security_dim"

@@ -9,19 +9,19 @@ table category_dim
 
 		annotation SummarizationSetBy = Automatic
 
-	column parent_category
-		dataType: string
-		lineageTag: 6ca6ab22-1ad2-4477-a9b2-aa6087be5203
-		summarizeBy: none
-		sourceColumn: parent_category
-
-		annotation SummarizationSetBy = Automatic
-
 	column top_bucket
 		dataType: string
 		lineageTag: 71faade0-e7a4-481f-840a-f78916c4b4b8
 		summarizeBy: none
 		sourceColumn: top_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column notes
+		dataType: string
+		lineageTag: bf603920-783a-4133-b7a8-be36ed90106f
+		summarizeBy: none
+		sourceColumn: notes
 
 		annotation SummarizationSetBy = Automatic
 

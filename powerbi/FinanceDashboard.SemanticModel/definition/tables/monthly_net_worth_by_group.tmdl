@@ -2,15 +2,12 @@ table monthly_net_worth_by_group
 	lineageTag: 28569f8f-dc8d-4e28-8ce8-585f2f539f27
 
 	column month
-		dataType: dateTime
-		formatString: Long Date
+		dataType: string
 		lineageTag: a3a842e7-a861-4372-8c08-67a3f9decf55
 		summarizeBy: none
 		sourceColumn: month
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation UnderlyingDateTimeDataType = Date
 
 	column acct_group
 		dataType: string

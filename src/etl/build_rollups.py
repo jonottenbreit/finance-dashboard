@@ -51,8 +51,10 @@ def safe_copy(table: str, filename: str):
 # -------------
 
 # --- ensure rule tables exist from CSVs if missing ---
-rules_dir = (Path(os.getenv("RULES_DIR")) if os.getenv("RULES_DIR") else Path(__file__).resolve().parents[2] / "rules")
+rules_dir = (Path(os.getenv("RULES_DIR")) if os.getenv("RULES_DIR")
+             else Path(__file__).resolve().parents[2] / "rules")
 
+# security_dim (create if missing, else add new cols if needed)
 if not has_table(con, "security_dim"):
     sec_csv = rules_dir / "security_dim.csv"
     if sec_csv.exists():
@@ -61,11 +63,19 @@ if not has_table(con, "security_dim"):
               symbol TEXT PRIMARY KEY,
               asset_class TEXT,
               region TEXT,
-              style TEXT
+              style TEXT,
+              size TEXT,
+              expense_ratio DECIMAL(9,6)
             )
         """)
         con.execute("INSERT INTO security_dim SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(sec_csv)])
         print("Loaded security_dim from CSV")
+else:
+    # add columns if the table pre-existed without them
+    if not has_column(con, "security_dim", "size"):
+        con.execute("ALTER TABLE security_dim ADD COLUMN size TEXT;")
+    if not has_column(con, "security_dim", "expense_ratio"):
+        con.execute("ALTER TABLE security_dim ADD COLUMN expense_ratio DECIMAL(9,6);")
 
 if not has_table(con, "target_allocation"):
     targ_csv = rules_dir / "target_allocation.csv"
@@ -233,17 +243,19 @@ if has_table(con, "positions"):
     con.execute(f"""
         CREATE OR REPLACE VIEW positions_enriched AS
         SELECT
-          p.as_of_date,
-          strftime('%Y-%m', p.as_of_date) AS month,
-          p.account_id,
-          COALESCE(a.acct_group, 'Unknown')  AS acct_group,
-          COALESCE(a.tax_bucket, 'Unknown')  AS tax_bucket,
-          COALESCE(a.liquidity, 'Unknown')   AS liquidity,
-          p.symbol,
-          COALESCE(s.asset_class, 'Unknown') AS asset_class,
-          COALESCE(s.region, 'Unknown')      AS region,
-          COALESCE(s.style, 'Unknown')       AS style,
-          CAST(p.market_value AS DOUBLE)     AS value
+        p.as_of_date,
+        strftime('%Y-%m', p.as_of_date) AS month,
+        p.account_id,
+        COALESCE(a.acct_group, 'Unknown')   AS acct_group,
+        COALESCE(a.tax_bucket, 'Unknown')   AS tax_bucket,
+        COALESCE(a.liquidity, 'Unknown')    AS liquidity,
+        p.symbol,
+        COALESCE(s.asset_class, 'Unknown')  AS asset_class,
+        COALESCE(s.region, 'Unknown')       AS region,
+        COALESCE(s.style, 'Unknown')        AS style,
+        COALESCE(s.size, 'Unknown')         AS size,
+        COALESCE(s.expense_ratio, 0.0)      AS expense_ratio,
+        CAST(p.market_value AS DOUBLE)      AS value
         FROM positions p
         {join_sec}
         {join_acct};
@@ -263,6 +275,31 @@ if has_table(con, "positions"):
         ORDER BY 1,2;
     """)
 
+    con.execute("""
+        CREATE OR REPLACE TABLE monthly_allocation_by_size AS
+        SELECT
+        month,
+        asset_class,
+        region,
+        style,
+        size,
+        tax_bucket,
+        SUM(value) AS value
+        FROM positions_enriched
+        GROUP BY 1,2,3,4,5,6
+        ORDER BY 1,2,5;
+    """)
+
+    con.execute("""
+        CREATE OR REPLACE TABLE monthly_weighted_expense_ratio AS
+        SELECT
+        month,
+        asset_class,
+        SUM(value * expense_ratio) / NULLIF(SUM(value), 0) AS weighted_expense_ratio
+        FROM positions_enriched
+        GROUP BY 1,2
+        ORDER BY 1,2;
+    """)
     con.execute("""
         CREATE OR REPLACE VIEW investable_by_month AS
         SELECT month, SUM(value) AS investable_value
@@ -302,21 +339,23 @@ if has_table(con, "positions"):
     print("Built allocation tables")
 
     con.execute("""
-        CREATE OR REPLACE TABLE positions_enriched_export AS
-        SELECT
-            as_of_date,
-            month,
-            account_id,
-            acct_group,
-            tax_bucket,
-            liquidity,
-            symbol,
-            asset_class,
-            region,
-            style,
-            CAST(value AS DOUBLE) AS value
-        FROM positions_enriched
-        ORDER BY month, account_id, symbol
+    CREATE OR REPLACE TABLE positions_enriched_export AS
+    SELECT
+        as_of_date,
+        month,
+        account_id,
+        acct_group,
+        tax_bucket,
+        liquidity,
+        symbol,
+        asset_class,
+        region,
+        style,
+        size,
+        expense_ratio,
+        CAST(value AS DOUBLE) AS value
+    FROM positions_enriched
+    ORDER BY month, account_id, symbol
     """)
 
     print("Built allocation tables")
@@ -337,7 +376,7 @@ safe_copy("monthly_net_worth", "monthly_net_worth.parquet")
 safe_copy("monthly_net_worth_by_group", "monthly_net_worth_by_group.parquet")
 
 safe_copy("monthly_allocation", "monthly_allocation.parquet")
-safe_copy("monthly_allocation", "monthly_allocation.parquet")
+safe_copy("allocation_vs_target", "allocation_vs_target.parquet")
 safe_copy("positions_enriched_export", "positions_enriched_export.parquet")
 
 print("Done.")

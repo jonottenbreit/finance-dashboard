@@ -102,6 +102,40 @@ table Measures_Main
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Portfolio Value' = ```
+			
+			CALCULATE(
+			  SUM(monthly_allocation[value]),
+			  ALLEXCEPT(monthly_allocation, monthly_allocation[month])
+			)
+			
+			```
+		lineageTag: 8b5a8cd6-1598-49d9-a889-a35b2345c84a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Actual Weight' = ```
+			
+			DIVIDE(
+			  SUM(monthly_allocation[value]),
+			  [Portfolio Value]
+			)
+			
+			```
+		lineageTag: c0127e20-f434-4ce4-b9b9-03e0ad959cdb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Target Weight' = AVERAGE(allocation_vs_target[target_weight])
+		lineageTag: 415ac29b-877b-41ce-be1a-03af4ef09fea
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Variance Weight' = [Actual Weight] - [Target Weight]
+		lineageTag: c750edd0-b2bb-4698-8ad9-e621480a441b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column Column1
 		dataType: int64
 		isHidden

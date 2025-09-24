@@ -12,6 +12,9 @@ python src\etl\load_rules.py
 Write-Host "Loading transactions..."
 python src\etl\load_transactions.py
 
+Write-Host "Normalizing positions..."
+python src\etl\normalize_positions.py 
+
 Write-Host "Loading positions..."
 python src\etl\load_positions.py  # remove if you don't maintain positions
 
