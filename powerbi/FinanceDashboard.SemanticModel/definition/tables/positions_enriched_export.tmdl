@@ -20,7 +20,8 @@ table positions_enriched_export
 		annotation UnderlyingDateTimeDataType = Date
 
 	column month
-		dataType: string
+		dataType: dateTime
+		formatString: Long Date
 		lineageTag: 4db87c89-5f6a-4138-9812-5e79630bfe2f
 		summarizeBy: none
 		sourceColumn: month
@@ -28,6 +29,8 @@ table positions_enriched_export
 		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
 
 	column account_id
 		dataType: string
@@ -111,6 +114,7 @@ table positions_enriched_export
 
 	column value
 		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
 		lineageTag: 848954a9-6002-465e-9516-8c32bd8fb86f
 		summarizeBy: sum
 		sourceColumn: value
@@ -118,8 +122,6 @@ table positions_enriched_export
 		changedProperty = IsHidden
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column size
 		dataType: string
@@ -143,11 +145,14 @@ table positions_enriched_export
 		mode: import
 		source =
 				let
-				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\positions_enriched_export.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\positions_enriched_export.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"month", type date}})
 				in
-				    Source
+				    #"Changed Type"
 
 	changedProperty = IsHidden
 
 	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
 

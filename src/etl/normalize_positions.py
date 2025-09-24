@@ -21,6 +21,7 @@ ACCOUNT_ID_OVERRIDES = {
     ("chase", "brokerage_taxable"): "BRK_JOINT",
     ("chase", "IRA_JON"): "IRA_JON",
     ("chase", "IRA_JON_ROTH"): "IRA_JON_ROTH",
+    ("chase", "IRA_SHANNA"): "IRA_SHANNA",
     ("alight", "all_accounts"): "401K_JON",
     # add more like: ("fidelity", "roth"): "ROTH_JON"
 }
