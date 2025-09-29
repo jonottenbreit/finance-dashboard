@@ -26,8 +26,9 @@
                 }
               },
               "queryRef": "allocation_vs_target.asset_class",
-              "nativeQueryRef": "asset_class",
-              "active": true
+              "nativeQueryRef": "Asset Class",
+              "active": true,
+              "displayName": "Asset Class"
             }
           ]
         },
@@ -50,7 +51,8 @@
                 }
               },
               "queryRef": "Sum(allocation_vs_target.actual_weight)",
-              "nativeQueryRef": "Sum of actual_weight"
+              "nativeQueryRef": "Actual",
+              "displayName": "Actual"
             },
             {
               "field": {
@@ -69,7 +71,8 @@
                 }
               },
               "queryRef": "Sum(allocation_vs_target.target_weight)",
-              "nativeQueryRef": "Sum of target_weight"
+              "nativeQueryRef": "Target Weight",
+              "displayName": "Target Weight"
             }
           ]
         }

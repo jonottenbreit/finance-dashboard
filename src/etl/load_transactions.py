@@ -23,7 +23,7 @@ load_dotenv()
 
 DATA_DIR = Path(os.getenv("DATA_DIR", r"C:\Users\jo136\OneDrive\FinanceData"))
 DB_PATH  = Path(os.getenv("DUCKDB_PATH", DATA_DIR / "finance.duckdb"))
-TXN_DIR  = Path(os.getenv("TXN_DIR", DATA_DIR / "transactions"))
+TXN_DIR = DATA_DIR / "transactions" / "normalized"
 TXN_DIR.mkdir(parents=True, exist_ok=True)
 
 # -------------------------
@@ -106,7 +106,7 @@ def main() -> None:
     """)
     con.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_transactions_txnid ON transactions(txn_id)")
 
-    csvs = sorted(glob.glob(str(TXN_DIR / "*.csv")))
+    csvs = sorted(glob.glob(str(TXN_DIR / "**" / "*.csv"), recursive=True))
     if not csvs:
         print(f"No transaction files found in: {TXN_DIR}")
         return

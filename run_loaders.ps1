@@ -9,6 +9,9 @@ $ErrorActionPreference = "Stop"
 Write-Host "Loading rules..."
 python src\etl\load_rules.py
 
+Write-Host "Normalizing transactions..."
+python src\etl\normalize_transactions.py 
+
 Write-Host "Loading transactions..."
 python src\etl\load_transactions.py
 

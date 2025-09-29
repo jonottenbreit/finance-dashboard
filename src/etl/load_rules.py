@@ -16,16 +16,50 @@ DB_PATH   = Path(os.getenv("DUCKDB_PATH", DATA_DIR / "finance.duckdb"))
 con = duckdb.connect(str(DB_PATH))
 
 def load_csv_table(csv_path: Path, create_sql: str, table: str):
+    """Ensure table exists with expected schema, then replace rows from CSV."""
     if not csv_path.exists():
         print(f"SKIP {table}: {csv_path} not found")
         return
-    # Ensure table exists with expected schema
     con.execute(create_sql)
-    # Replace all rows from CSV
     con.execute(f"DELETE FROM {table}")
     con.execute(f"INSERT INTO {table} SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(csv_path)])
     n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
     print(f"Loaded {table}: {n} rows")
+
+def load_category_dim():
+    """Recreate category_dim to match the CSV (no subcategory) and index it."""
+    csv_path = RULES_DIR / "category_dim.csv"
+    if not csv_path.exists():
+        print(f"SKIP category_dim: {csv_path} not found")
+        return
+
+    # Recreate the table directly from the CSV to guarantee schema alignment
+    con.execute("""
+        CREATE OR REPLACE TABLE category_dim AS
+        SELECT
+            TRIM(category)                                 AS category,
+            TRIM(COALESCE(parent_category, ''))           AS parent_category,
+            TRIM(COALESCE(top_bucket, ''))                AS top_bucket,
+            COALESCE(notes, '')                           AS notes,
+            CASE LOWER(CAST(exclude_from_budget AS VARCHAR))
+                WHEN '1' THEN TRUE
+                WHEN 'true' THEN TRUE
+                ELSE FALSE
+            END                                           AS exclude_from_budget,
+            CASE LOWER(CAST(is_transfer AS VARCHAR))
+                WHEN '1' THEN TRUE
+                WHEN 'true' THEN TRUE
+                ELSE FALSE
+            END                                           AS is_transfer
+        FROM read_csv_auto(?, HEADER=TRUE);
+    """, [str(csv_path)])
+
+    # Indexes consistent with the new schema
+    con.execute("CREATE UNIQUE INDEX IF NOT EXISTS ux_category_dim ON category_dim(category);")
+    con.execute("CREATE INDEX IF NOT EXISTS ix_category_dim_parent ON category_dim(parent_category);")
+
+    n = con.execute("SELECT COUNT(*) FROM category_dim").fetchone()[0]
+    print(f"Loaded category_dim: {n} rows")
 
 # 1) account_dim
 load_csv_table(
@@ -59,20 +93,10 @@ load_csv_table(
     "budget_monthly"
 )
 
-# 3) category_dim (used for tagging/reporting)
-load_csv_table(
-    RULES_DIR / "category_dim.csv",
-    """
-    CREATE TABLE IF NOT EXISTS category_dim (
-      category TEXT PRIMARY KEY,
-      top_bucket TEXT,
-      notes TEXT
-    )
-    """,
-    "category_dim"
-)
+# 3) category_dim (no subcategory)
+load_category_dim()
 
-# 4) security_dim (for allocation joins)
+# 4) security_dim
 load_csv_table(
     RULES_DIR / "security_dim.csv",
     """
@@ -88,7 +112,7 @@ load_csv_table(
     "security_dim"
 )
 
-# 5) target_allocation (for actual vs target)
+# 5) target_allocation
 load_csv_table(
     RULES_DIR / "target_allocation.csv",
     """

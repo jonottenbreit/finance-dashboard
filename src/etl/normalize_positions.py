@@ -23,6 +23,7 @@ ACCOUNT_ID_OVERRIDES = {
     ("chase", "IRA_JON_ROTH"): "IRA_JON_ROTH",
     ("chase", "IRA_SHANNA"): "IRA_SHANNA",
     ("alight", "all_accounts"): "401K_JON",
+    ("fideltiy", "401K_SHANNA_ROTH"): "401K_SHANNA_ROTH",
     # add more like: ("fidelity", "roth"): "ROTH_JON"
 }
 
@@ -39,8 +40,17 @@ def _num(x):
         return None
 
 def _infer_date_from_name(p: Path):
-    m = re.search(r"(\d{4})-(\d{2})-(\d{2})", p.name)
-    return pd.to_datetime("-".join(m.groups())).date() if m else None
+    s = p.name
+    m = re.search(r"(\d{4})-(\d{2})-(\d{2})", s)     # YYYY-MM-DD
+    if m:
+        return pd.to_datetime(f"{m.group(1)}-{m.group(2)}-{m.group(3)}").date()
+    m = re.search(r"(\d{2})-(\d{2})-(\d{4})", s)     # MM-DD-YYYY
+    if m:
+        return pd.to_datetime(f"{m.group(3)}-{m.group(1)}-{m.group(2)}").date()
+    m = re.search(r"(\d{4})(\d{2})(\d{2})", s)       # YYYYMMDD
+    if m:
+        return pd.to_datetime(f"{m.group(1)}-{m.group(2)}-{m.group(3)}").date()
+    return None
 
 def _slug_symbol_from_name(name: str) -> str:
     s = (name or "").strip()
@@ -71,6 +81,8 @@ def _account_id_from(vendor: str, route: str):
         return cand
     # fallback: vendor_route
     return (vendor + "_" + route.replace("/", "_")).upper()
+
+# CHASE PARSER
 
 def parse_chase_positions(p: Path) -> pd.DataFrame:
     """Parse Chase brokerage positions export; trims footnotes."""
@@ -126,6 +138,8 @@ def parse_chase_positions(p: Path) -> pd.DataFrame:
     out.loc[is_cash & out["market_value"].notna(), "shares"] = out.loc[is_cash, "market_value"]
 
     return out[["as_of_date","account_id","symbol","shares","price","market_value","vendor","route"]]
+
+# ALIGHT PARSER
 
 def parse_alight_positions(p: Path) -> pd.DataFrame:
     """
@@ -217,11 +231,117 @@ def parse_alight_positions(p: Path) -> pd.DataFrame:
 
     return out[["as_of_date","account_id","symbol","shares","price","market_value","vendor","route"]]
 
+# FIDELITY PARSER
+
+def parse_fidelity_positions(p: Path) -> pd.DataFrame:
+    """
+    Parse Fidelity positions. If ticker Symbol is blank, slug 'Description' as symbol.
+    Reads Quantity, Last Price (or similar), and Current Value (or similar).
+    """
+    df = pd.read_csv(p, encoding="utf-8-sig")
+
+    def norm(s): return re.sub(r"[^a-z0-9]", "", s.lower())
+    cols_norm = {c: norm(c) for c in df.columns}
+
+    def find_col(candidates, required=False):
+        for token in candidates:
+            for col, n in cols_norm.items():
+                if token in n:
+                    return col
+        if required:
+            raise ValueError(f"{p} missing required column like: {candidates}")
+        return None
+
+    # Name / symbol
+    desc_col  = find_col(["description","investmentname","fundname","name"], required=True)
+    sym_col   = find_col(["symbol","ticker"])
+
+    # Numbers
+    qty_col   = find_col(["quantity","shares","units","unit"])
+    price_col = find_col(["lastprice","price","nav","unitprice","unitvalue"])
+    value_col = find_col(["currentvalue","currentbalance","marketvalue","value","endingbalance","closingbalance"], required=True)
+
+    # Coerce numerics
+    for c in [qty_col, price_col, value_col]:
+        if c and c in df.columns:
+            df[c] = df[c].map(_num)
+
+    # As-of date
+    asof_col = find_col(["asof","asofthe","effective","date"])
+    as_of = None
+    if asof_col and df[asof_col].notna().any():
+        try:
+            as_of = pd.to_datetime(df[asof_col].dropna().astype(str).iloc[0]).date()
+        except Exception:
+            as_of = None
+    if as_of is None:
+        as_of = _infer_date_from_name(p)
+
+    vendor, route = _vendor_route_from_path(p)
+    account_id = _account_id_from(vendor, route)
+
+    # rows with a description (some rows may be totals, ignore)
+    pos = df[df[desc_col].notna()].copy()
+
+    # symbol: prefer actual Symbol col; else slug the description
+    def _slug_symbol_from_name(name: str) -> str:
+        s = (name or "").strip()
+        s = re.sub(r"\s+", "_", s)
+        s = re.sub(r"[^A-Za-z0-9_]+", "", s)
+        s = re.sub(r"_+", "_", s).strip("_")
+        return s.upper() if s else "UNKNOWN_FUND"
+
+    symbol = (
+        pos[sym_col].astype(str).str.strip().where(
+            pos[sym_col].notna() & (pos[sym_col].astype(str).str.strip() != "")
+        )
+        if sym_col in pos.columns else None
+    )
+    if symbol is None or symbol.isna().all():
+        symbol = pos[desc_col].astype(str).map(_slug_symbol_from_name)
+
+    shares = pos[qty_col] if qty_col in pos.columns else None
+    price  = pos[price_col] if price_col in pos.columns else None
+    value  = pos[value_col] if value_col in pos.columns else None
+
+    out = pd.DataFrame({
+        "as_of_date": as_of,
+        "account_id": account_id,
+        "symbol": symbol.astype(str).str.strip(),
+        "shares": shares,
+        "price": price,
+        "market_value": value,
+        "vendor": vendor,
+        "route": route,
+    })
+
+    # Fill value if shares * price available
+    mv_missing = out["market_value"].isna()
+    out.loc[mv_missing & out["shares"].notna() & out["price"].notna(), "market_value"] = \
+        out.loc[mv_missing, "shares"] * out.loc[mv_missing, "price"]
+
+    # Unitless balances (value only): price=1, shares=value
+    unitless = out["market_value"].notna() & out["shares"].isna()
+    out.loc[unitless, "shares"] = out.loc[unitless, "market_value"]
+    out.loc[unitless, "price"]  = 1.0
+
+    # Final types
+    out["shares"] = pd.to_numeric(out["shares"], errors="coerce")
+    out["price"]  = pd.to_numeric(out["price"], errors="coerce")
+    out["market_value"] = pd.to_numeric(out["market_value"], errors="coerce")
+
+    # (optional) quick debug
+    print(f"[normalize/fidelity] file={p.name} desc={desc_col} qty={qty_col} price={price_col} value={value_col} as_of={as_of}")
+
+    return out[["as_of_date","account_id","symbol","shares","price","market_value","vendor","route"]]
+
 # Register parsers here; more vendors later
 PARSERS = {
-    "chase":  parse_chase_positions,
-    "alight": parse_alight_positions,
+    "chase":    parse_chase_positions,
+    "alight":   parse_alight_positions,
+    "fidelity": parse_fidelity_positions,
 }
+
 
 def pick_parser(p: Path):
     vendor, _ = _vendor_route_from_path(p)
