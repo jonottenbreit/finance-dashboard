@@ -1,0 +1,245 @@
+table calendar_dim
+	lineageTag: 8be52d58-a53c-4010-ae84-ae75a776b4c3
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e3309f06-21d7-473b-ad89-6ebb9c5a9609
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: 8e05b9a3-f807-4fa6-98e3-c0dd147d0e57
+			defaultHierarchy: LocalDateTable_f214f7ae-4a25-479b-9e07-72b47532780b.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: d79444b7-4668-47a1-af64-3be4029d8b22
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 37272d38-e7d6-43a6-a369-7e494992ee6b
+		summarizeBy: sum
+		sourceColumn: month_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_num
+		dataType: int64
+		formatString: 0
+		lineageTag: f0e6c5f1-08a2-44ea-97d7-d3f8085f389a
+		summarizeBy: sum
+		sourceColumn: day_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month
+		dataType: string
+		lineageTag: cb948215-0ab9-41f8-ad49-772cbaf20aa0
+		summarizeBy: none
+		sourceColumn: year_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column yyyymm
+		dataType: int64
+		formatString: 0
+		lineageTag: c5e2c905-322d-4ec0-8478-2a097d4303f7
+		summarizeBy: sum
+		sourceColumn: yyyymm
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_start
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c4d1d91b-b58d-4331-bd6f-87ed772145f5
+		summarizeBy: none
+		sourceColumn: month_start
+
+		variation Variation
+			isDefault
+			relationship: 8388732f-6d42-4198-81a4-97a01d5c269f
+			defaultHierarchy: LocalDateTable_82ca1514-d1c8-4381-aede-865c1ec37713.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column month_end
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 83842af9-0f6a-4357-ae1a-fd4c9fb735e3
+		summarizeBy: none
+		sourceColumn: month_end
+
+		variation Variation
+			isDefault
+			relationship: d67c70cc-04c6-4fb6-b8b2-f0be1bbc5652
+			defaultHierarchy: LocalDateTable_9d6bad35-a82e-4974-a864-569bc3906569.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column quarter_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 78e7d180-cb00-45e7-863b-46a580aed502
+		summarizeBy: sum
+		sourceColumn: quarter_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter_start
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 586672b2-7f5e-4c8c-908a-d402bb5e8cb2
+		summarizeBy: none
+		sourceColumn: quarter_start
+
+		variation Variation
+			isDefault
+			relationship: 00db6e6b-d296-44d2-a491-f9cb12673623
+			defaultHierarchy: LocalDateTable_f9b3a7a9-c4f4-44c3-aab6-6dcc7f703ceb.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column is_weekend
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: de1cc1cc-6c63-4cb8-adc4-fd5f1046ad6c
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	column iso_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 2a187058-f3b5-4f09-ada5-53bae96271eb
+		summarizeBy: sum
+		sourceColumn: iso_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column iso_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 08debfa8-7495-459b-b11d-9f58e9b7c0f0
+		summarizeBy: sum
+		sourceColumn: iso_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column week_start_monday
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f3d7eefc-0ae0-4e39-8ebd-7d99d861b4c4
+		summarizeBy: none
+		sourceColumn: week_start_monday
+
+		variation Variation
+			isDefault
+			relationship: 5af6c452-cdd0-4d3f-b6e2-33824f260e3b
+			defaultHierarchy: LocalDateTable_87c2ec65-b0e5-4c9a-abdb-0cee76dbdb27.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column month_short
+		dataType: string
+		lineageTag: 451af372-de0f-486a-b682-bc09057ae67b
+		summarizeBy: none
+		sourceColumn: month_short
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: 2c8d9353-b063-499b-a927-3661dd2a0a09
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter_label
+		dataType: string
+		lineageTag: 2c2f2420-53dd-4c10-9833-ef33c0314573
+		summarizeBy: none
+		sourceColumn: quarter_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_eom
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c8d05829-a238-452a-87a9-b6567551c35e
+		summarizeBy: none
+		sourceColumn: is_eom
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_in_month
+		dataType: int64
+		formatString: 0
+		lineageTag: 67d8b5fc-1709-4a3e-bf10-ea5552cb3530
+		summarizeBy: sum
+		sourceColumn: days_in_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_year
+		dataType: int64
+		formatString: 0
+		lineageTag: f712dd08-8679-4d9f-86d7-71e2b8e28d14
+		summarizeBy: sum
+		sourceColumn: fiscal_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: ac245f2e-e6b8-4a3b-9567-ec79152749a8
+		summarizeBy: sum
+		sourceColumn: fiscal_quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_month_num
+		dataType: int64
+		formatString: 0
+		lineageTag: 27006277-b22f-467b-a16e-f16ad655ec67
+		summarizeBy: sum
+		sourceColumn: fiscal_month_num
+
+		annotation SummarizationSetBy = Automatic
+
+	partition calendar_dim = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("file:///C:/Users/jo136/OneDrive/FinanceData/exports/calendar_dim.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"date", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -125,3 +125,14 @@ load_csv_table(
 )
 
 print("Rules loaded.")
+
+# 6) category_rules (always reload so CSV edits take effect)
+catrules_csv = RULES_DIR / "category_rules.csv"
+if catrules_csv.exists():
+    con.execute("CREATE OR REPLACE TABLE category_rules AS SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(catrules_csv)])
+    # Optional: light index to speed contains-matching (helps a bit for many rules)
+    con.execute("CREATE INDEX IF NOT EXISTS ix_category_rules_pattern ON category_rules(pattern);")
+    print(f"Loaded category_rules from {catrules_csv}")
+else:
+    print(f"SKIP category_rules: {catrules_csv} not found")
+

@@ -4,8 +4,8 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 0,
-        "y": 0
+        "x": 993.439499136227,
+        "y": 165.13290216952743
       },
       "nodes": [
         {
@@ -36,8 +36,8 @@
         },
         {
           "location": {
-            "x": 659.32666015336133,
-            "y": 404.65864954597839
+            "x": 784.8276658022022,
+            "y": 563.18623562872472
           },
           "nodeIndex": "category_dim",
           "nodeLineageTag": "f3cce7e8-a129-4e9e-8a1c-586bc4374018",
@@ -62,8 +62,8 @@
         },
         {
           "location": {
-            "x": 681.89090909090908,
-            "y": 672.47382432293466
+            "x": 2455.418278391634,
+            "y": 992.83165453181789
           },
           "nodeIndex": "month_dim",
           "nodeLineageTag": "536b79a2-7241-4a4c-80ba-5870ef46d5c4",
@@ -162,10 +162,36 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2335.5577909765448,
+            "y": 203.39224709970716
+          },
+          "nodeIndex": "transactions_with_category",
+          "nodeLineageTag": "30e9b580-62bd-4ebc-964a-2d9e7204e3c5",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2841.8006777367409,
+            "y": 423.01900698517863
+          },
+          "nodeIndex": "calendar_dim",
+          "nodeLineageTag": "8be52d58-a53c-4010-ae84-ae75a776b4c3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",
-      "zoomValue": 48.175246115416513,
+      "zoomValue": 60.557283670421292,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

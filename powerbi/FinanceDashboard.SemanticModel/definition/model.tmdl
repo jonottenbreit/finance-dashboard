@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["monthly_cashflow","budget_monthly","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export"]
+annotation PBI_QueryOrder = ["monthly_cashflow","budget_monthly","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export","transactions_with_category","calendar_dim"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
@@ -26,6 +26,13 @@ ref table allocation_vs_target
 ref table security_dim
 ref table positions_enriched_export
 ref table LocalDateTable_9dd8e417-5962-40f4-83e2-98005e86c13a
+ref table transactions_with_category
+ref table calendar_dim
+ref table LocalDateTable_f214f7ae-4a25-479b-9e07-72b47532780b
+ref table LocalDateTable_82ca1514-d1c8-4381-aede-865c1ec37713
+ref table LocalDateTable_9d6bad35-a82e-4974-a864-569bc3906569
+ref table LocalDateTable_f9b3a7a9-c4f4-44c3-aab6-6dcc7f703ceb
+ref table LocalDateTable_87c2ec65-b0e5-4c9a-abdb-0cee76dbdb27
 
 ref cultureInfo en-US
 

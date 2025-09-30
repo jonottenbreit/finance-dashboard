@@ -1,8 +1,3 @@
-"""
-Build reporting rollups and export Parquet snapshots.
-Run:
-    python src/etl/build_rollups.py
-"""
 # src/etl/build_rollups.py
 from __future__ import annotations
 import os
@@ -44,6 +39,15 @@ def has_column(con: duckdb.DuckDBPyConnection, table: str, col: str) -> bool:
     except Exception:
         return False
 
+def list_columns(con: duckdb.DuckDBPyConnection, table: str) -> list[str]:
+    try:
+        return [r[0] for r in con.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_name = ? ORDER BY ordinal_position",
+            [table],
+        ).fetchall()]
+    except Exception:
+        return []
+
 def safe_copy(table: str, filename: str):
     if has_table(con, table):
         dst = (EXPORTS_DIR / filename).as_posix()
@@ -58,7 +62,7 @@ def safe_copy(table: str, filename: str):
 rules_dir = (Path(os.getenv("RULES_DIR")) if os.getenv("RULES_DIR")
              else Path(__file__).resolve().parents[2] / "rules")
 
-# security_dim (create if missing, else add new cols if needed)
+# security_dim
 if not has_table(con, "security_dim"):
     sec_csv = rules_dir / "security_dim.csv"
     if sec_csv.exists():
@@ -97,12 +101,10 @@ if not has_table(con, "target_allocation"):
 if not has_table(con, "category_dim"):
     catdim_csv = rules_dir / "category_dim.csv"
     if catdim_csv.exists():
-        # Be permissive on columns; read_csv_auto will infer what’s there.
         con.execute("CREATE TABLE category_dim AS SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(catdim_csv)])
         print("Loaded category_dim from CSV")
 
-# category_rules WITHOUT subcategory (we will ignore any subcategory col if present)
-# Expected minimal columns: rule_id (optional), match_type, pattern, category
+# category_rules (no subcategory)
 if not has_table(con, "category_rules"):
     catrules_csv = rules_dir / "category_rules.csv"
     if catrules_csv.exists():
@@ -120,11 +122,9 @@ if has_table(con, "transactions") and has_column(con, "transactions", "date"):
 if has_table(con, "budget_monthly") and has_column(con, "budget_monthly", "month"):
     unions.append("SELECT date_trunc('month', month)::DATE AS m FROM budget_monthly")
 
-# balances
 if has_table(con, "balance_snapshot") and has_column(con, "balance_snapshot", "as_of_date"):
     unions.append("SELECT date_trunc('month', as_of_date)::DATE AS m FROM balance_snapshot")
 
-# positions
 if has_table(con, "positions") and has_column(con, "positions", "as_of_date"):
     unions.append("SELECT date_trunc('month', as_of_date)::DATE AS m FROM positions")
 
@@ -142,88 +142,99 @@ else:
     print("SKIP month_dim: no date-bearing sources found")
 
 # -------------------------
-# CATEGORY ASSIGNMENT PIPELINE (no subcategory)
+# CATEGORY ASSIGNMENT PIPELINE
+# Rules override any default category; single category column; no is_transfer in view
 # -------------------------
-# Build a single source of truth for categories:
-# 1) If transactions already carry a 'category' column, we keep it.
-# 2) Else fall back to applying category_rules (no subcategory) on description-like fields when possible.
-# 3) Enrich with category_dim (if present) to expose higher-level groupings; all optional/guarded.
-
-# Identify description-like columns we may match on
-desc_cols = [c for c in ("clean_description", "description", "memo", "payee", "name") if has_column(con, "transactions", c)]
-desc_expr = None
-if desc_cols:
-    # prefer clean_description > description > memo > payee > name
-    for pref in ("clean_description", "description", "memo", "payee", "name"):
-        if pref in desc_cols:
-            desc_expr = pref
-            break
-
-# Create a VIEW transactions_with_category that guarantees a 'category' even if rules are needed
-# Note: we ignore any 'subcategory' concept entirely.
 if has_table(con, "transactions"):
-    # If rules exist and we have a description column, support two match types:
-    # - 'regex' -> pattern is a regex applied to description
-    # - 'contains' -> case-insensitive substring
-    rules_available = has_table(con, "category_rules") and desc_expr is not None and \
-        all(has_column(con, "category_rules", c) for c in ("match_type", "pattern", "category"))
+    # Candidate description fields (use ALL via COALESCE so rules still match if one is null)
+    desc_candidates = [c for c in ("clean_description","description","memo","payee","name")
+                       if has_column(con, "transactions", c)]
+    # Build a robust desc_src = lower(coalesce(...))
+    if desc_candidates:
+        coalesce_expr = "COALESCE(" + ", ".join([f"t.{c}" for c in desc_candidates]) + ", '')"
+    else:
+        coalesce_expr = "''"  # no description-like cols; matcher will do nothing
 
-    if rules_available and not has_column(con, "transactions", "category"):
-        # Build rule application
+    # Columns to expose from transactions (drop duplicates/noise)
+    tx_cols_all = [r[0] for r in con.execute(
+        "SELECT column_name FROM information_schema.columns WHERE table_name = 'transactions' ORDER BY ordinal_position"
+    ).fetchall()]
+    drop_cols = {"subcategory", "is_transfer"}  # exclude these from the view
+    tx_cols_no_cat = [c for c in tx_cols_all if c not in (drop_cols | {"category"})]
+
+    has_tx_category = has_column(con, "transactions", "category")
+
+    # Rules available?
+    rules_ok = (
+        has_table(con, "category_rules") and
+        all(has_column(con, "category_rules", c) for c in ("match_type","pattern","category"))
+    )
+    prio_sql = "COALESCE(priority, 9999) AS prio" if has_column(con, "category_rules", "priority") else "9999 AS prio"
+
+    base_select_cols = ", ".join([f"t.{c}" for c in tx_cols_no_cat]) if tx_cols_no_cat else ""
+    output_cols = ", ".join([f"b.{c}" for c in tx_cols_no_cat]) if tx_cols_no_cat else ""
+    base_cat_col = "t.category AS base_category," if has_tx_category else "'Uncategorized'::TEXT AS base_category,"
+
+    if rules_ok:
         con.execute(f"""
             CREATE OR REPLACE VIEW transactions_with_category AS
             WITH rules AS (
               SELECT
                 COALESCE(LOWER(match_type),'contains') AS match_type,
-                pattern,
-                category
+                TRIM(LOWER(pattern)) AS pattern,    -- normalize patterns
+                category,
+                {prio_sql}
               FROM category_rules
               WHERE category IS NOT NULL AND TRIM(category) <> ''
             ),
             base AS (
-              SELECT *, {desc_expr} AS desc_src FROM transactions
+              SELECT
+                ROW_NUMBER() OVER () AS rid,
+                {base_cat_col}
+                {base_select_cols}{"," if base_select_cols else ""}
+                LOWER({coalesce_expr}) AS desc_src
+              FROM transactions t
             ),
             hits AS (
               SELECT
-                b.*,
-                r.category,
-                ROW_NUMBER() OVER (PARTITION BY b.rowid ORDER BY r.category) AS rn
+                b.rid,
+                r.category AS rule_category,
+                ROW_NUMBER() OVER (
+                  PARTITION BY b.rid
+                  ORDER BY r.prio, LENGTH(r.pattern) DESC, r.category
+                ) AS rn
               FROM base b
               JOIN rules r
                 ON (
-                  (r.match_type = 'regex' AND regexp_matches(LOWER(b.desc_src), r.pattern))
+                  (r.match_type = 'regex'    AND regexp_matches(b.desc_src, r.pattern))
                   OR
-                  (r.match_type = 'contains' AND POSITION(LOWER(r.pattern) IN LOWER(b.desc_src)) > 0)
+                  (r.match_type = 'contains' AND POSITION(r.pattern IN b.desc_src) > 0)
                 )
             )
             SELECT
-              COALESCE(h.category, 'Uncategorized') AS category,
-              b.*
+              COALESCE(h.rule_category, b.base_category, 'Uncategorized') AS category
+              {"," if output_cols else ""}{output_cols}
             FROM base b
-            LEFT JOIN (
-              SELECT * FROM hits WHERE rn = 1
-            ) h
-            ON h.rowid = b.rowid
+            LEFT JOIN (SELECT rid, rule_category FROM hits WHERE rn = 1) h
+              ON h.rid = b.rid;
         """)
-        print("Built transactions_with_category via rules (no subcategory)")
+        print("Built transactions_with_category (rules override, coalesced desc)")
     else:
-        # Either we already have a 'category' column or cannot apply rules; just pass through
-        cat_col = "category" if has_column(con, "transactions", "category") else "NULL AS category"
+        # No usable rules: keep existing category if present
+        category_expr = "t.category" if has_tx_category else "'Uncategorized'::TEXT"
         con.execute(f"""
             CREATE OR REPLACE VIEW transactions_with_category AS
             SELECT
-              {cat_col},
-              t.*
-            FROM transactions t
+              {category_expr} AS category
+              {"," if base_select_cols else ""}{base_select_cols}
+            FROM transactions t;
         """)
-        print("Built transactions_with_category passthrough")
+        print("Built transactions_with_category (passthrough)")
 else:
     print("SKIP: transactions table missing; cannot build transactions_with_category")
 
-# Enrich categories with higher-level groupings if category_dim exists (all optional columns)
-# We'll create a VIEW category_enriched: category, level1, level2, level3 (whatever exists)
+# Optional: category_enriched (higher-levels)
 if has_table(con, "category_dim"):
-    # Probe optional higher-level columns
     lvl_cols = [c for c in ("level1", "level2", "level3", "parent", "group_1", "group_2") if has_column(con, "category_dim", c)]
     select_lvls = ", ".join([f"cd.{c} AS {c}" for c in lvl_cols]) if lvl_cols else ""
     comma = ", " if select_lvls else ""
@@ -238,19 +249,23 @@ else:
     print("SKIP category_enriched: category_dim not found")
 
 # -------------------------
-# CASHFLOW ROLLUP
+# CASHFLOW ROLLUP (filters transfers via category_dim.is_transfer when present)
 # -------------------------
 if has_table(con, "transactions_with_category") and has_column(con, "transactions_with_category", "amount_cents") and has_column(con, "transactions_with_category", "date"):
-    where_clause = "WHERE COALESCE(is_transfer, FALSE) = FALSE" if has_column(con, "transactions_with_category", "is_transfer") else ""
+    filter_clause = ""
+    if has_table(con, "category_dim") and has_column(con, "category_dim", "category") and has_column(con, "category_dim", "is_transfer"):
+        filter_clause = "WHERE COALESCE(cd.is_transfer, FALSE) = FALSE"
 
     con.execute(f"""
         CREATE OR REPLACE TABLE monthly_cashflow AS
         WITH t AS (
           SELECT
-            strftime('%Y-%m', date) AS month,
-            CAST(amount_cents/100.0 AS DOUBLE) AS amt
-          FROM transactions_with_category
-          {where_clause}
+            strftime('%Y-%m', twc.date) AS month,
+            CAST(twc.amount_cents/100.0 AS DOUBLE) AS amt,
+            twc.category
+          FROM transactions_with_category twc
+          LEFT JOIN category_dim cd ON cd.category = twc.category
+          {filter_clause}
         )
         SELECT
           month,
@@ -266,41 +281,44 @@ else:
     print("SKIP monthly_cashflow: needed columns not found")
 
 # -------------------------
-# ACTUALS BY CATEGORY (P&L detail; no subcategory)
+# ACTUALS BY CATEGORY (no subcategory; transfer filter via category_dim)
 # -------------------------
 if has_table(con, "transactions_with_category") and has_column(con, "transactions_with_category", "category") and has_column(con, "transactions_with_category", "date") and has_column(con, "transactions_with_category", "amount_cents"):
-    where_clause = "WHERE COALESCE(is_transfer, FALSE) = FALSE" if has_column(con, "transactions_with_category", "is_transfer") else ""
+    filter_clause = ""
+    if has_table(con, "category_dim") and has_column(con, "category_dim", "category") and has_column(con, "category_dim", "is_transfer"):
+        filter_clause = "WHERE COALESCE(cd.is_transfer, FALSE) = FALSE"
 
-    # Base (category only)
     con.execute(f"""
         CREATE OR REPLACE TABLE monthly_actuals_by_category AS
         WITH t AS (
           SELECT
-            strftime('%Y-%m', date) AS month,
-            COALESCE(category, 'Uncategorized') AS category,
-            CAST(amount_cents/100.0 AS DOUBLE) AS amt
-          FROM transactions_with_category
-          {where_clause}
+            strftime('%Y-%m', twc.date) AS month,
+            COALESCE(twc.category, 'Uncategorized') AS category,
+            CAST(twc.amount_cents/100.0 AS DOUBLE) AS amt
+          FROM transactions_with_category twc
+          LEFT JOIN category_dim cd ON cd.category = twc.category
+          {filter_clause}
         )
         SELECT
           month,
           category,
-          SUM(amt)                                   AS actual_signed,         -- keep signs
-          SUM(CASE WHEN amt < 0 THEN -amt ELSE 0 END) AS spending              -- positive spend
+          SUM(amt)                                   AS actual_signed,
+          SUM(CASE WHEN amt < 0 THEN -amt ELSE 0 END) AS spending
         FROM t
         GROUP BY 1,2
         ORDER BY 1,2;
     """)
     print("Built monthly_actuals_by_category")
 
-    # Optional: enriched rollup if category_dim exists (adds higher-levels, still no subcategory)
     if has_table(con, "category_enriched"):
-        # detect which higher-level columns exist and stitch them in
-        lvl_cols = [c for c in ("level1", "level2", "level3", "parent", "group_1", "group_2")
-                    if has_column(con, "category_dim", c)]
+        lvl_cols = [c for c in ("level1", "level2", "level3", "parent", "group_1", "group_2") if has_column(con, "category_dim", c)]
         select_lvls = ", ".join([f"ce.{c}" for c in lvl_cols]) if lvl_cols else ""
         comma = ", " if select_lvls else ""
         group_lvls = ("," + ",".join([f"ce.{c}" for c in lvl_cols])) if lvl_cols else ""
+
+        filter_clause = ""
+        if has_table(con, "category_dim") and has_column(con, "category_dim", "category") and has_column(con, "category_dim", "is_transfer"):
+            filter_clause = "WHERE COALESCE(cd.is_transfer, FALSE) = FALSE"
 
         con.execute(f"""
             CREATE OR REPLACE TABLE monthly_actuals_by_category_enriched AS
@@ -310,7 +328,8 @@ if has_table(con, "transactions_with_category") and has_column(con, "transaction
                 COALESCE(twc.category, 'Uncategorized') AS category,
                 CAST(twc.amount_cents/100.0 AS DOUBLE) AS amt
               FROM transactions_with_category twc
-              {where_clause}
+              LEFT JOIN category_dim cd ON cd.category = twc.category
+              {filter_clause}
             )
             SELECT
               t.month,
@@ -505,6 +524,90 @@ else:
     print("SKIP allocation: positions table not found")
 
 # -------------------------
+# CALENDAR / DATE DIM (single source of truth)
+# -------------------------
+fiscal_start = int(os.getenv("FISCAL_YEAR_START_MONTH", "1"))
+if fiscal_start < 1 or fiscal_start > 12:
+    fiscal_start = 1  # safety
+FS = fiscal_start  # for f-strings
+
+def _minmax(sql):
+    row = con.execute(sql).fetchone()
+    return row[0] if row and row[0] is not None else None
+
+min_date = _minmax("""
+    SELECT MIN(d) FROM (
+      SELECT MIN(date)           AS d FROM transactions
+      UNION ALL SELECT MIN(month)        FROM budget_monthly
+      UNION ALL SELECT MIN(as_of_date)   FROM balance_snapshot
+      UNION ALL SELECT MIN(as_of_date)   FROM positions
+    )
+""")
+max_date = _minmax("""
+    SELECT MAX(d) FROM (
+      SELECT MAX(date)           AS d FROM transactions
+      UNION ALL SELECT MAX(month)        FROM budget_monthly
+      UNION ALL SELECT MAX(as_of_date)   FROM balance_snapshot
+      UNION ALL SELECT MAX(as_of_date)   FROM positions
+    )
+""")
+
+def build_calendar(series_sql: str):
+    con.execute(f"""
+        CREATE OR REPLACE TABLE calendar_dim AS
+        SELECT
+          gs AS date,
+          CAST(EXTRACT(year  FROM gs) AS INT)                         AS year,
+          CAST(EXTRACT(month FROM gs) AS INT)                         AS month_num,
+          CAST(EXTRACT(day   FROM gs) AS INT)                         AS day_num,
+          strftime('%Y-%m', gs)                                       AS year_month,
+          CAST(strftime('%Y%m', gs) AS INT)                           AS yyyymm,
+          date_trunc('month', gs)::DATE                               AS month_start,
+          (date_trunc('month', gs) + INTERVAL 1 MONTH - INTERVAL 1 DAY)::DATE AS month_end,
+          EXTRACT(quarter FROM gs)::INT                               AS quarter_num,
+          date_trunc('quarter', gs)::DATE                             AS quarter_start,
+          CASE WHEN strftime('%w', gs) IN ('0','6') THEN TRUE ELSE FALSE END AS is_weekend,
+          CAST(strftime('%V', gs) AS INT)                             AS iso_week,
+          CAST(strftime('%G', gs) AS INT)                             AS iso_year,
+          date_trunc('week', gs)::DATE                                AS week_start_monday,
+          strftime('%b', gs)                                          AS month_short,
+          strftime('%B', gs)                                          AS month_name,
+          'Q' || CAST(EXTRACT(quarter FROM gs) AS INT)                AS quarter_label,
+          (gs = (date_trunc('month', gs) + INTERVAL 1 MONTH - INTERVAL 1 DAY)) AS is_eom,
+          CAST(EXTRACT(day FROM (date_trunc('month', gs) + INTERVAL 1 MONTH - INTERVAL 1 DAY)) AS INT) AS days_in_month,
+          -- Fiscal fields (year labeled to FY end year)
+          CASE WHEN CAST(EXTRACT(month FROM gs) AS INT) >= {FS}
+                 THEN CAST(EXTRACT(year FROM gs) AS INT)
+               ELSE CAST(EXTRACT(year FROM gs) AS INT) - 1
+          END                                                         AS fiscal_year,
+          CAST(CEIL((((((CAST(EXTRACT(month FROM gs) AS INT) - {FS} + 12) % 12) + 1)) / 3.0)) AS INT) AS fiscal_quarter,
+          CAST(((CAST(EXTRACT(month FROM gs) AS INT) - {FS} + 12) % 12) + 1 AS INT)           AS fiscal_month_num
+        FROM ({series_sql}) AS t(gs)
+        ORDER BY 1
+    """)
+
+if min_date is None or max_date is None:
+    # Build +/- 365 days around today
+    series = "SELECT * FROM generate_series(CURRENT_DATE - INTERVAL 365 DAY, CURRENT_DATE + INTERVAL 365 DAY, INTERVAL 1 DAY)"
+    build_calendar(series)
+else:
+    # Inline the literals so no separate CTE is required
+    series = f"SELECT * FROM generate_series(DATE '{min_date}', DATE '{max_date}', INTERVAL 1 DAY)"
+    build_calendar(series)
+
+print("Built calendar_dim")
+
+# Rebuild month_dim from calendar
+con.execute("""
+    CREATE OR REPLACE TABLE month_dim AS
+    SELECT DISTINCT month_start AS month
+    FROM calendar_dim
+    ORDER BY 1
+""")
+print("Rebuilt month_dim from calendar_dim")
+
+
+# -------------------------
 # EXPORTS (Parquet)
 # -------------------------
 safe_copy("transactions_with_category", "transactions_with_category.parquet")
@@ -522,5 +625,7 @@ safe_copy("monthly_net_worth_by_group", "monthly_net_worth_by_group.parquet")
 safe_copy("monthly_allocation", "monthly_allocation.parquet")
 safe_copy("allocation_vs_target", "allocation_vs_target.parquet")
 safe_copy("positions_enriched_export", "positions_enriched_export.parquet")
+
+safe_copy("calendar_dim", "calendar_dim.parquet")
 
 print("Done.")

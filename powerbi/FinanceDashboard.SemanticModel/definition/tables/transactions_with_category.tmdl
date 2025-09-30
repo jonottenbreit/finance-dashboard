@@ -1,0 +1,98 @@
+table transactions_with_category
+	lineageTag: 30e9b580-62bd-4ebc-964a-2d9e7204e3c5
+
+	column category
+		dataType: string
+		lineageTag: fc011cea-725e-457a-b72a-a5f6e5f38239
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column txn_id
+		dataType: string
+		lineageTag: 6bac185f-ff70-4168-96df-07dbb4b88058
+		summarizeBy: none
+		sourceColumn: txn_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0ea210b6-d6b3-4694-924d-9022a9f2d19d
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column account_id
+		dataType: string
+		lineageTag: 2a757c97-0d29-429a-9448-9915229e0840
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount_cents
+		dataType: int64
+		formatString: 0
+		lineageTag: e79e5e5b-1541-427c-8a10-e2e6b0e14e4f
+		summarizeBy: sum
+		sourceColumn: amount_cents
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount
+		dataType: double
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 45f37be7-65bf-40ea-a44c-426114424ccc
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column description
+		dataType: string
+		lineageTag: 8534c342-87c8-4d6e-913a-0cf82246af8f
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	column merchant_norm
+		dataType: string
+		lineageTag: b7333a89-fbaf-4866-a113-4ae50cd62eb0
+		summarizeBy: none
+		sourceColumn: merchant_norm
+
+		annotation SummarizationSetBy = Automatic
+
+	column memo
+		dataType: string
+		lineageTag: 4ed12fba-1bc4-47af-ac92-c67b0f5bc6da
+		summarizeBy: none
+		sourceColumn: memo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tags
+		dataType: string
+		lineageTag: b1a1de6a-3a17-4e3c-8f90-5039c93f5b5c
+		summarizeBy: none
+		sourceColumn: tags
+
+		annotation SummarizationSetBy = Automatic
+
+	partition transactions_with_category = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\exports\transactions_with_category.parquet"), [Compression=null, LegacyColumnNameEncoding=false, MaxDepth=null])
+				in
+				    Source
+
+	annotation PBI_ResultType = Table
+

@@ -25,6 +25,32 @@ table category_dim
 
 		annotation SummarizationSetBy = Automatic
 
+	column parent_category
+		dataType: string
+		lineageTag: 884fd80a-867b-4907-a8c8-875f330e8d6e
+		summarizeBy: none
+		sourceColumn: parent_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column exclude_from_budget
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b87b33a4-e7d6-4af3-83b1-bd899bcca215
+		summarizeBy: none
+		sourceColumn: exclude_from_budget
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_transfer
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 768201d5-4413-4f17-a9a9-952a2d975250
+		summarizeBy: none
+		sourceColumn: is_transfer
+
+		annotation SummarizationSetBy = Automatic
+
 	partition category_dim = m
 		mode: import
 		source =

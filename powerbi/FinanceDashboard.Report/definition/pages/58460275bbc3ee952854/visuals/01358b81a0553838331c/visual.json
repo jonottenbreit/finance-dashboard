@@ -20,35 +20,20 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "month_dim"
+                      "Entity": "calendar_dim"
                     }
                   },
-                  "Property": "month"
+                  "Property": "year_month"
                 }
               },
-              "queryRef": "month_dim.month",
-              "nativeQueryRef": "month",
+              "queryRef": "calendar_dim.year_month",
+              "nativeQueryRef": "year_month",
               "active": true
             }
           ]
         }
       },
       "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "month_dim"
-                  }
-                },
-                "Property": "month"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
         "isDefaultSort": true
       }
     },
@@ -82,6 +67,47 @@
                   "Value": "1D"
                 }
               }
+            },
+            "filter": {
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "c",
+                    "Entity": "calendar_dim",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "c"
+                                }
+                              },
+                              "Property": "year_month"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'2025-09'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
             }
           }
         }
@@ -92,15 +118,15 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "718c4bed943f7495ccdb",
+        "name": "144f5c5658692e7bba0d",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "month_dim"
+                "Entity": "calendar_dim"
               }
             },
-            "Property": "month"
+            "Property": "year_month"
           }
         },
         "type": "Categorical"

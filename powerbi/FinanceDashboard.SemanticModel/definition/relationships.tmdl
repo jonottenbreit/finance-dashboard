@@ -51,3 +51,36 @@ relationship b678808f-0faa-a474-456d-b443727a5438
 	fromColumn: positions_enriched_export.symbol
 	toColumn: security_dim.symbol
 
+relationship 9f019e1a-c4d3-1e96-7d0d-d91aeb2b8e4c
+	fromColumn: transactions_with_category.category
+	toColumn: category_dim.category
+
+relationship 8e05b9a3-f807-4fa6-98e3-c0dd147d0e57
+	joinOnDateBehavior: datePartOnly
+	fromColumn: calendar_dim.date
+	toColumn: LocalDateTable_f214f7ae-4a25-479b-9e07-72b47532780b.Date
+
+relationship 8388732f-6d42-4198-81a4-97a01d5c269f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: calendar_dim.month_start
+	toColumn: LocalDateTable_82ca1514-d1c8-4381-aede-865c1ec37713.Date
+
+relationship d67c70cc-04c6-4fb6-b8b2-f0be1bbc5652
+	joinOnDateBehavior: datePartOnly
+	fromColumn: calendar_dim.month_end
+	toColumn: LocalDateTable_9d6bad35-a82e-4974-a864-569bc3906569.Date
+
+relationship 00db6e6b-d296-44d2-a491-f9cb12673623
+	joinOnDateBehavior: datePartOnly
+	fromColumn: calendar_dim.quarter_start
+	toColumn: LocalDateTable_f9b3a7a9-c4f4-44c3-aab6-6dcc7f703ceb.Date
+
+relationship 5af6c452-cdd0-4d3f-b6e2-33824f260e3b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: calendar_dim.week_start_monday
+	toColumn: LocalDateTable_87c2ec65-b0e5-4c9a-abdb-0cee76dbdb27.Date
+
+relationship 25d2002e-513d-5fb1-f2fb-b630304ec137
+	fromColumn: transactions_with_category.date
+	toColumn: calendar_dim.date
+
