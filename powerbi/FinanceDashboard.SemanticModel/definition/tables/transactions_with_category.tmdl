@@ -54,6 +54,8 @@ table transactions_with_category
 
 		annotation SummarizationSetBy = Automatic
 
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
 	column description
 		dataType: string
 		lineageTag: 8534c342-87c8-4d6e-913a-0cf82246af8f

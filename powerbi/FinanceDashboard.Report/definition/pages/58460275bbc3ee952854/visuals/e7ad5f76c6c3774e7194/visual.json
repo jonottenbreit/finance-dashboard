@@ -3,10 +3,10 @@
   "name": "e7ad5f76c6c3774e7194",
   "position": {
     "x": 0,
-    "y": 54.888691602874424,
+    "y": 54.803571016632453,
     "z": 2001,
-    "height": 407.54853515134261,
-    "width": 728.647381028158,
+    "height": 266.45874183948882,
+    "width": 731.34420632540548,
     "tabOrder": 2001
   },
   "visual": {
@@ -74,6 +74,21 @@
               "queryRef": "transactions_with_category.description",
               "nativeQueryRef": "description",
               "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "transactions_with_category"
+                    }
+                  },
+                  "Property": "date"
+                }
+              },
+              "queryRef": "transactions_with_category.date",
+              "nativeQueryRef": "date",
+              "active": false
             }
           ]
         },
@@ -119,7 +134,7 @@
                 "Function": 0
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ]
       }
@@ -205,45 +220,16 @@
               }
             ],
             "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "transactions_with_category.date"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
           }
         ],
-        "root": {
-          "children": [
-            {
-              "identityValues": [
-                {
-                  "Literal": {
-                    "Value": "null"
-                  }
-                }
-              ],
-              "children": [
-                {
-                  "identityValues": [
-                    {
-                      "Literal": {
-                        "Value": "null"
-                      }
-                    }
-                  ],
-                  "isToggled": true,
-                  "children": [
-                    {
-                      "identityValues": [
-                        {
-                          "Literal": {
-                            "Value": "'Personal'"
-                          }
-                        }
-                      ],
-                      "isToggled": true
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+        "root": {}
       }
     ],
     "objects": {
@@ -260,6 +246,20 @@
           },
           "selector": {
             "metadata": "category_dim.top_bucket"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "105.77955624786426D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(transactions_with_category.amount)"
           }
         }
       ]
@@ -339,6 +339,20 @@
               }
             },
             "Property": "category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c8666720082922c38d07",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "transactions_with_category"
+              }
+            },
+            "Property": "date"
           }
         },
         "type": "Categorical"

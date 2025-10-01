@@ -155,6 +155,66 @@ if has_table(con, "transactions"):
     else:
         coalesce_expr = "''"  # no description-like cols; matcher will do nothing
 
+        # ---------- DEDUPE: collapse monthly-export / pending+posted duplicates ----------
+    acct_candidates = [c for c in ("account_id","account","account_name","institution",
+                                  "card_last4","account_last4","source","source_file")
+                      if has_column(con, "transactions", c)]
+    account_expr = ("COALESCE(" + ", ".join([f"t.{c}" for c in acct_candidates]) + ", '')"
+                    if acct_candidates else "''")
+
+    date_candidates = [c for c in ("post_date","transaction_date","date")
+                      if has_column(con, "transactions", c)]
+    date_expr = ("COALESCE(" + ", ".join([f"t.{c}" for c in date_candidates]) + ")"
+                if date_candidates else "DATE '1970-01-01'")
+
+    has_amt_cents = has_column(con, "transactions", "amount_cents")
+    has_amt       = has_column(con, "transactions", "amount")
+    amount_key    = ("ABS(t.amount_cents)" if has_amt_cents
+                    else ("CAST(ROUND(ABS(t.amount) * 100) AS BIGINT)" if has_amt else "0::BIGINT"))
+
+    # normalize description similar to matcher (uses t. here because we're still inside base)
+    desc_norm_expr = ("regexp_replace("
+                      "regexp_replace(LOWER(" + coalesce_expr + "), '[^a-z0-9 ]', ' '), "
+                      "'\\s+', ' ')")
+
+    # status/“pending” rank **without** table alias (these are columns from base)
+    status_rank = (
+        ("CASE WHEN LOWER(status) IN ('posted','complete','final','settled') THEN 0 ELSE 1 END"
+        if has_column(con, "transactions", "status") else "0")
+        + " + CASE WHEN desc_norm LIKE '%pending%' THEN 1 ELSE 0 END"
+    )
+
+    # tie-breaker on ids (bare column names; no t.)
+    txn_id_candidates = [c for c in ("txn_id","transaction_id","reference_id","id")
+                        if has_column(con, "transactions", c)]
+    txn_id_order = ", ".join(txn_id_candidates) if txn_id_candidates else ""
+
+    con.execute(f"""
+    CREATE OR REPLACE VIEW transactions_deduped AS
+    WITH base AS (
+      SELECT
+        t.*,
+        {desc_norm_expr} AS desc_norm,
+        {amount_key}     AS amount_key,
+        {account_expr}   AS account_key,
+        {date_expr}      AS date_key,
+        md5({account_expr} || '|' || CAST({date_expr} AS VARCHAR) || '|' ||
+            CAST({amount_key} AS VARCHAR) || '|' || {desc_norm_expr}) AS dupe_key
+      FROM transactions t
+    ),
+    ranked AS (
+      SELECT
+        *,
+        ROW_NUMBER() OVER (
+          PARTITION BY dupe_key
+          ORDER BY {status_rank}, date_key DESC{(", " + txn_id_order) if txn_id_order else ""}
+        ) AS rn
+      FROM base
+    )
+    SELECT * FROM ranked WHERE rn = 1;
+    """)
+    print("Built transactions_deduped (deduped by account+date+amount+desc)")
+
     # Columns to expose from transactions (drop duplicates/noise)
     tx_cols_all = [r[0] for r in con.execute(
         "SELECT column_name FROM information_schema.columns WHERE table_name = 'transactions' ORDER BY ordinal_position"
@@ -212,7 +272,7 @@ if has_table(con, "transactions"):
                 {base_cat_col}
                 {base_select_cols}{"," if base_select_cols else ""}
                 LOWER({coalesce_expr}) AS desc_src
-              FROM transactions t
+              FROM transactions_deduped t
             )
         """
         if overrides_available:
@@ -277,7 +337,7 @@ if has_table(con, "transactions"):
                 {category_expr} AS base_category
                 {"," if base_select_cols else ""}{base_select_cols}
                 {"," if base_select_cols else ""}LOWER({coalesce_expr}) AS desc_src
-              FROM transactions t
+              FROM transactions_deduped t
             )
         """
         if overrides_available:

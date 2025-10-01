@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
   "name": "58460275bbc3ee952854",
-  "displayName": "Spending vs. Plan",
+  "displayName": "Spending Trends",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280,
@@ -81,5 +81,17 @@
         }
       }
     ]
-  }
+  },
+  "visualInteractions": [
+    {
+      "source": "8767e47dac592801b159",
+      "target": "532e1950e7eb76cec84d",
+      "type": "DataFilter"
+    },
+    {
+      "source": "01358b81a0553838331c",
+      "target": "532e1950e7eb76cec84d",
+      "type": "NoFilter"
+    }
+  ]
 }

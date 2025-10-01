@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "05b641d6070b07dd6c18",
+  "name": "4d0172e3e51e71ed0600",
   "position": {
-    "x": 924.10159403907824,
-    "y": 88.819580613162941,
-    "z": 2002,
+    "x": 13.228448176428524,
+    "y": 323.15209116703966,
+    "z": 2006,
     "height": 83.150245680407863,
     "width": 283.46674663775406,
-    "tabOrder": 2002
+    "tabOrder": 2006
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,11 @@
                       "Entity": "category_dim"
                     }
                   },
-                  "Property": "top_bucket"
+                  "Property": "parent_category"
                 }
               },
-              "queryRef": "category_dim.top_bucket",
-              "nativeQueryRef": "top_bucket",
+              "queryRef": "category_dim.parent_category",
+              "nativeQueryRef": "parent_category",
               "active": true
             }
           ]
@@ -79,7 +79,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Discretionary?'"
+                  "Value": "'Budget Category'"
                 }
               }
             }
@@ -107,7 +107,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "6bc2cc08529900d0c8d9",
+        "name": "cb1302b57e5be123e560",
         "field": {
           "Column": {
             "Expression": {
@@ -115,7 +115,7 @@
                 "Entity": "category_dim"
               }
             },
-            "Property": "top_bucket"
+            "Property": "parent_category"
           }
         },
         "type": "Categorical"

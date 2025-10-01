@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "01358b81a0553838331c",
+  "name": "8767e47dac592801b159",
   "position": {
     "x": 924.10159403907824,
-    "y": 505.83064199866192,
-    "z": 2000,
+    "y": 587.09110936815114,
+    "z": 2003,
     "height": 85.040023991326223,
     "width": 283.46674663775406,
-    "tabOrder": 2000
+    "tabOrder": 2003
   },
   "visual": {
     "visualType": "slicer",
@@ -23,32 +23,15 @@
                       "Entity": "calendar_dim"
                     }
                   },
-                  "Property": "year_month"
+                  "Property": "year"
                 }
               },
-              "queryRef": "calendar_dim.year_month",
-              "nativeQueryRef": "year_month",
+              "queryRef": "calendar_dim.year",
+              "nativeQueryRef": "year",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "calendar_dim"
-                  }
-                },
-                "Property": "year_month"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
@@ -81,6 +64,47 @@
                   "Value": "1D"
                 }
               }
+            },
+            "filter": {
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "c",
+                    "Entity": "calendar_dim",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "c"
+                                }
+                              },
+                              "Property": "year"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "2025L"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
             }
           }
         }
@@ -104,7 +128,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Month & Year'"
+                  "Value": "'Year'"
                 }
               }
             }
@@ -117,7 +141,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "144f5c5658692e7bba0d",
+        "name": "5ced91e90403d02001c3",
         "field": {
           "Column": {
             "Expression": {
@@ -125,10 +149,10 @@
                 "Entity": "calendar_dim"
               }
             },
-            "Property": "year_month"
+            "Property": "year"
           }
         },
-        "type": "Categorical"
+        "type": "Advanced"
       }
     ]
   }
