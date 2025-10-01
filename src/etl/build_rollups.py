@@ -164,6 +164,24 @@ if has_table(con, "transactions"):
 
     has_tx_category = has_column(con, "transactions", "category")
 
+    # Additions for manual overrides
+    has_tx_date    = has_column(con, "transactions", "date")
+    has_amt_cents  = has_column(con, "transactions", "amount_cents")
+    has_amt        = has_column(con, "transactions", "amount")
+
+    overrides_available = (
+        has_table(con, "category_overrides") and
+        all(has_column(con, "category_overrides", c) for c in ("active","description_regex","amount","category"))
+    )
+
+    date_pred   = "(o.date IS NULL OR b.date = o.date)" if has_tx_date else "TRUE"
+    if has_amt_cents:
+        amount_pred = "CAST(ROUND(o.amount * 100) AS BIGINT) = b.amount_cents"
+    elif has_amt:
+        amount_pred = "b.amount = o.amount"
+    else:
+        amount_pred = "TRUE"
+
     # Rules available?
     rules_ok = (
         has_table(con, "category_rules") and
@@ -176,7 +194,8 @@ if has_table(con, "transactions"):
     base_cat_col = "t.category AS base_category," if has_tx_category else "'Uncategorized'::TEXT AS base_category,"
 
     if rules_ok:
-        con.execute(f"""
+        # Build SQL in steps to keep it clean
+        sql = f"""
             CREATE OR REPLACE VIEW transactions_with_category AS
             WITH rules AS (
               SELECT
@@ -194,8 +213,29 @@ if has_table(con, "transactions"):
                 {base_select_cols}{"," if base_select_cols else ""}
                 LOWER({coalesce_expr}) AS desc_src
               FROM transactions t
+            )
+        """
+        if overrides_available:
+            sql += f"""
+            , ov AS (
+              SELECT
+                b.rid,
+                o.category AS override_category,
+                ROW_NUMBER() OVER (PARTITION BY b.rid ORDER BY o.category) AS rn
+              FROM base b
+              JOIN category_overrides o
+                ON o.active = TRUE
+               AND regexp_matches(b.desc_src, o.description_regex)
+               AND {date_pred}
+               AND {amount_pred}
             ),
-            hits AS (
+            overrides_one AS (
+              SELECT rid, override_category
+              FROM ov WHERE rn = 1
+            )
+            """
+        sql += """
+            , hits AS (
               SELECT
                 b.rid,
                 r.category AS rule_category,
@@ -212,24 +252,67 @@ if has_table(con, "transactions"):
                 )
             )
             SELECT
-              COALESCE(h.rule_category, b.base_category, 'Uncategorized') AS category
-              {"," if output_cols else ""}{output_cols}
+              COALESCE({override}, h.rule_category, b.base_category, 'Uncategorized') AS category
+              {cols}
             FROM base b
             LEFT JOIN (SELECT rid, rule_category FROM hits WHERE rn = 1) h
-              ON h.rid = b.rid;
-        """)
-        print("Built transactions_with_category (rules override, coalesced desc)")
+              ON h.rid = b.rid
+            {join_override};
+        """.format(
+            override="o.override_category" if overrides_available else "NULL",
+            cols= ("," + output_cols) if output_cols else "",
+            join_override="LEFT JOIN overrides_one o ON o.rid = b.rid" if overrides_available else ""
+        )
+        con.execute(sql)
+        print("Built transactions_with_category (overrides > rules > base)" if overrides_available
+              else "Built transactions_with_category (rules override, coalesced desc)")
     else:
-        # No usable rules: keep existing category if present
+        # No usable rules: keep existing category if present, but still honor manual overrides
         category_expr = "t.category" if has_tx_category else "'Uncategorized'::TEXT"
-        con.execute(f"""
+        sql = f"""
             CREATE OR REPLACE VIEW transactions_with_category AS
+            WITH base AS (
+              SELECT
+                ROW_NUMBER() OVER () AS rid,
+                {category_expr} AS base_category
+                {"," if base_select_cols else ""}{base_select_cols}
+                {"," if base_select_cols else ""}LOWER({coalesce_expr}) AS desc_src
+              FROM transactions t
+            )
+        """
+        if overrides_available:
+            sql += f"""
+            , ov AS (
+              SELECT
+                b.rid,
+                o.category AS override_category,
+                ROW_NUMBER() OVER (PARTITION BY b.rid ORDER BY o.category) AS rn
+              FROM base b
+              JOIN category_overrides o
+                ON o.active = TRUE
+               AND regexp_matches(b.desc_src, o.description_regex)
+               AND {date_pred}
+               AND {amount_pred}
+            ),
+            overrides_one AS (
+              SELECT rid, override_category
+              FROM ov WHERE rn = 1
+            )
+            """
+        sql += """
             SELECT
-              {category_expr} AS category
-              {"," if base_select_cols else ""}{base_select_cols}
-            FROM transactions t;
-        """)
-        print("Built transactions_with_category (passthrough)")
+              COALESCE({override}, b.base_category, 'Uncategorized') AS category
+              {cols}
+            FROM base b
+            {join_override};
+        """.format(
+            override="o.override_category" if overrides_available else "NULL",
+            cols= ("," + output_cols) if output_cols else "",
+            join_override="LEFT JOIN overrides_one o ON o.rid = b.rid" if overrides_available else ""
+        )
+        con.execute(sql)
+        print("Built transactions_with_category (overrides > base)" if overrides_available
+              else "Built transactions_with_category (passthrough)")
 else:
     print("SKIP: transactions table missing; cannot build transactions_with_category")
 

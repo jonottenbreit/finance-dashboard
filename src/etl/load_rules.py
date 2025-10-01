@@ -136,3 +136,50 @@ if catrules_csv.exists():
 else:
     print(f"SKIP category_rules: {catrules_csv} not found")
 
+# 7) category_overrides (manual one-off categorization rules)
+overrides_csv = RULES_DIR / "category_overrides.csv"
+if overrides_csv.exists():
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS category_overrides (
+            active BOOLEAN,
+            date DATE,
+            description_regex TEXT,
+            amount DOUBLE,
+            category TEXT
+        )
+    """)
+    con.execute("DELETE FROM category_overrides")
+    con.execute("""
+    INSERT INTO category_overrides
+    SELECT
+        -- Accept text or boolean; normalize to text then map to TRUE/FALSE
+        CASE
+          WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('1','true','t','yes','y') THEN TRUE
+          WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('0','false','f','no','n') THEN FALSE
+          ELSE FALSE
+        END AS active,
+
+        -- Dates: ISO first, then MM/DD/YYYY; blanks -> NULL
+        COALESCE(
+          TRY_CAST(NULLIF(TRIM(CAST("date" AS VARCHAR)), '') AS DATE),
+          CAST(TRY_STRPTIME(NULLIF(TRIM(CAST("date" AS VARCHAR)), ''), '%m/%d/%Y') AS DATE)
+        ) AS date,
+
+        TRIM(CAST(description_regex AS VARCHAR)) AS description_regex,
+
+        -- Amounts: strip $/commas if present; blanks/bad -> NULL
+        TRY_CAST(
+          NULLIF(TRIM(REPLACE(REPLACE(CAST(amount AS VARCHAR), '$', ''), ',', '')), '')
+          AS DOUBLE
+        ) AS amount,
+
+        TRIM(CAST(category AS VARCHAR)) AS category
+    FROM read_csv_auto(?, HEADER=TRUE)
+    """, [str(overrides_csv)])
+
+    n = con.execute("SELECT COUNT(*) FROM category_overrides").fetchone()[0]
+    print(f"Loaded category_overrides: {n} rows")
+else:
+    print(f"SKIP category_overrides: {overrides_csv} not found")
+
+
