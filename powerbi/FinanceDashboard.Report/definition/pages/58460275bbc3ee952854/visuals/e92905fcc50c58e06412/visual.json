@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
   "name": "e92905fcc50c58e06412",
   "position": {
-    "x": 924.10159403907824,
-    "y": 171.9698262935708,
-    "z": 2004,
+    "x": 56.693349327550813,
+    "y": 167.24538051627491,
+    "z": 4000,
     "height": 83.150245680407863,
     "width": 283.46674663775406,
-    "tabOrder": 2004
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "slicer",
@@ -44,13 +44,6 @@
                   "Value": "'Dropdown'"
                 }
               }
-            },
-            "isInvertedSelectionMode": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
             }
           }
         }
@@ -70,53 +63,7 @@
       ],
       "general": [
         {
-          "properties": {
-            "filter": {
-              "filter": {
-                "Version": 2,
-                "From": [
-                  {
-                    "Name": "t",
-                    "Entity": "transactions_with_category",
-                    "Type": 0
-                  }
-                ],
-                "Where": [
-                  {
-                    "Condition": {
-                      "Not": {
-                        "Expression": {
-                          "In": {
-                            "Expressions": [
-                              {
-                                "Column": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Source": "t"
-                                    }
-                                  },
-                                  "Property": "description"
-                                }
-                              }
-                            ],
-                            "Values": [
-                              [
-                                {
-                                  "Literal": {
-                                    "Value": "'ABBOTT LABORATOR REG SALARY                 PPD ID: 9360356001'"
-                                  }
-                                }
-                              ]
-                            ]
-                          }
-                        }
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
+          "properties": {}
         }
       ],
       "header": [
@@ -159,20 +106,6 @@
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "acd99e52ce39c51ad909",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "description"
-          }
-        },
-        "type": "Categorical"
-      },
       {
         "name": "eda1a3a725329bb260c9",
         "field": {
@@ -226,6 +159,20 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "4332e2b61cc393723003",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "transactions_with_category"
+              }
+            },
+            "Property": "description"
+          }
+        },
+        "type": "Categorical"
       }
     ]
   }

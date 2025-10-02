@@ -4,10 +4,9 @@
   "position": {
     "x": 943.68735533186191,
     "y": 39.687785971900738,
-    "z": 2,
+    "z": 2000,
     "height": 254.29581381995655,
-    "width": 302.803107785613,
-    "tabOrder": 1
+    "width": 302.803107785613
   },
   "visual": {
     "visualType": "card",
@@ -52,23 +51,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "0453314a48843034576e",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Portfolio Value"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

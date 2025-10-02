@@ -4,10 +4,9 @@
   "position": {
     "x": 12.349955610646745,
     "y": 56.260908892946283,
-    "z": 1,
+    "z": 1000,
     "height": 201.7159416405635,
-    "width": 289.53784820516256,
-    "tabOrder": 1
+    "width": 289.53784820516256
   },
   "visual": {
     "visualType": "card",
@@ -52,23 +51,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "4ee706b943241f373e2c",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "NW Total"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

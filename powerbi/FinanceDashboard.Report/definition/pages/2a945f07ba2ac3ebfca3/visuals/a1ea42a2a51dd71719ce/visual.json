@@ -6,7 +6,8 @@
     "y": 7.3495899947964327,
     "z": 0,
     "height": 320.44212377312448,
-    "width": 762.88744145986971
+    "width": 762.88744145986971,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "clusteredColumnChart",
@@ -117,61 +118,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "83f19617b694000acd93",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "allocation_vs_target"
-                  }
-                },
-                "Property": "actual_weight"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "fce8921db9d9b538c9f7",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "allocation_vs_target"
-              }
-            },
-            "Property": "asset_class"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "5c0d4dc4601ce5fc05f0",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "allocation_vs_target"
-                  }
-                },
-                "Property": "target_weight"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

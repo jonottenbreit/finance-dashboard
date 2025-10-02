@@ -88,6 +88,15 @@ table transactions_with_category
 
 		annotation SummarizationSetBy = Automatic
 
+	column is_subscription
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 12a3871a-7779-4d2a-a78d-df5af61ec6db
+		summarizeBy: none
+		sourceColumn: is_subscription
+
+		annotation SummarizationSetBy = Automatic
+
 	partition transactions_with_category = m
 		mode: import
 		source =

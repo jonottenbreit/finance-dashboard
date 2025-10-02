@@ -1,12 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "01358b81a0553838331c",
+  "name": "d1c1fab84bb51b80793a",
   "position": {
     "x": 56.693349327550813,
-    "y": 544.2561535444878,
-    "z": 0,
-    "height": 85.040023991326223,
-    "width": 283.46674663775406
+    "y": 402.5227802256108,
+    "z": 9001,
+    "height": 83.150245680407863,
+    "width": 283.46674663775406,
+    "tabOrder": 9001
   },
   "visual": {
     "visualType": "slicer",
@@ -19,72 +20,28 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "calendar_dim"
+                      "Entity": "transactions_with_category"
                     }
                   },
-                  "Property": "year_month"
+                  "Property": "is_subscription"
                 }
               },
-              "queryRef": "calendar_dim.year_month",
-              "nativeQueryRef": "year_month",
+              "queryRef": "transactions_with_category.is_subscription",
+              "nativeQueryRef": "is_subscription",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "calendar_dim"
-                  }
-                },
-                "Property": "year_month"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
       "data": [
         {
           "properties": {
-            "endDate": {
-              "expr": {
-                "Literal": {
-                  "Value": "datetime'2026-11-21T00:00:00'"
-                }
-              }
-            },
             "mode": {
               "expr": {
                 "Literal": {
                   "Value": "'Dropdown'"
-                }
-              }
-            },
-            "isInvertedSelectionMode": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "general": [
-        {
-          "properties": {
-            "orientation": {
-              "expr": {
-                "Literal": {
-                  "Value": "1D"
                 }
               }
             }
@@ -104,13 +61,40 @@
           }
         }
       ],
+      "general": [
+        {
+          "properties": {}
+        }
+      ],
       "header": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Month & Year'"
+                  "Value": "'Subscription?'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -123,15 +107,15 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9504a1f814a1d532c453",
+        "name": "d46b23a0d387624ec0b1",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "calendar_dim"
+                "Entity": "transactions_with_category"
               }
             },
-            "Property": "year_month"
+            "Property": "is_subscription"
           }
         },
         "type": "Categorical"

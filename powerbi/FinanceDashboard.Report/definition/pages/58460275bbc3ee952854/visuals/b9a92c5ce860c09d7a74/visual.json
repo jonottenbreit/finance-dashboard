@@ -1,12 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "01358b81a0553838331c",
+  "name": "b9a92c5ce860c09d7a74",
   "position": {
     "x": 56.693349327550813,
-    "y": 544.2561535444878,
-    "z": 0,
-    "height": 85.040023991326223,
-    "width": 283.46674663775406
+    "y": 324.09698032249884,
+    "z": 7000,
+    "height": 83.150245680407863,
+    "width": 283.46674663775406,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "slicer",
@@ -19,72 +20,28 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "calendar_dim"
+                      "Entity": "category_dim"
                     }
                   },
-                  "Property": "year_month"
+                  "Property": "category"
                 }
               },
-              "queryRef": "calendar_dim.year_month",
-              "nativeQueryRef": "year_month",
+              "queryRef": "category_dim.category",
+              "nativeQueryRef": "category",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "calendar_dim"
-                  }
-                },
-                "Property": "year_month"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
       "data": [
         {
           "properties": {
-            "endDate": {
-              "expr": {
-                "Literal": {
-                  "Value": "datetime'2026-11-21T00:00:00'"
-                }
-              }
-            },
             "mode": {
               "expr": {
                 "Literal": {
                   "Value": "'Dropdown'"
-                }
-              }
-            },
-            "isInvertedSelectionMode": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "general": [
-        {
-          "properties": {
-            "orientation": {
-              "expr": {
-                "Literal": {
-                  "Value": "1D"
                 }
               }
             }
@@ -104,13 +61,40 @@
           }
         }
       ],
+      "general": [
+        {
+          "properties": {}
+        }
+      ],
       "header": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Month & Year'"
+                  "Value": "'Budget Subcategory'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -123,15 +107,15 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9504a1f814a1d532c453",
+        "name": "9e54ca0222b1041e6cb5",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "calendar_dim"
+                "Entity": "category_dim"
               }
             },
-            "Property": "year_month"
+            "Property": "category"
           }
         },
         "type": "Categorical"

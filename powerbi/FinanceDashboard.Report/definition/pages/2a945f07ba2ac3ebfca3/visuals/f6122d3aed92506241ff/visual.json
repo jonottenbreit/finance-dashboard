@@ -4,10 +4,10 @@
   "position": {
     "x": 20.57885198543001,
     "y": 339.55105775959515,
-    "z": 4,
+    "z": 4000,
     "height": 77.905653944842186,
     "width": 199.90884785846296,
-    "tabOrder": 3
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "slicer",
@@ -110,23 +110,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "d6c35d1e5061ae65ca29",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "asset_class"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

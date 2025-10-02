@@ -145,37 +145,39 @@ if overrides_csv.exists():
             date DATE,
             description_regex TEXT,
             amount DOUBLE,
-            category TEXT
+            category TEXT,
+            subscription BOOLEAN
         )
     """)
+    con.execute("ALTER TABLE category_overrides ADD COLUMN IF NOT EXISTS subscription BOOLEAN;")
     con.execute("DELETE FROM category_overrides")
     con.execute("""
     INSERT INTO category_overrides
+        (active, date, description_regex, amount, category, subscription)
     SELECT
-        -- Accept text or boolean; normalize to text then map to TRUE/FALSE
         CASE
-          WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('1','true','t','yes','y') THEN TRUE
-          WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('0','false','f','no','n') THEN FALSE
-          ELSE FALSE
+        WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('1','true','t','yes','y') THEN TRUE
+        WHEN LOWER(NULLIF(TRIM(CAST(active AS VARCHAR)), '')) IN ('0','false','f','no','n') THEN FALSE
+        ELSE FALSE
         END AS active,
-
-        -- Dates: ISO first, then MM/DD/YYYY; blanks -> NULL
         COALESCE(
-          TRY_CAST(NULLIF(TRIM(CAST("date" AS VARCHAR)), '') AS DATE),
-          CAST(TRY_STRPTIME(NULLIF(TRIM(CAST("date" AS VARCHAR)), ''), '%m/%d/%Y') AS DATE)
+        TRY_CAST(NULLIF(TRIM(CAST("date" AS VARCHAR)), '') AS DATE),
+        CAST(TRY_STRPTIME(NULLIF(TRIM(CAST("date" AS VARCHAR)), ''), '%m/%d/%Y') AS DATE)
         ) AS date,
-
         TRIM(CAST(description_regex AS VARCHAR)) AS description_regex,
-
-        -- Amounts: strip $/commas if present; blanks/bad -> NULL
         TRY_CAST(
-          NULLIF(TRIM(REPLACE(REPLACE(CAST(amount AS VARCHAR), '$', ''), ',', '')), '')
-          AS DOUBLE
+        NULLIF(TRIM(REPLACE(REPLACE(CAST(amount AS VARCHAR), '$', ''), ',', '')), '')
+        AS DOUBLE
         ) AS amount,
-
-        TRIM(CAST(category AS VARCHAR)) AS category
+        TRIM(CAST(category AS VARCHAR)) AS category,
+        CASE
+        WHEN LOWER(NULLIF(TRIM(CAST(subscription AS VARCHAR)), '')) IN ('1','true','t','yes','y') THEN TRUE
+        WHEN LOWER(NULLIF(TRIM(CAST(subscription AS VARCHAR)), '')) IN ('0','false','f','no','n') THEN FALSE
+        ELSE FALSE
+        END AS subscription
     FROM read_csv_auto(?, HEADER=TRUE)
     """, [str(overrides_csv)])
+
 
     n = con.execute("SELECT COUNT(*) FROM category_overrides").fetchone()[0]
     print(f"Loaded category_overrides: {n} rows")

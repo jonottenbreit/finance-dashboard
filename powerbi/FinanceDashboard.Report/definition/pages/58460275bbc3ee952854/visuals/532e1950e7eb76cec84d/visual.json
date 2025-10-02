@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
   "name": "532e1950e7eb76cec84d",
   "position": {
-    "x": 0,
-    "y": 406.30233684744752,
-    "z": 2005,
-    "height": 266.45874183948882,
+    "x": 400.63300191469239,
+    "y": 343.93965258714161,
+    "z": 5000,
+    "height": 328.82142609979473,
     "width": 731.34420632540548,
-    "tabOrder": 2005
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "columnChart",
@@ -103,6 +103,41 @@
                   "Value": "'Scalar'"
                 }
               }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "valueAxis": [
+        {
+          "properties": {
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
             }
           }
         }
@@ -112,39 +147,6 @@
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "751a54be20a00bc48370",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "transactions_with_category"
-                  }
-                },
-                "Property": "amount"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "23378f815b5791038790",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "calendar_dim"
-              }
-            },
-            "Property": "yyyymm"
-          }
-        },
-        "type": "Advanced"
-      },
       {
         "name": "33f34132cd21be918a50",
         "field": {
@@ -212,6 +214,39 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "f24f9981b7b00204b1ba",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "calendar_dim"
+              }
+            },
+            "Property": "yyyymm"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1a816abd42ee9480c088",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "transactions_with_category"
+                  }
+                },
+                "Property": "amount"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

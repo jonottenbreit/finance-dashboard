@@ -155,22 +155,22 @@ if has_table(con, "transactions"):
     else:
         coalesce_expr = "''"  # no description-like cols; matcher will do nothing
 
-        # ---------- DEDUPE: collapse monthly-export / pending+posted duplicates ----------
+    # ---------- DEDUPE: collapse monthly-export / pending+posted duplicates ----------
     acct_candidates = [c for c in ("account_id","account","account_name","institution",
-                                  "card_last4","account_last4","source","source_file")
-                      if has_column(con, "transactions", c)]
+                                   "card_last4","account_last4","source","source_file")
+                       if has_column(con, "transactions", c)]
     account_expr = ("COALESCE(" + ", ".join([f"t.{c}" for c in acct_candidates]) + ", '')"
                     if acct_candidates else "''")
 
     date_candidates = [c for c in ("post_date","transaction_date","date")
-                      if has_column(con, "transactions", c)]
+                       if has_column(con, "transactions", c)]
     date_expr = ("COALESCE(" + ", ".join([f"t.{c}" for c in date_candidates]) + ")"
-                if date_candidates else "DATE '1970-01-01'")
+                 if date_candidates else "DATE '1970-01-01'")
 
     has_amt_cents = has_column(con, "transactions", "amount_cents")
     has_amt       = has_column(con, "transactions", "amount")
     amount_key    = ("ABS(t.amount_cents)" if has_amt_cents
-                    else ("CAST(ROUND(ABS(t.amount) * 100) AS BIGINT)" if has_amt else "0::BIGINT"))
+                     else ("CAST(ROUND(ABS(t.amount) * 100) AS BIGINT)" if has_amt else "0::BIGINT"))
 
     # normalize description similar to matcher (uses t. here because we're still inside base)
     desc_norm_expr = ("regexp_replace("
@@ -180,13 +180,13 @@ if has_table(con, "transactions"):
     # status/“pending” rank **without** table alias (these are columns from base)
     status_rank = (
         ("CASE WHEN LOWER(status) IN ('posted','complete','final','settled') THEN 0 ELSE 1 END"
-        if has_column(con, "transactions", "status") else "0")
+         if has_column(con, "transactions", "status") else "0")
         + " + CASE WHEN desc_norm LIKE '%pending%' THEN 1 ELSE 0 END"
     )
 
     # tie-breaker on ids (bare column names; no t.)
     txn_id_candidates = [c for c in ("txn_id","transaction_id","reference_id","id")
-                        if has_column(con, "transactions", c)]
+                         if has_column(con, "transactions", c)]
     txn_id_order = ", ".join(txn_id_candidates) if txn_id_candidates else ""
 
     con.execute(f"""
@@ -234,13 +234,18 @@ if has_table(con, "transactions"):
         all(has_column(con, "category_overrides", c) for c in ("active","description_regex","amount","category"))
     )
 
-    date_pred   = "(o.date IS NULL OR b.date = o.date)" if has_tx_date else "TRUE"
-    if has_amt_cents:
-        amount_pred = "CAST(ROUND(o.amount * 100) AS BIGINT) = b.amount_cents"
-    elif has_amt:
-        amount_pred = "b.amount = o.amount"
+    # --- NEW: optional + sign-agnostic amount predicate
+    if overrides_available:
+        if has_amt_cents:
+            amount_pred = "(o.amount IS NULL OR CAST(ROUND(ABS(o.amount) * 100) AS BIGINT) = ABS(b.amount_cents))"
+        elif has_amt:
+            amount_pred = "(o.amount IS NULL OR ABS(b.amount) = ABS(o.amount))"
+        else:
+            amount_pred = "TRUE"
     else:
         amount_pred = "TRUE"
+
+    date_pred   = "(o.date IS NULL OR b.date = o.date)" if has_tx_date else "TRUE"
 
     # Rules available?
     rules_ok = (
@@ -253,6 +258,14 @@ if has_table(con, "transactions"):
     output_cols = ", ".join([f"b.{c}" for c in tx_cols_no_cat]) if tx_cols_no_cat else ""
     base_cat_col = "t.category AS base_category," if has_tx_category else "'Uncategorized'::TEXT AS base_category,"
 
+    # --- NEW: subscription flags (gracefully handle missing columns)
+    rules_has_sub = has_column(con, "category_rules", "subscription")
+    ov_has_sub    = has_column(con, "category_overrides", "subscription") if overrides_available else False
+    rules_sub_expr = ("CASE WHEN LOWER(CAST(subscription AS VARCHAR)) IN ('1','true','t','yes','y') "
+                      "THEN TRUE ELSE FALSE END") if rules_has_sub else "FALSE"
+    ov_sub_expr    = ("CASE WHEN LOWER(CAST(o.subscription AS VARCHAR)) IN ('1','true','t','yes','y') "
+                      "THEN TRUE ELSE FALSE END") if ov_has_sub else "FALSE"
+
     if rules_ok:
         # Build SQL in steps to keep it clean
         sql = f"""
@@ -262,7 +275,8 @@ if has_table(con, "transactions"):
                 COALESCE(LOWER(match_type),'contains') AS match_type,
                 TRIM(LOWER(pattern)) AS pattern,    -- normalize patterns
                 category,
-                {prio_sql}
+                {prio_sql},
+                {rules_sub_expr} AS subscription
               FROM category_rules
               WHERE category IS NOT NULL AND TRIM(category) <> ''
             ),
@@ -281,6 +295,7 @@ if has_table(con, "transactions"):
               SELECT
                 b.rid,
                 o.category AS override_category,
+                {ov_sub_expr} AS override_subscription,
                 ROW_NUMBER() OVER (PARTITION BY b.rid ORDER BY o.category) AS rn
               FROM base b
               JOIN category_overrides o
@@ -290,7 +305,7 @@ if has_table(con, "transactions"):
                AND {amount_pred}
             ),
             overrides_one AS (
-              SELECT rid, override_category
+              SELECT rid, override_category, override_subscription
               FROM ov WHERE rn = 1
             )
             """
@@ -299,6 +314,7 @@ if has_table(con, "transactions"):
               SELECT
                 b.rid,
                 r.category AS rule_category,
+                r.subscription AS rule_subscription,
                 ROW_NUMBER() OVER (
                   PARTITION BY b.rid
                   ORDER BY r.prio, LENGTH(r.pattern) DESC, r.category
@@ -312,14 +328,16 @@ if has_table(con, "transactions"):
                 )
             )
             SELECT
-              COALESCE({override}, h.rule_category, b.base_category, 'Uncategorized') AS category
+              COALESCE({override_cat}, h.rule_category, b.base_category, 'Uncategorized') AS category,
+              COALESCE({override_sub}, h.rule_subscription, FALSE)                        AS is_subscription
               {cols}
             FROM base b
-            LEFT JOIN (SELECT rid, rule_category FROM hits WHERE rn = 1) h
+            LEFT JOIN (SELECT rid, rule_category, rule_subscription FROM hits WHERE rn = 1) h
               ON h.rid = b.rid
             {join_override};
         """.format(
-            override="o.override_category" if overrides_available else "NULL",
+            override_cat="o.override_category" if overrides_available else "NULL",
+            override_sub="o.override_subscription" if overrides_available else "NULL",
             cols= ("," + output_cols) if output_cols else "",
             join_override="LEFT JOIN overrides_one o ON o.rid = b.rid" if overrides_available else ""
         )
@@ -346,6 +364,7 @@ if has_table(con, "transactions"):
               SELECT
                 b.rid,
                 o.category AS override_category,
+                {ov_sub_expr} AS override_subscription,
                 ROW_NUMBER() OVER (PARTITION BY b.rid ORDER BY o.category) AS rn
               FROM base b
               JOIN category_overrides o
@@ -355,18 +374,20 @@ if has_table(con, "transactions"):
                AND {amount_pred}
             ),
             overrides_one AS (
-              SELECT rid, override_category
+              SELECT rid, override_category, override_subscription
               FROM ov WHERE rn = 1
             )
             """
         sql += """
             SELECT
-              COALESCE({override}, b.base_category, 'Uncategorized') AS category
+              COALESCE({override_cat}, b.base_category, 'Uncategorized') AS category,
+              COALESCE({override_sub}, FALSE)                            AS is_subscription
               {cols}
             FROM base b
             {join_override};
         """.format(
-            override="o.override_category" if overrides_available else "NULL",
+            override_cat="o.override_category" if overrides_available else "NULL",
+            override_sub="o.override_subscription" if overrides_available else "NULL",
             cols= ("," + output_cols) if output_cols else "",
             join_override="LEFT JOIN overrides_one o ON o.rid = b.rid" if overrides_available else ""
         )
@@ -375,6 +396,7 @@ if has_table(con, "transactions"):
               else "Built transactions_with_category (passthrough)")
 else:
     print("SKIP: transactions table missing; cannot build transactions_with_category")
+
 
 # Optional: category_enriched (higher-levels)
 if has_table(con, "category_dim"):

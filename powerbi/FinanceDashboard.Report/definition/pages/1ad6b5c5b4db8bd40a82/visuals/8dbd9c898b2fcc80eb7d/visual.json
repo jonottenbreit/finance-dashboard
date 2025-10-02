@@ -4,10 +4,10 @@
   "position": {
     "x": 603.77560763161864,
     "y": 67.238647213521162,
-    "z": 3,
+    "z": 3000,
     "height": 190.73820331998863,
     "width": 306.00445568602493,
-    "tabOrder": 3
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "card",
@@ -52,23 +52,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "b48ea1346ad24592e0fe",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "NW Liabilities"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

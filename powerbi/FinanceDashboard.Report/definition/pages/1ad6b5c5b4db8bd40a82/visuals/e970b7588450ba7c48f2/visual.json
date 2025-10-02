@@ -4,10 +4,10 @@
   "position": {
     "x": 301.88780381580932,
     "y": 56.260908892946283,
-    "z": 2,
+    "z": 2000,
     "height": 201.7159416405635,
     "width": 289.53784820516256,
-    "tabOrder": 2
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "card",
@@ -52,23 +52,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "2c96372cad6a1c590c01",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "NW Assets"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

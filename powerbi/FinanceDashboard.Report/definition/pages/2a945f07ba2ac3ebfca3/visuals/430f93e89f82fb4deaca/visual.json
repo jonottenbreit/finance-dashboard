@@ -4,10 +4,10 @@
   "position": {
     "x": 10.289425992715005,
     "y": 417.45671170443734,
-    "z": 3,
+    "z": 3000,
     "height": 288.10392779602017,
     "width": 568.85826559724387,
-    "tabOrder": 2
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -229,20 +229,6 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "fddd4f4e4095cb9bb84b",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "% of Portfolio"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
         "name": "3d9dbe461756c6f460cb",
         "field": {
           "Column": {
@@ -322,20 +308,6 @@
         }
       },
       {
-        "name": "b727111d29bee2bf2ed1",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "symbol"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
         "name": "56758b6597488cdbcf66",
         "field": {
           "Column": {
@@ -364,48 +336,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "6548dccbb044b15052ed",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "size"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "f1b65be74b1ec7fcb6f9",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "style"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "7782afa7d128edb636ed",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Total Value"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

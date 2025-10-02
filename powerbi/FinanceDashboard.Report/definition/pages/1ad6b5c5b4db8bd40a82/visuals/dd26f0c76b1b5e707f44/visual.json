@@ -4,10 +4,10 @@
   "position": {
     "x": 11.813609734114467,
     "y": 296.81694456962595,
-    "z": 5,
+    "z": 5000,
     "height": 391.32582244254166,
     "width": 729.49040108156828,
-    "tabOrder": 5
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "columnChart",
@@ -86,37 +86,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "7dba25f1d07fbc0b4c1a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "monthly_net_worth_by_group"
-              }
-            },
-            "Property": "acct_group"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "6973044d2de4e8e57a34",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "NW By Group (EOP)"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

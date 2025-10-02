@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
   "name": "e7ad5f76c6c3774e7194",
   "position": {
-    "x": 0,
-    "y": 54.803571016632453,
-    "z": 2001,
+    "x": 400.63300191469239,
+    "y": 51.024014394795735,
+    "z": 1000,
     "height": 266.45874183948882,
     "width": 731.34420632540548,
-    "tabOrder": 2001
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -134,7 +134,7 @@
                 "Function": 0
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ]
       }
@@ -269,7 +269,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "b0f8e95380711802ad3a",
+        "name": "bcfc7af614a6c97d1313",
         "field": {
           "Column": {
             "Expression": {
@@ -283,7 +283,63 @@
         "type": "Categorical"
       },
       {
-        "name": "f34e24169d90c7eb07e1",
+        "name": "3a9a1e9e84e487be2a64",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "category_dim"
+              }
+            },
+            "Property": "parent_category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "a77f42bfee2be5069d21",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "transactions_with_category"
+              }
+            },
+            "Property": "category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "de9fc450c2c49612c696",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "transactions_with_category"
+              }
+            },
+            "Property": "description"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1bfd2a45660bd8818ae0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "transactions_with_category"
+              }
+            },
+            "Property": "date"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6bbddda0720702a43a8b",
         "field": {
           "Aggregation": {
             "Expression": {
@@ -300,62 +356,6 @@
           }
         },
         "type": "Advanced"
-      },
-      {
-        "name": "7bf15ef7ce60d7a80302",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "category_dim"
-              }
-            },
-            "Property": "parent_category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "3067f9e88e978e53197a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "description"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "40e36f446116a94ea534",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "c8666720082922c38d07",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "date"
-          }
-        },
-        "type": "Categorical"
       }
     ]
   }
