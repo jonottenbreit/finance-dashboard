@@ -4,8 +4,8 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 993.439499136227,
-        "y": 165.13290216952743
+        "x": 1452.9940082520118,
+        "y": 0
       },
       "nodes": [
         {
@@ -20,19 +20,6 @@
             "width": 234
           },
           "zIndex": 1
-        },
-        {
-          "location": {
-            "x": 275.92885194394074,
-            "y": 254.6176253506257
-          },
-          "nodeIndex": "budget_monthly",
-          "nodeLineageTag": "34b2ea39-afec-4493-a19f-47500d46981b",
-          "size": {
-            "height": 152,
-            "width": 234
-          },
-          "zIndex": 2
         },
         {
           "location": {
@@ -62,13 +49,13 @@
         },
         {
           "location": {
-            "x": 2455.418278391634,
-            "y": 992.83165453181789
+            "x": 2542.4349953259616,
+            "y": 885.44932299583911
           },
           "nodeIndex": "month_dim",
           "nodeLineageTag": "536b79a2-7241-4a4c-80ba-5870ef46d5c4",
           "size": {
-            "height": 104,
+            "height": 200.27381448053279,
             "width": 234
           },
           "zIndex": 5
@@ -188,10 +175,23 @@
             "width": 234
           },
           "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3155.4233898845969,
+            "y": 328.53983164424636
+          },
+          "nodeIndex": "budgets",
+          "nodeLineageTag": "abf09e68-6d36-4de2-b006-9c6230c0c5d9",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",
-      "zoomValue": 60.557283670421292,
+      "zoomValue": 54.012610054538548,
       "pinKeyFieldsToTop": false,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,

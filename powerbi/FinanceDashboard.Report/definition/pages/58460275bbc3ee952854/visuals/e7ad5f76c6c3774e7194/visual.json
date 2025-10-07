@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
   "name": "e7ad5f76c6c3774e7194",
   "position": {
-    "x": 400.63300191469239,
-    "y": 51.024014394795735,
+    "x": 400.64824673801229,
+    "y": 51.744238508599373,
     "z": 1000,
-    "height": 266.45874183948882,
-    "width": 731.34420632540548,
+    "height": 329.68471964050457,
+    "width": 651.97740520835214,
     "tabOrder": 1000
   },
   "visual": {
@@ -111,7 +111,8 @@
                 }
               },
               "queryRef": "Sum(transactions_with_category.amount)",
-              "nativeQueryRef": "Sum of amount"
+              "nativeQueryRef": "Amount",
+              "displayName": "Amount"
             }
           ]
         }
@@ -269,7 +270,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "bcfc7af614a6c97d1313",
+        "name": "d8bc49e310e1ad70edb8",
         "field": {
           "Column": {
             "Expression": {
@@ -283,7 +284,7 @@
         "type": "Categorical"
       },
       {
-        "name": "3a9a1e9e84e487be2a64",
+        "name": "5fee542aba9283b00044",
         "field": {
           "Column": {
             "Expression": {
@@ -297,7 +298,7 @@
         "type": "Categorical"
       },
       {
-        "name": "a77f42bfee2be5069d21",
+        "name": "91fc23e41d0db1e61874",
         "field": {
           "Column": {
             "Expression": {
@@ -311,7 +312,7 @@
         "type": "Categorical"
       },
       {
-        "name": "de9fc450c2c49612c696",
+        "name": "0013bfebe5940a61c0c1",
         "field": {
           "Column": {
             "Expression": {
@@ -325,7 +326,7 @@
         "type": "Categorical"
       },
       {
-        "name": "1bfd2a45660bd8818ae0",
+        "name": "edab7bcf1b2e9d5e2aaa",
         "field": {
           "Column": {
             "Expression": {
@@ -339,7 +340,7 @@
         "type": "Categorical"
       },
       {
-        "name": "6bbddda0720702a43a8b",
+        "name": "a0de748f31a32ca71c61",
         "field": {
           "Aggregation": {
             "Expression": {

@@ -4,10 +4,10 @@
   "position": {
     "x": 56.693349327550813,
     "y": 402.5227802256108,
-    "z": 9001,
+    "z": 10000,
     "height": 83.150245680407863,
     "width": 283.46674663775406,
-    "tabOrder": 9001
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "slicer",
@@ -103,23 +103,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "d46b23a0d387624ec0b1",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "is_subscription"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

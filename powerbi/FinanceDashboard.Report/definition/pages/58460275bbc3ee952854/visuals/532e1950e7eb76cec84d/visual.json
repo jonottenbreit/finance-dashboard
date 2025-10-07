@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
   "name": "532e1950e7eb76cec84d",
   "position": {
-    "x": 400.63300191469239,
-    "y": 343.93965258714161,
+    "x": 400.64824673801229,
+    "y": 406.56187399613793,
     "z": 5000,
-    "height": 328.82142609979473,
-    "width": 731.34420632540548,
+    "height": 298.63817653534494,
+    "width": 811.6453411777444,
     "tabOrder": 5000
   },
   "visual": {
@@ -214,39 +214,6 @@
           ]
         },
         "howCreated": "User"
-      },
-      {
-        "name": "f24f9981b7b00204b1ba",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "calendar_dim"
-              }
-            },
-            "Property": "yyyymm"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "1a816abd42ee9480c088",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "transactions_with_category"
-                  }
-                },
-                "Property": "amount"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

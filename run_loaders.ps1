@@ -31,4 +31,9 @@ python src\etl\load_accounts_and_balances.py # Loads the account balances over t
 Write-Host "Building rollups..."
 python src\etl\build_rollups.py
 
+Write-Host "=== Rolling forward budgets (if needed) ==="
+python src/etl/budget_roll_forward_csv_only.py `
+  --budgets "C:\Users\jo136\OneDrive\FinanceData\budgets\budgets.csv" `
+  --tx "C:\Users\jo136\OneDrive\FinanceData\exports\transactions_with_category.parquet"
+
 Write-Host "All loaders completed."

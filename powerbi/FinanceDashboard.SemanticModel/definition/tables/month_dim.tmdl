@@ -3,7 +3,7 @@ table month_dim
 
 	column month
 		dataType: dateTime
-		formatString: mmmm yyyy
+		formatString: m/d/yy
 		lineageTag: a24c91e0-e283-487d-a187-62ec1c758201
 		summarizeBy: none
 		sourceColumn: month
@@ -13,6 +13,31 @@ table month_dim
 		annotation UnderlyingDateTimeDataType = Date
 
 		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column MonthStart =
+			
+			DATE ( YEAR ( month_dim[month] ), MONTH ( month_dim[month] ), 1 )
+		formatString: General Date
+		lineageTag: 07365ac0-eba4-4a4b-9805-1466291b7d96
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 4880944d-e807-497c-97e3-d903e1709deb
+			defaultHierarchy: LocalDateTable_ed5416df-7006-4a8b-830d-17f5c9137cd7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column yyyymm = ```
+			
+			YEAR ( [MonthStart] ) * 100 + MONTH ( [MonthStart] )
+			
+			```
+		formatString: 0
+		lineageTag: 90510be3-7997-40aa-9f2b-04bfaf687358
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
 
 	partition month_dim = m
 		mode: import

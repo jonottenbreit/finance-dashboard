@@ -1,14 +1,6 @@
-relationship AutoDetected_080d39aa-36cf-48a0-80e6-22b19a0393d4
-	fromColumn: budget_monthly.category
-	toColumn: category_dim.category
-
 relationship 4d73f450-2e08-4739-6712-1ff430f1d070
 	fromColumn: monthly_actuals_by_category.category
 	toColumn: category_dim.category
-
-relationship ea7c1fc0-2c63-9708-0175-e3ecf8e7e2eb
-	fromColumn: budget_monthly.month
-	toColumn: month_dim.month
 
 relationship 39d48d04-4a73-047f-5375-3f3653d37d8a
 	fromColumn: monthly_actuals_by_category.month
@@ -83,4 +75,17 @@ relationship 5af6c452-cdd0-4d3f-b6e2-33824f260e3b
 relationship 25d2002e-513d-5fb1-f2fb-b630304ec137
 	fromColumn: transactions_with_category.date
 	toColumn: calendar_dim.date
+
+relationship 4880944d-e807-497c-97e3-d903e1709deb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: month_dim.MonthStart
+	toColumn: LocalDateTable_ed5416df-7006-4a8b-830d-17f5c9137cd7.Date
+
+relationship 2b0871ce-5a8b-deb8-529f-6017674d7fa5
+	fromColumn: calendar_dim.yyyymm
+	toColumn: month_dim.yyyymm
+
+relationship 3c2d3269-ff5a-037d-3213-952c3a08ecc9
+	fromColumn: budgets.yyyymm
+	toColumn: month_dim.yyyymm
 

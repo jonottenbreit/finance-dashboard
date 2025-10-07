@@ -56,7 +56,7 @@ table calendar_dim
 		dataType: int64
 		formatString: 0
 		lineageTag: c5e2c905-322d-4ec0-8478-2a097d4303f7
-		summarizeBy: sum
+		summarizeBy: none
 		sourceColumn: yyyymm
 
 		annotation SummarizationSetBy = Automatic

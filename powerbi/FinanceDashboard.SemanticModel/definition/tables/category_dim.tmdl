@@ -51,6 +51,21 @@ table category_dim
 
 		annotation SummarizationSetBy = Automatic
 
+	hierarchy 'top_bucket Hierarchy'
+		lineageTag: 8595c651-14e1-4d49-88f1-6987469d668b
+
+		level top_bucket
+			lineageTag: a79599a3-8edd-430a-85a7-eee29dfbdc52
+			column: top_bucket
+
+		level parent_category
+			lineageTag: 974e1a30-47c4-460a-adc6-f9f78215f89f
+			column: parent_category
+
+		level category
+			lineageTag: e83ff88f-05e8-42f6-8554-1945a6b29be9
+			column: category
+
 	partition category_dim = m
 		mode: import
 		source =

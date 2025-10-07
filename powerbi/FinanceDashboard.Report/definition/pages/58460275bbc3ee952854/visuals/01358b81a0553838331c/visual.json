@@ -67,13 +67,6 @@
                   "Value": "'Dropdown'"
                 }
               }
-            },
-            "isInvertedSelectionMode": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
             }
           }
         }
@@ -123,7 +116,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9504a1f814a1d532c453",
+        "name": "c7871dc69020310d1048",
         "field": {
           "Column": {
             "Expression": {

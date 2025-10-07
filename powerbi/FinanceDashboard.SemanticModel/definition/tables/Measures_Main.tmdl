@@ -160,6 +160,35 @@ table Measures_Main
 		formatString: General Date
 		lineageTag: 02c95118-b2c2-432e-a486-0480a408d5e8
 
+	measure Amount_Total = ```
+			
+			SUM ( 'transactions_with_category'[amount] )
+			
+			Amount_avg_per_month =
+			AVERAGEX (
+			    VALUES ( 'calendar_dim'[yyyymm] ),   -- the months currently in filter
+			    CALCULATE ( Amount_Total )          -- total for each month
+			)
+			
+			```
+		lineageTag: 2ce72292-0469-477d-9f09-11e7f602c387
+
+	measure Trans_Amount_Total =
+			
+			SUM ( 'transactions_with_category'[amount] )
+		lineageTag: e391dc71-41c1-48f1-a6ea-f9965d214777
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Trans_amount_month =
+			
+			AVERAGEX (
+			    VALUES ( 'calendar_dim'[yyyymm] ),
+			    CALCULATE ( [Trans_Amount_Total] )
+			)
+		formatString: \$#,0.0;(\$#,0.0);\$#,0.0
+		lineageTag: de2d972d-4ea0-4952-ae09-5da35f4672e9
+
 	column Column1
 		dataType: int64
 		isHidden
