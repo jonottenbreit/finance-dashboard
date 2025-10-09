@@ -39,6 +39,37 @@ table month_dim
 
 		annotation SummarizationSetBy = Automatic
 
+	column MonthEnd = ```
+			EOMONTH ( 'month_dim'[MonthStart], 0 )
+			
+			```
+		formatString: General Date
+		lineageTag: 9d2d4735-157b-4e06-9007-31adda9e0016
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 4cffe9c9-42f3-496b-b2d4-fed89eb55c3b
+			defaultHierarchy: LocalDateTable_87d75ae8-45f3-47d6-b7ce-04e16169f5ec.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = YEAR ( 'month_dim'[MonthStart] )
+		formatString: 0
+		lineageTag: 9b67545a-8a48-4f48-98b3-ba6fec604a75
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quarter Year (Sortable)' =
+			
+			FORMAT ( 'month_dim'[MonthStart], "YYYY" )
+			    & "-Q" & QUARTER ( 'month_dim'[MonthStart] )
+		lineageTag: 404cd834-9ce9-453d-9a5e-c961d9fb2f77
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition month_dim = m
 		mode: import
 		source =

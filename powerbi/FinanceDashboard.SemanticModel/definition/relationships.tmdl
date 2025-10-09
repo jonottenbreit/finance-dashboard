@@ -89,3 +89,16 @@ relationship 3c2d3269-ff5a-037d-3213-952c3a08ecc9
 	fromColumn: budgets.yyyymm
 	toColumn: month_dim.yyyymm
 
+relationship 8530daae-0fc9-acce-2081-a97463411bb5
+	fromColumn: budgets.parent_category
+	toColumn: parent_category_dim.parent_category
+
+relationship b0d8ea6d-2f15-19b4-42c2-e1d310e84131
+	fromColumn: category_dim.parent_category
+	toColumn: parent_category_dim.parent_category
+
+relationship 4cffe9c9-42f3-496b-b2d4-fed89eb55c3b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: month_dim.MonthEnd
+	toColumn: LocalDateTable_87d75ae8-45f3-47d6-b7ce-04e16169f5ec.Date
+

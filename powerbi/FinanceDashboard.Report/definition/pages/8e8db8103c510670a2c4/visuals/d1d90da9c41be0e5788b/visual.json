@@ -1,0 +1,155 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "d1d90da9c41be0e5788b",
+  "position": {
+    "x": 26.414278398421938,
+    "y": 102.54955142916754,
+    "z": 0,
+    "height": 436.61248411509206,
+    "width": 579.56034368302255
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "parent_category_dim"
+                    }
+                  },
+                  "Property": "parent_category"
+                }
+              },
+              "queryRef": "parent_category_dim.parent_category",
+              "nativeQueryRef": "Count of parent_category",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Budget to Date"
+                }
+              },
+              "queryRef": "Measures_Main.Budget to Date",
+              "nativeQueryRef": "Budget to Date"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Actual Spend (Outflows)"
+                }
+              },
+              "queryRef": "Measures_Main.Actual Spend (Outflows)",
+              "nativeQueryRef": "Actual Spend (Outflows)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "Budget to Date"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "8823721dd30346e460c6",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "parent_category_dim"
+              }
+            },
+            "Property": "parent_category"
+          }
+        },
+        "type": "Categorical",
+        "objects": {
+          "general": [
+            {
+              "properties": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "575b70420a0e5a5953ed",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Budget to Date"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "de0d62e001898a3687c4",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Actual Spend (Outflows)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

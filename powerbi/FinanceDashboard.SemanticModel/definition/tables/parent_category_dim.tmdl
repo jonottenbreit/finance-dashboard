@@ -1,0 +1,23 @@
+table parent_category_dim
+	lineageTag: 5f9a8ef2-512e-4bfd-a08a-06946317f9f6
+
+	column parent_category
+		lineageTag: 253e87c5-c9e7-4834-9c5d-3f5ca9a23bf4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: category_dim[parent_category]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition parent_category_dim = calculated
+		mode: import
+		source = ```
+				
+				DISTINCT (
+				    category_dim[parent_category]
+				)
+				
+				```
+
+	annotation PBI_Id = 663bb4ffe26e46c4ba31ee27362d03bd
+

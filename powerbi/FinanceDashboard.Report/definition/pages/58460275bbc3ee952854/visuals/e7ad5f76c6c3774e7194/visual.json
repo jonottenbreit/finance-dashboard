@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "e7ad5f76c6c3774e7194",
   "position": {
     "x": 400.64824673801229,
@@ -96,23 +96,17 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "transactions_with_category"
-                        }
-                      },
-                      "Property": "amount"
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
                     }
                   },
-                  "Function": 0
+                  "Property": "Actual Amount"
                 }
               },
-              "queryRef": "Sum(transactions_with_category.amount)",
-              "nativeQueryRef": "Amount",
-              "displayName": "Amount"
+              "queryRef": "Measures_Main.Actual Amount",
+              "nativeQueryRef": "Actual Amount"
             }
           ]
         }
@@ -248,20 +242,6 @@
           "selector": {
             "metadata": "category_dim.top_bucket"
           }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "105.77955624786426D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Sum(transactions_with_category.amount)"
-          }
         }
       ]
     },
@@ -340,20 +320,15 @@
         "type": "Categorical"
       },
       {
-        "name": "a0de748f31a32ca71c61",
+        "name": "18df73eb0027a6340799",
         "field": {
-          "Aggregation": {
+          "Measure": {
             "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "transactions_with_category"
-                  }
-                },
-                "Property": "amount"
+              "SourceRef": {
+                "Entity": "Measures_Main"
               }
             },
-            "Function": 0
+            "Property": "Actual Amount"
           }
         },
         "type": "Advanced"

@@ -1,0 +1,192 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "8168dbf362e4335b9570",
+  "position": {
+    "x": 605.97462208144452,
+    "y": 136.73273523889003,
+    "z": 4,
+    "height": 368.24611649564707,
+    "width": 663.4645221250687,
+    "tabOrder": 2001
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "parent_category_dim"
+                    }
+                  },
+                  "Property": "parent_category"
+                }
+              },
+              "queryRef": "parent_category_dim.parent_category",
+              "nativeQueryRef": "Budget Category",
+              "active": true,
+              "displayName": "Budget Category"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Budget Variance"
+                }
+              },
+              "queryRef": "Measures_Main.Budget Variance",
+              "nativeQueryRef": "Budget Variance"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Budget to Date"
+                }
+              },
+              "queryRef": "Measures_Main.Budget to Date",
+              "nativeQueryRef": "Budget to Date"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Actual Spend (Outflows)"
+                }
+              },
+              "queryRef": "Measures_Main.Actual Spend (Outflows)",
+              "nativeQueryRef": "Actual Spend",
+              "displayName": "Actual Spend"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Budget Amount"
+                }
+              },
+              "queryRef": "Measures_Main.Budget Amount",
+              "nativeQueryRef": "Budget Amount"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "Budget Variance"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "c70906f68b736e267515",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "parent_category_dim"
+              }
+            },
+            "Property": "parent_category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b93cd1a1215da795b9d7",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Budget to Date"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "6ebd826abaee0c6a163d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Actual Spend (Outflows)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "948cc2b1e0bb02e29a84",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Budget Variance"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1c42af86c74913922298",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Budget Amount"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

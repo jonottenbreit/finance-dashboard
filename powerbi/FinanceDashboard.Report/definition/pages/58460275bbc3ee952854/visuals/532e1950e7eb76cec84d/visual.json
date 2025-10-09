@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "532e1950e7eb76cec84d",
   "position": {
     "x": 400.64824673801229,
@@ -214,6 +214,39 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "2d86ff9410dded536200",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "calendar_dim"
+              }
+            },
+            "Property": "yyyymm"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5dd01fbd486437238480",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "transactions_with_category"
+                  }
+                },
+                "Property": "amount"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

@@ -3,14 +3,11 @@ table Measures_Main
 
 	measure 'Budget Amount' =
 			
-			SUM(budget_monthly[amount])
+			SUM(budgets[budget_amount])
 		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
 		lineageTag: b14aea9f-d578-4bf1-a101-039212fc5dbe
 
-	measure 'Actual Amount' =
-			
-			VAR amt = SUM(monthly_actuals_by_category[actual_signed])
-			RETURN IF(SELECTEDVALUE(category_dim[top_bucket]) = "Income", amt, -amt)
+	measure 'Actual Amount' = SUM(transactions_with_category[amount])
 		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: 385ea110-5d91-4ebf-8450-5865a466aab6
 
@@ -160,19 +157,6 @@ table Measures_Main
 		formatString: General Date
 		lineageTag: 02c95118-b2c2-432e-a486-0480a408d5e8
 
-	measure Amount_Total = ```
-			
-			SUM ( 'transactions_with_category'[amount] )
-			
-			Amount_avg_per_month =
-			AVERAGEX (
-			    VALUES ( 'calendar_dim'[yyyymm] ),   -- the months currently in filter
-			    CALCULATE ( Amount_Total )          -- total for each month
-			)
-			
-			```
-		lineageTag: 2ce72292-0469-477d-9f09-11e7f602c387
-
 	measure Trans_Amount_Total =
 			
 			SUM ( 'transactions_with_category'[amount] )
@@ -188,6 +172,59 @@ table Measures_Main
 			)
 		formatString: \$#,0.0;(\$#,0.0);\$#,0.0
 		lineageTag: de2d972d-4ea0-4952-ae09-5da35f4672e9
+
+	measure 'Monthly Budget' =
+			
+			SUM ( budgets[Budget_Amount] )
+		formatString: 0
+		lineageTag: fa2a1d8c-bcc0-44c3-bf70-0b4529053811
+
+	measure 'Budget to Date' = ```
+			
+			VAR LatestTxnDateInCtx =
+			    CALCULATE (
+			        MAX ( transactions_with_category[Date] )
+			        -- respects current filters (year/quarter/month/category) by default
+			    )
+			
+			VAR NoTxns = ISBLANK ( LatestTxnDateInCtx )
+			VAR LatestMonthStart =
+			    DATE ( YEAR ( LatestTxnDateInCtx ), MONTH ( LatestTxnDateInCtx ), 1 )
+			VAR DaysInLatestMonth = DAY ( EOMONTH ( LatestTxnDateInCtx, 0 ) )
+			VAR DaysElapsed       = DAY ( LatestTxnDateInCtx )
+			
+			-- sum budgets for full months in the selection BEFORE the latest month
+			VAR FullMonthsBudget =
+			    CALCULATE (
+			        SUM ( budgets[Budget_Amount] ),
+			        'month_dim'[MonthStart] < LatestMonthStart
+			        -- we DON'T clear month_dim filters, so Year/Quarter/Category stay applied
+			    )
+			
+			-- budget for the latest month in the selection
+			VAR LatestMonthBudget =
+			    CALCULATE (
+			        SUM ( budgets[Budget_Amount] ),
+			        'month_dim'[MonthStart] = LatestMonthStart
+			    )
+			
+			VAR ProratedLatest =
+			    LatestMonthBudget * DIVIDE ( DaysElapsed, DaysInLatestMonth, 0 )
+			
+			RETURN
+			IF ( NoTxns, BLANK(), FullMonthsBudget + ProratedLatest )
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 4cd00926-5c26-4e71-8523-876feff772c4
+
+	measure 'Actual Spend (Outflows)' = - SUM ( transactions_with_category[Amount] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: ad52acef-98a3-4d26-ae31-56a519768b5b
+
+	measure 'Budget Variance' = [Budget to Date] - [Actual Spend (Outflows)]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 8bb69587-f26d-47d3-a515-6f604d8ca0af
 
 	column Column1
 		dataType: int64

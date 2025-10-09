@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "1d065b51c3e297a8dacd",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "9ee29242607b2d1aeed4",
   "position": {
-    "x": 741.30401081568277,
-    "y": 536.04254168544389,
-    "z": 0,
-    "height": 169.82063992789546,
-    "width": 485.83470031545744,
-    "tabOrder": 5000
+    "x": 56.693349327550813,
+    "y": 629.29617753581408,
+    "z": 2,
+    "height": 85.040023991326223,
+    "width": 283.46674663775406,
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "slicer",
@@ -23,33 +23,15 @@
                       "Entity": "month_dim"
                     }
                   },
-                  "Property": "month"
+                  "Property": "Year"
                 }
               },
-              "queryRef": "month_dim.month",
-              "nativeQueryRef": "month",
+              "queryRef": "month_dim.Year",
+              "nativeQueryRef": "Year",
               "active": true
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "month_dim"
-                  }
-                },
-                "Property": "month"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
-        "isDefaultSort": true
       }
     },
     "objects": {
@@ -66,7 +48,7 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'Basic'"
+                  "Value": "'Dropdown'"
                 }
               }
             }
@@ -105,7 +87,7 @@
                                   "Source": "m"
                                 }
                               },
-                              "Property": "month"
+                              "Property": "Year"
                             }
                           }
                         ],
@@ -113,7 +95,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "datetime'2025-08-01T00:00:00'"
+                                "Value": "2025L"
                               }
                             }
                           ]
@@ -126,8 +108,52 @@
             }
           }
         }
+      ],
+      "selection": [
+        {
+          "properties": {
+            "selectAllCheckboxEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "header": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Year'"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "2ed5cce4180d28685a1a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "month_dim"
+              }
+            },
+            "Property": "Year"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

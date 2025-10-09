@@ -4,7 +4,7 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 1452.9940082520118,
+        "x": 952.78669085894364,
         "y": 0
       },
       "nodes": [
@@ -23,13 +23,13 @@
         },
         {
           "location": {
-            "x": 784.8276658022022,
-            "y": 563.18623562872472
+            "x": 3101.1457251470206,
+            "y": 646.84575965902934
           },
           "nodeIndex": "category_dim",
           "nodeLineageTag": "f3cce7e8-a129-4e9e-8a1c-586bc4374018",
           "size": {
-            "height": 152,
+            "height": 330.21643902862695,
             "width": 234
           },
           "zIndex": 3
@@ -158,15 +158,15 @@
           "nodeIndex": "transactions_with_category",
           "nodeLineageTag": "30e9b580-62bd-4ebc-964a-2d9e7204e3c5",
           "size": {
-            "height": 300,
-            "width": 234
+            "height": 388.37178794807949,
+            "width": 312.06174602080318
           },
           "zIndex": 0
         },
         {
           "location": {
-            "x": 2841.8006777367409,
-            "y": 423.01900698517863
+            "x": 2800.2855810580759,
+            "y": 408.48872314764583
           },
           "nodeIndex": "calendar_dim",
           "nodeLineageTag": "8be52d58-a53c-4010-ae84-ae75a776b4c3",
@@ -178,13 +178,26 @@
         },
         {
           "location": {
-            "x": 3155.4233898845969,
-            "y": 328.53983164424636
+            "x": 2874.7482374843312,
+            "y": 128.5865246462169
           },
           "nodeIndex": "budgets",
           "nodeLineageTag": "abf09e68-6d36-4de2-b006-9c6230c0c5d9",
           "size": {
             "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3436.3173784066275,
+            "y": 352.24423012280329
+          },
+          "nodeIndex": "parent_category_dim",
+          "nodeLineageTag": "5f9a8ef2-512e-4bfd-a08a-06946317f9f6",
+          "size": {
+            "height": 200,
             "width": 234
           },
           "zIndex": 0

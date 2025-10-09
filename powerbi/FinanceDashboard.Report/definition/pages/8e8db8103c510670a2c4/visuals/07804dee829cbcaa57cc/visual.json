@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
-  "name": "4d0172e3e51e71ed0600",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "07804dee829cbcaa57cc",
   "position": {
-    "x": 56.693349327550813,
-    "y": 245.67118041938687,
-    "z": 6000,
-    "height": 83.150245680407863,
-    "width": 283.46674663775406,
-    "tabOrder": 6000
+    "x": 355.81586783756615,
+    "y": 627.72755723308615,
+    "z": 7,
+    "height": 85.457959524306276,
+    "width": 284.34193805360087,
+    "tabOrder": 2004
   },
   "visual": {
     "visualType": "slicer",
@@ -20,35 +20,65 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "category_dim"
+                      "Entity": "month_dim"
                     }
                   },
-                  "Property": "parent_category"
+                  "Property": "Quarter Year (Sortable)"
                 }
               },
-              "queryRef": "category_dim.parent_category",
-              "nativeQueryRef": "parent_category",
+              "queryRef": "month_dim.Quarter Year (Sortable)",
+              "nativeQueryRef": "Quarter Year (Sortable)",
               "active": true
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "month_dim"
+                  }
+                },
+                "Property": "Quarter Year (Sortable)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "objects": {
       "data": [
         {
           "properties": {
+            "endDate": {
+              "expr": {
+                "Literal": {
+                  "Value": "datetime'2026-11-21T00:00:00'"
+                }
+              }
+            },
             "mode": {
               "expr": {
                 "Literal": {
                   "Value": "'Dropdown'"
                 }
               }
-            },
-            "isInvertedSelectionMode": {
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "orientation": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "1D"
                 }
               }
             }
@@ -68,40 +98,13 @@
           }
         }
       ],
-      "general": [
-        {
-          "properties": {}
-        }
-      ],
       "header": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Budget Category'"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
+                  "Value": "'Quarter'"
                 }
               }
             }
@@ -114,15 +117,15 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "300889660329070b2e28",
+        "name": "76ab70ca202466443ce6",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "category_dim"
+                "Entity": "month_dim"
               }
             },
-            "Property": "parent_category"
+            "Property": "Quarter Year (Sortable)"
           }
         },
         "type": "Categorical"
