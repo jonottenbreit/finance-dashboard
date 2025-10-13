@@ -181,27 +181,28 @@ table Measures_Main
 
 	measure 'Budget to Date' = ```
 			
-			VAR LatestTxnDateInCtx =
+			VAR LatestTxnDateInPeriod =
 			    CALCULATE (
-			        MAX ( transactions_with_category[Date] )
-			        -- respects current filters (year/quarter/month/category) by default
+			        MAX ( transactions_with_category[Date] ),
+			        -- keep the current month/quarter/year filters from month_dim
+			        -- but IGNORE category filters so all rows use the same date
+			        REMOVEFILTERS ( parent_category_dim ),
+			        REMOVEFILTERS ( category_dim )
 			    )
 			
-			VAR NoTxns = ISBLANK ( LatestTxnDateInCtx )
+			VAR NoTxns = ISBLANK ( LatestTxnDateInPeriod )
 			VAR LatestMonthStart =
-			    DATE ( YEAR ( LatestTxnDateInCtx ), MONTH ( LatestTxnDateInCtx ), 1 )
-			VAR DaysInLatestMonth = DAY ( EOMONTH ( LatestTxnDateInCtx, 0 ) )
-			VAR DaysElapsed       = DAY ( LatestTxnDateInCtx )
+			    DATE ( YEAR ( LatestTxnDateInPeriod ), MONTH ( LatestTxnDateInPeriod ), 1 )
+			VAR DaysInLatestMonth = DAY ( EOMONTH ( LatestTxnDateInPeriod, 0 ) )
+			VAR DaysElapsed       = DAY ( LatestTxnDateInPeriod )
 			
-			-- sum budgets for full months in the selection BEFORE the latest month
 			VAR FullMonthsBudget =
 			    CALCULATE (
 			        SUM ( budgets[Budget_Amount] ),
 			        'month_dim'[MonthStart] < LatestMonthStart
-			        -- we DON'T clear month_dim filters, so Year/Quarter/Category stay applied
+			        -- category filters remain in context here (good)
 			    )
 			
-			-- budget for the latest month in the selection
 			VAR LatestMonthBudget =
 			    CALCULATE (
 			        SUM ( budgets[Budget_Amount] ),

@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["monthly_cashflow","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export","transactions_with_category","calendar_dim","budgets"]
+annotation PBI_QueryOrder = ["monthly_cashflow","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export","transactions_with_category","calendar_dim","budgets","ret_globals","ret_inflows","ret_outflows","ret_starting_balances","Cashflows"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
@@ -36,6 +36,12 @@ ref table budgets
 ref table LocalDateTable_ed5416df-7006-4a8b-830d-17f5c9137cd7
 ref table parent_category_dim
 ref table LocalDateTable_87d75ae8-45f3-47d6-b7ce-04e16169f5ec
+ref table ret_globals
+ref table ret_inflows
+ref table ret_outflows
+ref table ret_starting_balances
+ref table Cashflows
+ref table YearTable
 
 ref cultureInfo en-US
 

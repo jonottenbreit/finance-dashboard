@@ -1,0 +1,17 @@
+table YearTable
+	lineageTag: 0969c0de-1e4d-4ec5-86f7-442a15662789
+
+	column Year
+		formatString: 0
+		lineageTag: bd22851e-9078-4c74-a5b6-103e55c8371c
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition YearTable = calculated
+		mode: import
+		source = GENERATESERIES(2024, 2100, 1)
+
+	annotation PBI_Id = d3746499245d413b87a2301e5ae6dff2
+

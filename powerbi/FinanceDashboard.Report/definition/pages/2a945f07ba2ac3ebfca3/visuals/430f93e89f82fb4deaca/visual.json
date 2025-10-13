@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.2.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "430f93e89f82fb4deaca",
   "position": {
-    "x": 10.289425992715005,
-    "y": 417.45671170443734,
+    "x": 21.089987325728767,
+    "y": 431.5335868187579,
     "z": 3000,
-    "height": 288.10392779602017,
-    "width": 568.85826559724387,
+    "height": 288.77059569074777,
+    "width": 569.42965779467681,
     "tabOrder": 1000
   },
   "visual": {
@@ -43,7 +43,7 @@
               },
               "queryRef": "security_dim.size",
               "nativeQueryRef": "size",
-              "active": false
+              "active": true
             },
             {
               "field": {
@@ -199,7 +199,43 @@
             "isPinned": true
           }
         ],
-        "root": {}
+        "root": {
+          "children": [
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'US'"
+                  }
+                }
+              ],
+              "isToggled": true,
+              "children": [
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Bonds'"
+                      }
+                    }
+                  ],
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Bonds'"
+                          }
+                        }
+                      ],
+                      "isToggled": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     "visualContainerObjects": {
@@ -216,7 +252,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Portfolio Mix'"
+                  "Value": "'Portfolio Mix (Excludes Cash)'"
                 }
               }
             }
@@ -269,13 +305,6 @@
                         }
                       ],
                       "Values": [
-                        [
-                          {
-                            "Literal": {
-                              "Value": "null"
-                            }
-                          }
-                        ],
                         [
                           {
                             "Literal": {
@@ -336,6 +365,76 @@
             }
           ]
         }
+      },
+      {
+        "name": "7c6b007c44d2b6e6414a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "size"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d7a662774bd026231ed2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "style"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c636a42108bb8cadc31b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "symbol"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4c7b8f6de143e03525ab",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Total Value"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "559c4e4e60668eb8a661",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "% of Portfolio"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

@@ -17,47 +17,62 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "category_dim"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "category_dim"
+                        }
+                      },
+                      "Hierarchy": "top_bucket Hierarchy"
                     }
                   },
-                  "Property": "top_bucket"
+                  "Level": "top_bucket"
                 }
               },
-              "queryRef": "category_dim.top_bucket",
-              "nativeQueryRef": "top_bucket",
+              "queryRef": "category_dim.top_bucket Hierarchy.top_bucket",
+              "nativeQueryRef": "top_bucket Hierarchy top_bucket",
               "active": true
             },
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "category_dim"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "category_dim"
+                        }
+                      },
+                      "Hierarchy": "top_bucket Hierarchy"
                     }
                   },
-                  "Property": "parent_category"
+                  "Level": "parent_category"
                 }
               },
-              "queryRef": "category_dim.parent_category",
-              "nativeQueryRef": "parent_category",
+              "queryRef": "category_dim.top_bucket Hierarchy.parent_category",
+              "nativeQueryRef": "top_bucket Hierarchy parent_category",
               "active": false
             },
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "transactions_with_category"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "category_dim"
+                        }
+                      },
+                      "Hierarchy": "top_bucket Hierarchy"
                     }
                   },
-                  "Property": "category"
+                  "Level": "category"
                 }
               },
-              "queryRef": "transactions_with_category.category",
-              "nativeQueryRef": "category1",
+              "queryRef": "category_dim.top_bucket Hierarchy.category",
+              "nativeQueryRef": "top_bucket Hierarchy category",
               "active": false
             },
             {
@@ -115,18 +130,13 @@
         "sort": [
           {
             "field": {
-              "Aggregation": {
+              "Measure": {
                 "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "transactions_with_category"
-                      }
-                    },
-                    "Property": "amount"
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
                   }
                 },
-                "Function": 0
+                "Property": "Actual Amount"
               }
             },
             "direction": "Ascending"
@@ -142,7 +152,7 @@
         "levels": [
           {
             "queryRefs": [
-              "category_dim.top_bucket"
+              "category_dim.top_bucket Hierarchy.top_bucket"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -161,7 +171,7 @@
           },
           {
             "queryRefs": [
-              "category_dim.parent_category"
+              "category_dim.top_bucket Hierarchy.parent_category"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -180,7 +190,7 @@
           },
           {
             "queryRefs": [
-              "transactions_with_category.category"
+              "category_dim.top_bucket Hierarchy.category"
             ],
             "isCollapsed": true,
             "identityKeys": [
@@ -188,7 +198,7 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "transactions_with_category"
+                      "Entity": "category_dim"
                     }
                   },
                   "Property": "category"
@@ -227,70 +237,10 @@
         "root": {}
       }
     ],
-    "objects": {
-      "columnWidth": [
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "511.42120162366905D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "category_dim.top_bucket"
-          }
-        }
-      ]
-    },
     "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [
-      {
-        "name": "d8bc49e310e1ad70edb8",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "category_dim"
-              }
-            },
-            "Property": "top_bucket"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "5fee542aba9283b00044",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "category_dim"
-              }
-            },
-            "Property": "parent_category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "91fc23e41d0db1e61874",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "category"
-          }
-        },
-        "type": "Categorical"
-      },
       {
         "name": "0013bfebe5940a61c0c1",
         "field": {
@@ -332,6 +282,63 @@
           }
         },
         "type": "Advanced"
+      },
+      {
+        "name": "9a970849bbd899668300",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "category_dim"
+                  }
+                },
+                "Hierarchy": "top_bucket Hierarchy"
+              }
+            },
+            "Level": "top_bucket"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "5497e591c059a0cedeb0",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "category_dim"
+                  }
+                },
+                "Hierarchy": "top_bucket Hierarchy"
+              }
+            },
+            "Level": "parent_category"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9a1cd6f6c30c807e2d3b",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "category_dim"
+                  }
+                },
+                "Hierarchy": "top_bucket Hierarchy"
+              }
+            },
+            "Level": "category"
+          }
+        },
+        "type": "Categorical"
       }
     ]
   }

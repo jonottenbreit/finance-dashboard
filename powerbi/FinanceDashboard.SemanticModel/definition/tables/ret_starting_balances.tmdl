@@ -1,0 +1,57 @@
+table ret_starting_balances
+	lineageTag: 4d30debd-3a59-4d34-8edb-ca44b93a46ab
+
+	column account_id
+		dataType: string
+		lineageTag: e499166d-4341-4daf-9fcd-1a4224520b28
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_name
+		dataType: string
+		lineageTag: 2672231c-5ef5-44ec-99a7-4ba9ce6ff116
+		summarizeBy: none
+		sourceColumn: account_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_bucket_final
+		dataType: string
+		lineageTag: 990d4b74-d164-48f5-b7fa-70a717e38afc
+		summarizeBy: none
+		sourceColumn: tax_bucket_final
+
+		annotation SummarizationSetBy = Automatic
+
+	column owner
+		dataType: string
+		lineageTag: cf326659-7970-4440-ad79-6941fa9892f7
+		summarizeBy: none
+		sourceColumn: owner
+
+		annotation SummarizationSetBy = Automatic
+
+	column balance_today
+		dataType: double
+		lineageTag: 44ea230f-50b4-4081-90d6-e2fd05ff6392
+		summarizeBy: none
+		sourceColumn: balance_today
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ret_starting_balances = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\retirement\out\ret_starting_balances.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"account_id", type text}, {"account_name", type text}, {"tax_bucket_final", type text}, {"owner", type text}, {"balance_today", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

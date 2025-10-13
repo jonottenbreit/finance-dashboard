@@ -1,0 +1,33 @@
+table ret_globals
+	lineageTag: c1894a39-6f8c-48ca-939c-23c4e51c076c
+
+	column Variable
+		dataType: string
+		lineageTag: 34138628-daf5-4590-8e27-a584194a12ee
+		summarizeBy: none
+		sourceColumn: Variable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: double
+		lineageTag: e43f7c81-531c-40d3-9ddd-a59a6b6aab99
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition ret_globals = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\retirement\out\ret_globals.csv"),[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Variable", type text}, {"Value", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

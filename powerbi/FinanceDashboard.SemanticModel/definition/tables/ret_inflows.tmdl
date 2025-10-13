@@ -1,0 +1,77 @@
+table ret_inflows
+	lineageTag: 31fd9381-57be-435f-bd3a-0dea05774f40
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3779f177-9004-4ebe-ad08-3b5d6b08a07a
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Variable
+		dataType: string
+		lineageTag: 2890984f-d9b7-4088-a9ec-f0177822ee76
+		summarizeBy: none
+		sourceColumn: Variable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: double
+		lineageTag: c6dbf822-639a-4c2a-ab6b-6dc4931f2556
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column account_id
+		dataType: string
+		lineageTag: c152df03-295b-402f-8c1b-c3ead1143a2e
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column applies_to
+		dataType: string
+		lineageTag: c4966285-0b83-41d2-b935-4ff514ba2170
+		summarizeBy: none
+		sourceColumn: applies_to
+
+		annotation SummarizationSetBy = Automatic
+
+	column Notes
+		dataType: string
+		lineageTag: fac1ac6c-ffea-48bf-8b37-d79f45145a82
+		summarizeBy: none
+		sourceColumn: Notes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: 5edf2548-4126-42e4-8b3c-cc7cb146ac60
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ret_inflows = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\retirement\out\ret_inflows.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Year", Int64.Type}, {"Variable", type text}, {"Value", type number}, {"account_id", type text}, {"applies_to", type text}, {"Notes", type text}}),
+				    #"Added Custom" = Table.AddColumn(#"Changed Type", "Type", each "Inflows")
+				in
+				    #"Added Custom"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

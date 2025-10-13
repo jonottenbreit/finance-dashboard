@@ -1,0 +1,140 @@
+table Cashflows
+	lineageTag: 0643359f-649c-45e0-aeeb-82532e9acaa0
+
+	measure 'Net Flow' =
+			
+			VAR inflow  = CALCULATE(SUM(Cashflows[Value]), Cashflows[Type] = "Inflows")
+			VAR outflow = CALCULATE(SUM(Cashflows[Value]), Cashflows[Type] = "Outflows")
+			RETURN inflow - outflow
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 271ac181-0ec0-4a16-a512-ff609ec9b7b2
+
+	measure 'Net Worth (with growth)' =
+			
+			VAR y    = MAX ( YearTable[Year] )
+			VAR r    = COALESCE ( [Nominal Return Rate], 0 )
+			VAR base = VAR cy = CALCULATE ( MAX ( ret_globals[Value] ),
+			                                ret_globals[Variable] = "current_year" )
+			           RETURN IF ( NOT ISBLANK ( cy ), cy, YEAR ( TODAY() ) )
+			
+			VAR StartCompounded =
+			    [Start Balance] * POWER ( 1 + r, y - base )
+			
+			VAR FlowsCompounded =
+			    SUMX (
+			        FILTER ( Cashflows, Cashflows[Year] <= y ),
+			        VAR sign = IF ( Cashflows[Type] = "Inflows", 1, -1 )
+			        RETURN sign * Cashflows[Value] * POWER ( 1 + r, y - Cashflows[Year] )
+			    )
+			RETURN
+			    StartCompounded + FlowsCompounded
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 41044907-f509-4be9-a1cc-114cc497d2d3
+
+	measure 'Inflation Rate' =
+			
+			CALCULATE ( MAX ( ret_globals[Value] ), ret_globals[Variable] = "inflation_rate" )
+		lineageTag: 52df570f-3501-458e-8dcf-e63bf15d8738
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Nominal Return Rate' =
+			
+			VAR r = COALESCE ( [Real Return Rate], 0 )
+			VAR i = COALESCE ( [Inflation Rate], 0 )
+			RETURN (1 + r) * (1 + i) - 1
+		lineageTag: dcaeace6-26f9-4a2d-bec2-2f6eea17a224
+
+	measure 'Real Return Rate' =
+			
+			CALCULATE (
+			    MAX ( ret_globals[Value] ),
+			    ret_globals[Variable] = "real_return_rate"
+			)
+		lineageTag: c8eeaf64-71e2-48d2-806f-39039e3cfe38
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Measure
+		lineageTag: 6acfe43a-f1c5-4850-8500-f974998e64e0
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Start Balance' =
+			
+			SUM ( ret_starting_balances[balance_today] )
+		lineageTag: 172edbcf-58b1-43ab-b093-57548a0c4271
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c8d176b-d238-44ef-8ba7-f5b032594c67
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Variable
+		dataType: string
+		lineageTag: 359d536a-c1b9-47cf-bc61-808e0c28a23e
+		summarizeBy: none
+		sourceColumn: Variable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		dataType: double
+		lineageTag: c806768e-3159-40ec-96aa-f1b0b8b7a439
+		summarizeBy: sum
+		sourceColumn: Value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column account_id
+		dataType: string
+		lineageTag: 8f69aa6c-9998-440e-96ee-2ff99ff39aa4
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column applies_to
+		dataType: string
+		lineageTag: 0a25e03a-f671-4e9e-a5c6-d2065dad08a1
+		summarizeBy: none
+		sourceColumn: applies_to
+
+		annotation SummarizationSetBy = Automatic
+
+	column Notes
+		dataType: string
+		lineageTag: 94d2412d-9557-4482-8d3d-117b8e4897fa
+		summarizeBy: none
+		sourceColumn: Notes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: 9db33773-26cb-424c-87b6-83b27c1e928d
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Cashflows = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({ret_inflows, ret_outflows})
+				in
+				    Source
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

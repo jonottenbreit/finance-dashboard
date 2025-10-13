@@ -102,3 +102,11 @@ relationship 4cffe9c9-42f3-496b-b2d4-fed89eb55c3b
 	fromColumn: month_dim.MonthEnd
 	toColumn: LocalDateTable_87d75ae8-45f3-47d6-b7ce-04e16169f5ec.Date
 
+relationship AutoDetected_3be2de43-b117-4bb7-84cf-abb6172dffe5
+	fromColumn: positions_enriched_export.account_id
+	toColumn: ret_starting_balances.account_id
+
+relationship 72f53f80-9c63-dfde-9b77-6509483b5b71
+	fromColumn: Cashflows.Year
+	toColumn: YearTable.Year
+
