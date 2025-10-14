@@ -4,7 +4,7 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 2599.3929909743833,
+        "x": 952.78669085894364,
         "y": 0
       },
       "nodes": [
@@ -262,8 +262,8 @@
           "nodeIndex": "Cashflows",
           "nodeLineageTag": "0643359f-649c-45e0-aeeb-82532e9acaa0",
           "size": {
-            "height": 248,
-            "width": 234
+            "height": 353.53091202673772,
+            "width": 278.4340682217844
           },
           "zIndex": 0
         },
@@ -276,6 +276,32 @@
           "nodeLineageTag": "0969c0de-1e4d-4ec5-86f7-442a15662789",
           "size": {
             "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5243.9968709241248,
+            "y": 780.35464551918687
+          },
+          "nodeIndex": "DivFlowsYear",
+          "nodeLineageTag": "1bcc5cbe-f622-4b61-9164-40e3f7982fa3",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5527.9968709241248,
+            "y": 425.01900698517863
+          },
+          "nodeIndex": "account_dim",
+          "nodeLineageTag": "2e6026f4-7795-43d1-a3a9-5484d7a24780",
+          "size": {
+            "height": 296,
             "width": 234
           },
           "zIndex": 0

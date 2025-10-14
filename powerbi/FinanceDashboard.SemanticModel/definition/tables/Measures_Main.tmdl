@@ -227,6 +227,46 @@ table Measures_Main
 		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: 8bb69587-f26d-47d3-a515-6f604d8ca0af
 
+	measure 'Dividends (Net)' =
+			
+			SUM ( DivFlowsYear[dividends_net_by_year] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 91c077e1-69c9-4669-ae29-d3ffc26ee48a
+
+	measure 'Net Flow (w/ Dividends)' =
+			
+			[Net Flow (cash only)] + [Dividends (Net, Year)]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 0f99c244-5c01-4734-bc15-397bcd64ad5f
+
+	measure Inflows =
+			
+			CALCULATE ( SUM ( Cashflows[Value] ), Cashflows[Type] = "Inflows" )
+		lineageTag: acdf2bf0-cc76-4b0f-bc12-274c7000654f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Outflows =
+			
+			CALCULATE ( SUM ( Cashflows[Value] ), Cashflows[Type] = "Outflows" )
+		lineageTag: 2bd256fb-78e3-47d9-acbc-7f0234e491c5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dividends (Net, Year)' =
+			
+			SUM ( DivFlowsYear[dividends_net_by_year] )
+		lineageTag: 4a4dc4fd-7011-437e-b983-01b35fbe4f59
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Flow (cash only)' =
+			
+			SUM ( Cashflows[SignedValue] )
+		lineageTag: 0bd49e0c-d0e2-4bcd-b135-1e9e2ddf47a9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column Column1
 		dataType: int64
 		isHidden

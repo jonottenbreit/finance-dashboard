@@ -51,6 +51,26 @@ table security_dim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	column dividend_yield
+		dataType: double
+		lineageTag: bc29c465-19e2-4113-8270-e1e155f6c031
+		summarizeBy: none
+		sourceColumn: dividend_yield
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column qualified_ratio
+		dataType: double
+		lineageTag: 7dbd5c51-dfff-4cbb-babe-3933db6bde90
+		summarizeBy: none
+		sourceColumn: qualified_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	partition security_dim = m
 		mode: import
 		source =

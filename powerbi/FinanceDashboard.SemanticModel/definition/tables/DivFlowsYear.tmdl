@@ -1,0 +1,58 @@
+table DivFlowsYear
+	lineageTag: 1bcc5cbe-f622-4b61-9164-40e3f7982fa3
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 946d1b8a-89f0-4f1d-a493-db00f6632859
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_name
+		dataType: string
+		lineageTag: fe8a4304-bf41-45e4-a2ea-843c669eddbe
+		summarizeBy: none
+		sourceColumn: account_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column acct_group
+		dataType: string
+		lineageTag: 59548630-55c4-4dff-880d-0fc4ed75f6fd
+		summarizeBy: none
+		sourceColumn: acct_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_bucket
+		dataType: string
+		lineageTag: 3f4ce2cb-875c-4df3-a768-324265945528
+		summarizeBy: none
+		sourceColumn: tax_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column dividends_net_by_year
+		dataType: double
+		lineageTag: bf7b8b59-284a-41b8-8576-747031dd63e3
+		summarizeBy: sum
+		sourceColumn: dividends_net_by_year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition DivFlowsYear = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\retirement\out\ret_dividend_flows_by_year.csv"),[Delimiter=",", Columns=5, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"year", Int64.Type}, {"account_name", type text}, {"acct_group", type text}, {"tax_bucket", type text}, {"dividends_net_by_year", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

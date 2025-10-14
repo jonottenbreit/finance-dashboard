@@ -1,0 +1,89 @@
+table account_dim
+	lineageTag: 2e6026f4-7795-43d1-a3a9-5484d7a24780
+
+	column account_id
+		dataType: string
+		lineageTag: d316c0f0-ca96-4bc9-a4ba-e1a6c4136b95
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column account_name
+		dataType: string
+		lineageTag: 7e088629-181d-4efe-b9ec-c97e67549583
+		summarizeBy: none
+		sourceColumn: account_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column owner
+		dataType: string
+		lineageTag: e859452b-bceb-4db4-b2fe-e19c66f8fe5b
+		summarizeBy: none
+		sourceColumn: owner
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: 63943be5-7174-4fbb-a01a-94d8dbb3cc59
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column acct_group
+		dataType: string
+		lineageTag: b35503ae-3873-4fcf-8e7d-1ec6e973f154
+		summarizeBy: none
+		sourceColumn: acct_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_bucket
+		dataType: string
+		lineageTag: 943937a0-6e12-4f74-b61b-8449e90754e1
+		summarizeBy: none
+		sourceColumn: tax_bucket
+
+		annotation SummarizationSetBy = Automatic
+
+	column liquidity
+		dataType: string
+		lineageTag: abf408c0-281f-4803-9676-a1b650898b86
+		summarizeBy: none
+		sourceColumn: liquidity
+
+		annotation SummarizationSetBy = Automatic
+
+	column include_networth
+		dataType: int64
+		formatString: 0
+		lineageTag: a8f9fc74-11de-4f74-ae7c-7521e60ec50d
+		summarizeBy: none
+		sourceColumn: include_networth
+
+		annotation SummarizationSetBy = Automatic
+
+	column include_liquid
+		dataType: int64
+		formatString: 0
+		lineageTag: 624abfba-58c7-451f-90c6-273a9c8d3f57
+		summarizeBy: none
+		sourceColumn: include_liquid
+
+		annotation SummarizationSetBy = Automatic
+
+	partition account_dim = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\Projects\finance-dashboard\rules\account_dim.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"account_id", type text}, {"account_name", type text}, {"owner", type text}, {"type", type text}, {"acct_group", type text}, {"tax_bucket", type text}, {"liquidity", type text}, {"include_networth", Int64.Type}, {"include_liquid", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "4889316de85d909d62e1",
   "position": {
-    "x": 113.56147021546261,
-    "y": 407.19898605830161,
+    "x": 113.73721833430271,
+    "y": 407.30220079175973,
     "z": 1,
-    "height": 257.94676806083646,
-    "width": 968.51711026615965,
+    "height": 258.21422540760614,
+    "width": 991.35818683277364,
     "tabOrder": 1
   },
   "visual": {
@@ -45,7 +45,7 @@
                   "Property": "Net Worth (with growth)"
                 }
               },
-              "queryRef": "Cashflows.Net Worth",
+              "queryRef": "Cashflows.Net Worth (with growth) v3",
               "nativeQueryRef": "Net Worth (with growth)"
             }
           ]
@@ -123,7 +123,7 @@
         }
       },
       {
-        "name": "9ff4a5c811a035010c9d",
+        "name": "df8b6ee34ca70699625c",
         "field": {
           "Measure": {
             "Expression": {

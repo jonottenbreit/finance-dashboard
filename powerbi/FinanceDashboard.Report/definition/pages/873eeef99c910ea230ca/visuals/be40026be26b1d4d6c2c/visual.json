@@ -1,15 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
-  "name": "28a6feec81a51d7250cd",
+  "name": "be40026be26b1d4d6c2c",
   "position": {
-    "x": 113.73721833430271,
-    "y": 63.016566914951504,
-    "z": 0,
-    "height": 229.01142610555547,
-    "width": 991.35818683277364
+    "x": 129.10711270380307,
+    "y": 292.027993020507,
+    "z": 2,
+    "height": 95.293345090902278,
+    "width": 960.618398093773,
+    "tabOrder": 2
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -41,11 +42,11 @@
                       "Entity": "Measures_Main"
                     }
                   },
-                  "Property": "Net Flow (w/ Dividends)"
+                  "Property": "Dividends (Net)"
                 }
               },
-              "queryRef": "Measures_Main.Net Flow (w/ Dividends)",
-              "nativeQueryRef": "Net Flow (w/ Dividends)"
+              "queryRef": "Measures_Main.Dividends (Net)",
+              "nativeQueryRef": "Dividends (Net)"
             }
           ]
         }
@@ -60,7 +61,7 @@
                     "Entity": "Measures_Main"
                   }
                 },
-                "Property": "Net Flow (w/ Dividends)"
+                "Property": "Dividends (Net)"
               }
             },
             "direction": "Descending"
@@ -74,7 +75,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "20b898005990c080122c",
+        "name": "849233e40eb4a90a5302",
         "field": {
           "Column": {
             "Expression": {
@@ -88,7 +89,7 @@
         "type": "Advanced"
       },
       {
-        "name": "eb088ce6310b680dda9a",
+        "name": "cf0513265a3a0e476191",
         "field": {
           "Measure": {
             "Expression": {
@@ -96,7 +97,7 @@
                 "Entity": "Measures_Main"
               }
             },
-            "Property": "Net Flow (w/ Dividends)"
+            "Property": "Dividends (Net)"
           }
         },
         "type": "Advanced"

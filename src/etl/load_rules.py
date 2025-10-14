@@ -22,7 +22,7 @@ def load_csv_table(csv_path: Path, create_sql: str, table: str):
         return
     con.execute(create_sql)
     con.execute(f"DELETE FROM {table}")
-    con.execute(f"INSERT INTO {table} SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(csv_path)])
+    con.execute(f"INSERT INTO {table} BY NAME SELECT * FROM read_csv_auto(?, HEADER=TRUE)", [str(csv_path)])
     n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
     print(f"Loaded {table}: {n} rows")
 
@@ -106,8 +106,14 @@ load_csv_table(
       region TEXT,
       style TEXT,
       size TEXT,
-      expense_ratio DECIMAL(9,6)
-    )
+      expense_ratio DECIMAL(9,6),
+      dividend_yield DOUBLE,
+      qualified_ratio DOUBLE
+    );
+    -- In case security_dim already existed without the new columns,
+    -- make the migration idempotent:
+    ALTER TABLE security_dim ADD COLUMN IF NOT EXISTS dividend_yield DOUBLE;
+    ALTER TABLE security_dim ADD COLUMN IF NOT EXISTS qualified_ratio DOUBLE;
     """,
     "security_dim"
 )

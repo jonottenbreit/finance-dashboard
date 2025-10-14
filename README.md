@@ -9,15 +9,16 @@ This project builds a comprehensive personal finance and retirement dashboard po
 finance-dashboard/
 ├── src/
 │   └── etl/
-│       ├── init_db.py          # Initialize DuckDB with base schema
-│       ├── load_rules.py       # Load rule/lookup tables (account_dim, category_dim, etc.)
-│       ├── load_positions.py   # Load brokerage/investment positions
-│       ├── normalize_positions.py # Normalize institution exports
-│       ├── build_rollups.py    # Build aggregated rollups for Power BI
-│       ├── load_retirement.py  # Build retirement inflow/outflow projections
+│       ├── init_db.py              # Initialize DuckDB with base schema
+│       ├── load_rules.py           # Load rule/lookup tables (account_dim, category_dim, etc.)
+│       ├── load_positions.py       # Load brokerage/investment positions
+│       ├── normalize_positions.py  # Normalize institution exports
+│       ├── build_rollups.py        # Build aggregated rollups for Power BI
+│       ├── load_retirement.py      # Build retirement inflow/outflow projections
+│       ├── run_sql.py              # Utility to run ad-hoc SQL from the CLI
 │
-├── rules/                      # Lookup tables (account_dim, category_dim, security_dim)
-├── data/                       # DuckDB file and exports
+├── rules/                          # Lookup tables (account_dim, category_dim, security_dim)
+├── data/                           # DuckDB file and exports
 └── README.md
 ```
 
@@ -71,6 +72,11 @@ python src/etl/build_rollups.py
 python src/etl/load_retirement.py
 ```
 
+### Run Ad‑Hoc SQL
+```powershell
+python .\src\etl\run_sql.py "SELECT ..."
+```
+
 Or run everything:
 ```powershell
 ./run_loaders.ps1
@@ -81,36 +87,20 @@ Or run everything:
 ## Data Flow Summary
 
 | Step | File | Purpose |
-|------|------|----------|
+|------|------|---------|
 | 1 | **init_db.py** | Creates initial schema for DuckDB database. |
-| 2 | **load_rules.py** | Loads static lookup tables (account_dim, category_dim, etc.). |
+| 2 | **load_rules.py** | Loads static lookup tables (account_dim, category_dim, security_dim, globals). |
 | 3 | **load_positions.py / normalize_positions.py** | Imports and standardizes brokerage and manual positions. |
 | 4 | **build_rollups.py** | Aggregates transactions, budgets, and balances for Power BI. |
-| 5 | **load_retirement.py** | Loads and inflates future inflows/outflows from `retirement_assumptions.csv`, applies real and nominal return logic, and exports `ret_inflows.csv` and `ret_outflows.csv`. |
-
----
-
-## Key File Behavior
-
-- **Manual Positions**  
-  Saved under `FinanceData/positions/normalized/manual/positions_<YYYY-MM-DD>.csv`.  
-  To update: duplicate and update the date for the latest snapshot.
-
-- **Budgets**  
-  Lives only as `budgets.csv` (not in DuckDB). If the current month is blank, the prior month’s data is copied forward.
-
-- **Retirement Assumptions**  
-  Stored at `FinanceData/retirement/retirement_assumptions.csv`.  
-  Defines base assumptions for inflation, returns, spending, and contribution timing.  
-  The loader expands these over time and saves `ret_inflows.csv` and `ret_outflows.csv`.
+| 5 | **load_retirement.py** | Expands `retirement_assumptions.csv` into yearly **inflows/outflows**, applies **real→nominal** conversion, grows balances, and exports `ret_inflows.csv`, `ret_outflows.csv`, and `ret_starting_balances.csv`. |
 
 ---
 
 ## Power BI Integration
 
 ### Data Sources
-- **DuckDB (positions, transactions, rollups)** — actuals
-- **ret_inflows.csv / ret_outflows.csv** — projected cashflows
+- **DuckDB** (positions, transactions, rollups) — actuals  
+- **ret_inflows.csv / ret_outflows.csv** — projected cashflows  
 - **ret_starting_balances.csv** — current portfolio baseline
 
 ### Model Relationships
@@ -119,22 +109,26 @@ YearTable[Year] 1 → * Cashflows[Year]
 Cashflows joined to ret_starting_balances via account_id (optional)
 ```
 
-### Core Measures
+### Core Measures (DAX)
+> Normalize cashflow types, compute flows, nominal returns, and growth-aware net worth.
+
 ```DAX
 -- Clean type normalization
 TypeNorm =
 VAR t = UPPER(TRIM(Cashflows[Type]))
-RETURN SWITCH(TRUE(),
-    t = "INFLOW" || t = "INFLOWS", "INFLOW",
-    t = "OUTFLOW" || t = "OUTFLOWS", "OUTFLOW",
-    BLANK()
-)
+RETURN
+    SWITCH(
+        TRUE(),
+        t = "INFLOW" || t = "INFLOWS", "INFLOW",
+        t = "OUTFLOW" || t = "OUTFLOWS", "OUTFLOW",
+        BLANK()
+    )
 
 -- Core flows
 Net Flow =
 VAR Inflow  = CALCULATE(SUM(Cashflows[Value]), Cashflows[TypeNorm] = "INFLOW")
 VAR Outflow = CALCULATE(SUM(Cashflows[Value]), Cashflows[TypeNorm] = "OUTFLOW")
-RETURN COALESCE(Inflow,0) - COALESCE(Outflow,0)
+RETURN COALESCE(Inflow, 0) - COALESCE(Outflow, 0)
 
 Cumulative Net Flow =
 VAR Y = MAX(YearTable[Year])
@@ -146,7 +140,7 @@ VAR r = COALESCE([Real Return Rate], 0)
 VAR i = COALESCE([Inflation Rate], 0)
 RETURN (1 + r) * (1 + i) - 1
 
--- Portfolio growth-aware net worth
+-- Growth-aware net worth (compounds base and each flow to Year)
 Net Worth (with growth) =
 VAR y = MAX(YearTable[Year])
 VAR r = COALESCE([Nominal Return Rate], 0)
@@ -162,24 +156,106 @@ RETURN StartCompounded + FlowsCompounded
 ```
 
 ### Visuals
-- **Line Chart:** Net Worth (with growth) by Year
-- **Clustered Columns:** Net Flow and Investment Return by Year
-- **Table:** Cashflows by category and year
+- **Line Chart:** Net Worth (with growth) by Year  
+- **Clustered Columns:** Net Flow and Investment Return by Year  
+- **Table:** Cashflows by category and year, include `Type`, `Account`, `Symbol`, `Spendable?`
 
 ---
 
-## Recent Enhancements
+## Dividend, Tax, and Cashflow Rules (Updated 2025-10-14)
 
-- `load_retirement.py` now inflates withdrawals and social security flows using CPI and applies nominal growth logic.
-- Added `real_return_rate` and `inflation_rate` assumptions to `ret_globals` for downstream DAX measures.
-- Implemented `manual_positions.csv` ingestion for assets not tied to institutions (TIPS, HSA, etc.).
-- Added cumulative return logic in Power BI for dynamic portfolio projection.
+These capture decisions we finalized today.
+
+### 1) Projection Horizon (“lifetime” support)
+- `retirement_assumptions.csv` has `Start_Year` and `Duration`.  
+- If `Duration = "lifetime"`, the loader expands the series through **End_Year = 2100** (configurable in `ret_globals.end_year`).  
+- Otherwise, `End_Year = Start_Year + Duration - 1`.
+
+### 2) Dividend engine and growing balances
+- Annual **Dividends** for each account-year are computed from the **projected end‑of‑year balance** (not a static snapshot):  
+  	`dividends_y = balance_y * forward_or_trailing_yield(symbol)`
+- `balance_y` is derived via rolling compounding of: prior balance, **contributions/withdrawals**, and **nominal return**.  
+  This ensures that increasing contributions (e.g., BRK_JOINT from 30k → 150k) **does** raise dividends by 2040 and beyond.
+
+### 3) Yield sources
+- `security_dim.csv` holds `yield_forward` (preferred) and `yield_trailing`.  
+- If `yield_forward` is null, fall back to `yield_trailing`.  
+- A `last_verified` column tracks data freshness. (Populate via your symbol‑scrape step.)
+
+### 4) Qualified dividend ratio & muni/treasury handling
+- Column: `qualified_ratio` ∈ [0.0–1.0], representing the share taxed at qualified rates.  
+- **Muni funds (e.g., VOHIX)**: set `tax_treatment = "muni"`, and **ignore** `qualified_ratio` in tax math; dividends are **federal tax‑exempt** and typically **state‑exempt** if in‑state (document your state rule).  
+- **Treasuries**: `tax_treatment = "treasury"` for **state‑tax‑exempt** interest.  
+- **Sentinel vs zero**: avoid using `0` to mean “override to zero tax.” Use either `tax_treatment` or a sentinel like `qualified_ratio = 999` (the loader treats `999` as “override → zero tax”). Prefer the explicit `tax_treatment` enum.
+
+### 5) Spendability (pre‑retirement cash)
+- A boolean **Spendable_Pre_Ret** is derived in the model:  
+  	`Spendable_Pre_Ret = (account_dim.acct_group = "Liquid")`  
+- In Power BI, the **Dividends (Spendable Pre‑Ret)** measure filters by this flag for pre‑retirement cash‑flow views.
+
+### 6) Cashflows typing and normalization
+- `Cashflows[Type]` must be strictly `"INFLOW"` or `"OUTFLOW"` (plural variants normalized by `TypeNorm` above).  
+- Dividends are **inflows**; withdrawals are **outflows**. Social Security, contributions, etc., are loaded into the correct side upstream in `load_retirement.py`.
+
+### 7) Globals for return and inflation
+- `ret_globals` provides:  
+  - `real_return_rate` (e.g., 0.045)  
+  - `inflation_rate` (e.g., 0.02)  
+  - `end_year` (default `2100` for lifetime expansion)  
+- In DAX we compute `Nominal Return Rate = (1+r_real)*(1+i) - 1` and compound flows/year accordingly.
+
+### 8) Budgets roll‑forward (clarified)
+- `budgets.csv` is the **source of truth** (not stored in DuckDB).  
+- If the row for the **current month** is blank, the loader **copies forward** the prior month’s values on ingest.  
+- This keeps visuals populated without manual monthly edits.
+
+### 9) Troubleshooting notes
+- **Net worth line drops pre‑retirement:** ensure `Nominal Return Rate` is wired and the growth‑aware net‑worth measure above is used.  
+- **Dividends stop early (e.g., 2065):** check `Duration` vs `"lifetime"` and `ret_globals.end_year`.  
+- **Contribution changes not impacting dividends:** verify the rolling balance calc is enabled in `load_retirement.py` and that dividends use **projected** balances.
 
 ---
 
-## Next Steps
-- Merge real portfolio performance (DuckDB) with projected cashflow forecast into one Power BI view.
-- Add toggles for *nominal vs real* view and *scenario-based returns* (e.g., 4%, 6%, 8%).
-- Introduce withdrawal sequencing and tax-bucket logic (Taxable / Roth / Traditional).
-- Extend Python loader to project required minimum distributions (RMDs) and Social Security tax treatment.
+## File Locations & Conventions
 
+- **Manual Positions:** `FinanceData/positions/normalized/manual/positions_<YYYY-MM-DD>.csv`  
+  Update by duplicating the most recent file with a new date-stamped name.
+
+- **Retirement Assumptions:** `FinanceData/retirement/retirement_assumptions.csv`  
+  Expanded into `ret_inflows.csv` & `ret_outflows.csv` with lifetime support.
+
+- **Globals:** `rules/ret_globals.csv` (or table) controlling `real_return_rate`, `inflation_rate`, `end_year`.
+
+---
+
+## Roadmap
+
+- Toggle between **Nominal vs Real** views in Power BI.  
+- Scenario picker for returns (e.g., 4% / 6% / 8%).  
+- Withdrawal sequencing and tax‑bucket logic (Taxable / Roth / Trad).  
+- RMD projections and Social Security tax treatment.  
+- Automated yield refresh step writing `security_dim.yield_forward` + `last_verified`.
+
+---
+
+## Quick Commands
+
+```powershell
+# Full refresh
+./run_loaders.ps1
+
+# Only retirement
+python src/etl/load_retirement.py
+
+# Only rollups
+python src/etl/build_rollups.py
+
+# Inspect a view
+python .\src\etl\run_sql.py "SELECT * FROM ret_outflows LIMIT 50"
+```
+
+---
+
+### Changelog
+- **2025-10-14:** Added lifetime expansion (to 2100), rolling-balance‑based dividends, muni/treasury tax‐treatment logic, spendability flag, and clarified budgets roll‑forward. Updated DAX and troubleshooting.
+- **Prior:** Initial setup, rules/positions loaders, nominal return integration, manual positions ingestion.

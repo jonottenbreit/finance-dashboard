@@ -110,3 +110,11 @@ relationship 72f53f80-9c63-dfde-9b77-6509483b5b71
 	fromColumn: Cashflows.Year
 	toColumn: YearTable.Year
 
+relationship 32d82811-9dde-973f-f963-f02f28560912
+	fromColumn: DivFlowsYear.year
+	toColumn: YearTable.Year
+
+relationship d1a7225f-4a6f-49bf-7773-55165e7485df
+	fromColumn: Cashflows.Variable
+	toColumn: account_dim.account_id
+

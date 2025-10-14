@@ -1,36 +1,6 @@
 table Cashflows
 	lineageTag: 0643359f-649c-45e0-aeeb-82532e9acaa0
 
-	measure 'Net Flow' =
-			
-			VAR inflow  = CALCULATE(SUM(Cashflows[Value]), Cashflows[Type] = "Inflows")
-			VAR outflow = CALCULATE(SUM(Cashflows[Value]), Cashflows[Type] = "Outflows")
-			RETURN inflow - outflow
-		formatString: \$#,0;(\$#,0);\$#,0
-		lineageTag: 271ac181-0ec0-4a16-a512-ff609ec9b7b2
-
-	measure 'Net Worth (with growth)' =
-			
-			VAR y    = MAX ( YearTable[Year] )
-			VAR r    = COALESCE ( [Nominal Return Rate], 0 )
-			VAR base = VAR cy = CALCULATE ( MAX ( ret_globals[Value] ),
-			                                ret_globals[Variable] = "current_year" )
-			           RETURN IF ( NOT ISBLANK ( cy ), cy, YEAR ( TODAY() ) )
-			
-			VAR StartCompounded =
-			    [Start Balance] * POWER ( 1 + r, y - base )
-			
-			VAR FlowsCompounded =
-			    SUMX (
-			        FILTER ( Cashflows, Cashflows[Year] <= y ),
-			        VAR sign = IF ( Cashflows[Type] = "Inflows", 1, -1 )
-			        RETURN sign * Cashflows[Value] * POWER ( 1 + r, y - Cashflows[Year] )
-			    )
-			RETURN
-			    StartCompounded + FlowsCompounded
-		formatString: \$#,0;(\$#,0);\$#,0
-		lineageTag: 41044907-f509-4be9-a1cc-114cc497d2d3
-
 	measure 'Inflation Rate' =
 			
 			CALCULATE ( MAX ( ret_globals[Value] ), ret_globals[Variable] = "inflation_rate" )
@@ -66,6 +36,38 @@ table Cashflows
 		lineageTag: 172edbcf-58b1-43ab-b093-57548a0c4271
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Worth (with growth)' = ```
+			
+			VAR y =
+			    MAX ( YearTable[Year] )
+			VAR r =
+			    COALESCE ( [Nominal Return Rate], 0 )
+			VAR baseYear =
+			    VAR cy =
+			        CALCULATE ( MAX ( ret_globals[Value] ), ret_globals[Variable] = "current_year" )
+			    RETURN IF ( NOT ISBLANK ( cy ), cy, YEAR ( TODAY() ) )
+			
+			VAR StartCompounded =
+			    [Start Balance] * POWER ( 1 + r, y - baseYear )
+			
+			-- only investable inflows, coerce Year to number, ignore page filters on Cashflows
+			VAR FlowsCompoundedInvestableOnly =
+			    SUMX (
+			        FILTER (
+			            ALL ( Cashflows ),
+			            LOWER ( Cashflows[Type] ) = "inflows"
+			                && VALUE ( Cashflows[Year] ) <= y
+			                && Cashflows[IsInvestable] = TRUE
+			        ),
+			        Cashflows[Value] * POWER ( 1 + r, y - VALUE ( Cashflows[Year] ) )
+			    )
+			RETURN
+			    StartCompounded + FlowsCompoundedInvestableOnly
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 62b75b84-4013-4f47-bfee-15482d7e09c2
 
 	column Year
 		dataType: int64
@@ -125,6 +127,29 @@ table Cashflows
 		sourceColumn: Type
 
 		annotation SummarizationSetBy = Automatic
+
+	column IsInvestable = ```
+			
+			NOT ISBLANK ( RELATED ( account_dim[account_id] ) )
+			
+			```
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: fe3bf247-bbfd-45be-999f-8310dc5a5e8c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column SignedValue = ```
+			
+			IF ( Cashflows[Type] = "Inflows", Cashflows[Value], - Cashflows[Value] )
+			
+			```
+		lineageTag: c4b624f4-21bb-4e66-9260-ad3be27925c5
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	partition Cashflows = m
 		mode: import
