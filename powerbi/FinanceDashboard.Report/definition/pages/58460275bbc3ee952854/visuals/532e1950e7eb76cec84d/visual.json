@@ -7,7 +7,7 @@
     "z": 5000,
     "height": 298.63817653534494,
     "width": 811.6453411777444,
-    "tabOrder": 5000
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "columnChart",
@@ -214,39 +214,6 @@
           ]
         },
         "howCreated": "User"
-      },
-      {
-        "name": "2d86ff9410dded536200",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "calendar_dim"
-              }
-            },
-            "Property": "yyyymm"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "5dd01fbd486437238480",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "transactions_with_category"
-                  }
-                },
-                "Property": "amount"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

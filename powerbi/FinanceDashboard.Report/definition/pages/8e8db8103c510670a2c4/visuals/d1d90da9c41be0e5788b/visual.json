@@ -6,7 +6,8 @@
     "y": 102.54955142916754,
     "z": 0,
     "height": 436.61248411509206,
-    "width": 579.56034368302255
+    "width": 579.56034368302255,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -98,58 +99,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "8823721dd30346e460c6",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "parent_category_dim"
-              }
-            },
-            "Property": "parent_category"
-          }
-        },
-        "type": "Categorical",
-        "objects": {
-          "general": [
-            {
-              "properties": {}
-            }
-          ]
-        }
-      },
-      {
-        "name": "575b70420a0e5a5953ed",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Budget to Date"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "de0d62e001898a3687c4",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Actual Spend (Outflows)"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -7,7 +7,7 @@
     "z": 4000,
     "height": 83.150245680407863,
     "width": 283.46674663775406,
-    "tabOrder": 4000
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "slicer",
@@ -212,20 +212,6 @@
           ]
         },
         "howCreated": "User"
-      },
-      {
-        "name": "9a10b7c3375a634b00d9",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "description"
-          }
-        },
-        "type": "Categorical"
       }
     ]
   }

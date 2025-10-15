@@ -37,38 +37,6 @@ table Cashflows
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Net Worth (with growth)' = ```
-			
-			VAR y =
-			    MAX ( YearTable[Year] )
-			VAR r =
-			    COALESCE ( [Nominal Return Rate], 0 )
-			VAR baseYear =
-			    VAR cy =
-			        CALCULATE ( MAX ( ret_globals[Value] ), ret_globals[Variable] = "current_year" )
-			    RETURN IF ( NOT ISBLANK ( cy ), cy, YEAR ( TODAY() ) )
-			
-			VAR StartCompounded =
-			    [Start Balance] * POWER ( 1 + r, y - baseYear )
-			
-			-- only investable inflows, coerce Year to number, ignore page filters on Cashflows
-			VAR FlowsCompoundedInvestableOnly =
-			    SUMX (
-			        FILTER (
-			            ALL ( Cashflows ),
-			            LOWER ( Cashflows[Type] ) = "inflows"
-			                && VALUE ( Cashflows[Year] ) <= y
-			                && Cashflows[IsInvestable] = TRUE
-			        ),
-			        Cashflows[Value] * POWER ( 1 + r, y - VALUE ( Cashflows[Year] ) )
-			    )
-			RETURN
-			    StartCompounded + FlowsCompoundedInvestableOnly
-			
-			```
-		formatString: \$#,0;(\$#,0);\$#,0
-		lineageTag: 62b75b84-4013-4f47-bfee-15482d7e09c2
-
 	column Year
 		dataType: int64
 		formatString: 0
@@ -144,12 +112,11 @@ table Cashflows
 			IF ( Cashflows[Type] = "Inflows", Cashflows[Value], - Cashflows[Value] )
 			
 			```
+		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: c4b624f4-21bb-4e66-9260-ad3be27925c5
 		summarizeBy: sum
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	partition Cashflows = m
 		mode: import

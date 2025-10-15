@@ -7,7 +7,7 @@
     "z": 4000,
     "height": 77.905653944842186,
     "width": 199.90884785846296,
-    "tabOrder": 2000
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -75,23 +75,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "988546939890804e5151",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "asset_class"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

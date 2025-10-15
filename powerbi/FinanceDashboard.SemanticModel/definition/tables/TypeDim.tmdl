@@ -1,0 +1,40 @@
+table TypeDim
+	lineageTag: 4141b95a-edcb-406b-8d98-f387ccc2e6ad
+
+	column Type
+		lineageTag: fcf1cce9-f8af-41e0-bd25-456946fc1890
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Type]
+		sortByColumn: SortKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortKey
+		formatString: 0
+		lineageTag: be31f9b9-daf2-4ddf-9742-156bbb992d59
+		summarizeBy: count
+		isNameInferred
+		sourceColumn: [SortKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TypeDim = calculated
+		mode: import
+		source = ```
+				
+				DATATABLE(
+				  "Type", STRING, "SortKey", INTEGER,
+				  {
+				    {"Beg Balance", 1},
+				    {"Inflows", 2},
+				    {"Dividends", 3},
+				    {"Outflows", 4},
+				    {"End Balance", 5}   // last
+				  }
+				)
+				
+				```
+
+	annotation PBI_Id = 51af9852380047b9a14f1cb0f0b6b962
+

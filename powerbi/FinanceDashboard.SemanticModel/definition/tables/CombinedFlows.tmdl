@@ -1,0 +1,59 @@
+table CombinedFlows
+	lineageTag: 6ee5430a-faed-4afd-a696-e759027c5185
+
+	measure Amount = SUM(CombinedFlows[Value])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 125fd06a-783a-4c20-b93a-edac771643cb
+
+	column Year
+		formatString: 0
+		lineageTag: 6177899c-28c1-466a-aa49-bc193a1decd8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		lineageTag: 70f54418-903a-4f71-b28d-3def40b6fbc3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Type]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Value
+		lineageTag: 5cf60b9d-bc33-43d8-8d1b-e9df25f1f3f4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition CombinedFlows = calculated
+		mode: import
+		source = ```
+				
+				VAR Cash =
+				    SELECTCOLUMNS(
+				        Cashflows,
+				        "Year",  INT(Cashflows[Year]),
+				        "Type",  Cashflows[Type],
+				        "Value", Cashflows[SignedValue]
+				    )
+				VAR Divs =
+				    SELECTCOLUMNS(
+				        DivFlowsYear,
+				        "Year",  INT(DivFlowsYear[Year]),
+				        "Type",  "Dividends",
+				        "Value", DivFlowsYear[dividends_net_by_year]
+				    )
+				RETURN
+				UNION(Cash, Divs)
+				
+				```
+
+	annotation PBI_Id = 34aeb8c5f0af4d58ada42cb156ef352f
+

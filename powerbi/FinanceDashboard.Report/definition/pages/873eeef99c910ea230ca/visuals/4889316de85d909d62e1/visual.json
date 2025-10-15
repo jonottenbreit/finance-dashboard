@@ -2,12 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "4889316de85d909d62e1",
   "position": {
-    "x": 113.73721833430271,
-    "y": 407.30220079175973,
-    "z": 1,
-    "height": 258.21422540760614,
-    "width": 991.35818683277364,
-    "tabOrder": 1
+    "x": 118.01068694618002,
+    "y": 37.049866831940236,
+    "z": 0,
+    "height": 255.23241595336606,
+    "width": 1084.0516591567698
   },
   "visual": {
     "visualType": "lineChart",
@@ -39,14 +38,14 @@
                 "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Cashflows"
+                      "Entity": "Measures_Main"
                     }
                   },
-                  "Property": "Net Worth (with growth)"
+                  "Property": "Net Worth (EOY)"
                 }
               },
-              "queryRef": "Cashflows.Net Worth (with growth) v3",
-              "nativeQueryRef": "Net Worth (with growth)"
+              "queryRef": "Measures_Main.Net Worth (EOY)",
+              "nativeQueryRef": "Net Worth (EOY)"
             }
           ]
         }
@@ -58,10 +57,10 @@
               "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Cashflows"
+                    "Entity": "Measures_Main"
                   }
                 },
-                "Property": "Net Worth (with growth)"
+                "Property": "Net Worth (EOY)"
               }
             },
             "direction": "Descending"
@@ -123,15 +122,15 @@
         }
       },
       {
-        "name": "df8b6ee34ca70699625c",
+        "name": "29924eb991a07c12ec99",
         "field": {
           "Measure": {
             "Expression": {
               "SourceRef": {
-                "Entity": "Cashflows"
+                "Entity": "Measures_Main"
               }
             },
-            "Property": "Net Worth (with growth)"
+            "Property": "Net Worth (EOY)"
           }
         },
         "type": "Advanced"

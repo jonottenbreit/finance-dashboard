@@ -6,8 +6,7 @@
     "y": 51.744238508599373,
     "z": 1000,
     "height": 329.68471964050457,
-    "width": 651.97740520835214,
-    "tabOrder": 1000
+    "width": 651.97740520835214
   },
   "visual": {
     "visualType": "pivotTable",
@@ -139,7 +138,7 @@
                 "Property": "Actual Amount"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ]
       }
@@ -265,6 +264,28 @@
                       "isToggled": true
                     }
                   ]
+                },
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Shopping'"
+                      }
+                    }
+                  ],
+                  "isToggled": true,
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Shopping'"
+                          }
+                        }
+                      ],
+                      "isToggled": true
+                    }
+                  ]
                 }
               ]
             },
@@ -305,108 +326,5 @@
       }
     ],
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "0013bfebe5940a61c0c1",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "description"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "edab7bcf1b2e9d5e2aaa",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "date"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "18df73eb0027a6340799",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Actual Amount"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "9a970849bbd899668300",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "top_bucket"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "5497e591c059a0cedeb0",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "parent_category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "9a1cd6f6c30c807e2d3b",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "category"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

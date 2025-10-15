@@ -267,6 +267,167 @@ table Measures_Main
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'End Balance (EOY)' = ```
+			
+			VAR y = MAX(YearTable[Year])
+			VAR r = COALESCE([Return ex Div (Nominal)], 0)
+			
+			VAR baseYear =
+			    VAR cy = CALCULATE(MAX(ret_globals[Value]), ret_globals[Variable] = "current_year")
+			    RETURN IF(NOT ISBLANK(cy), cy, YEAR(TODAY()))
+			
+			VAR StartCompounded =
+			    [Start Balance] * POWER(1 + r, y - baseYear)
+			
+			/* Include BOTH inflows and outflows from Cashflows; exclude dividends here
+			   because dividends are added from DivFlowsYear below. */
+			VAR Flows_NoDiv =
+			    SUMX(
+			        FILTER(
+			            ALL(Cashflows),
+			            VALUE(Cashflows[Year]) <= y &&
+			            ( LOWER(Cashflows[Type]) = "inflows" || LOWER(Cashflows[Type]) = "outflows" )
+			        ),
+			        Cashflows[SignedValue] * POWER(1 + r, y - VALUE(Cashflows[Year]))
+			    )
+			
+			/* Net dividends (cash) compounded forward */
+			VAR Divs_Compounded =
+			    SUMX(
+			        FILTER(ALL(DivFlowsYear), VALUE(DivFlowsYear[year]) <= y),
+			        DivFlowsYear[dividends_net_by_year] * POWER(1 + r, y - VALUE(DivFlowsYear[year]))
+			    )
+			
+			RETURN
+			    StartCompounded + Flows_NoDiv + Divs_Compounded
+			
+			```
+		lineageTag: 50049610-f0e7-4c92-a90c-a4093fb6054f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Beg Balance' = ```
+			
+			VAR y =
+			    MAX(YearTable[Year])
+			VAR baseYear =
+			    VAR cy =
+			        CALCULATE(MAX(ret_globals[Value]), ret_globals[Variable] = "current_year")
+			    RETURN IF(NOT ISBLANK(cy), cy, YEAR(TODAY()))
+			RETURN
+			IF(
+			    y = baseYear,
+			    [Start Balance],
+			    CALCULATE(
+			        [End Balance (EOY)],
+			        FILTER(ALL(YearTable[Year]), YearTable[Year] = y - 1)
+			    )
+			)
+			
+			```
+		lineageTag: 79e40321-2c1c-4041-b313-eca21533c226
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Amount By Type' = ```
+			
+			VAR sel = SELECTEDVALUE(TypeDim[Type])
+			RETURN
+			SWITCH(
+			    sel,
+			    "Inflows",   CALCULATE(SUM(Cashflows[SignedValue]),  Cashflows[Type] = "Inflows"),
+			    "Outflows",  CALCULATE(SUM(Cashflows[SignedValue]),  Cashflows[Type] = "Outflows"),
+			    "Dividends", SUM(DivFlowsYear[dividends_net_by_year]),
+			    "Beg Balance", [Beg Balance],
+			    "End Balance", [End Balance (EOY)],
+			    BLANK()
+			)
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 0309dd80-c8bb-4f41-aec1-167f706ad605
+
+	measure 'Return ex Div (Real)' = ```
+			
+			VAR r_total_real = COALESCE([Real Return Rate], 0)           -- your total real return (incl. dividends)
+			VAR y_div_net    = COALESCE([Dividend Yield (Net, Real)], 0) -- matches the net cash you model in flows
+			RETURN (1 + r_total_real) / (1 + y_div_net) - 1
+			
+			
+			```
+		lineageTag: 1e4a42d8-d669-4abc-8299-3f3f38b963c6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Dividend Yield (Net, Real)' = ```
+			
+			DIVIDE(
+			    SUM(DivFlowsYear[dividends_net_by_year]),
+			    SUM(DivFlowsYear[portfolio_value])
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 1b296550-8f9c-4e6d-825a-3ea85cf85611
+
+	measure 'Nominal Total Return' = ```
+			
+			VAR r_real = COALESCE([Real Return Rate], 0)   -- e.g., 0.04
+			VAR i      = COALESCE([Inflation Rate], 0)    -- e.g., 0.03
+			RETURN (1 + r_real) * (1 + i) - 1
+			
+			```
+		lineageTag: fab2812b-620e-4f0a-9572-25c722a2ea4c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Return ex Div (Nominal)' = ```
+			
+			VAR r_nom_total = COALESCE([Nominal Total Return], 0)
+			VAR y_div_net   = COALESCE([Dividend Yield (Net, Real)], 0)  -- okay to use this; difference vs nominal yield is tiny
+			RETURN (1 + r_nom_total) / (1 + y_div_net) - 1
+			
+			```
+		lineageTag: 53264fdf-6fbf-4418-99e2-2b40fb5a03e5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Outflows (Signed)' = ```
+			
+			SUMX(
+			    FILTER(Cashflows, LOWER(Cashflows[Type]) = "outflows"),
+			    Cashflows[SignedValue]                -- should be negative
+			)
+			
+			```
+		lineageTag: 8d2c3fde-fc77-41f6-879a-db95dde7aa3e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Outflows (Abs)' = ```
+			ABS( [Outflows (Signed)] )
+			
+			```
+		lineageTag: be1dc4e6-4f61-4843-9211-cae34dc9f36a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Avg Withdrawal Rate (Weighted)' =
+			
+			VAR YearsWithW =
+			    FILTER( VALUES(YearTable[Year]), CALCULATE([Outflows (Abs)]) > 0 && CALCULATE([Beg Balance]) > 0 )
+			RETURN
+			DIVIDE(
+			    SUMX(YearsWithW, CALCULATE([Outflows (Abs)])),
+			    SUMX(YearsWithW, CALCULATE([Beg Balance]))
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 24b46ad3-a4c0-4b9c-8a2f-ec8733a11ccd
+
+	measure 'Net Worth (EOY)' = [End Balance (EOY)]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 8125eb16-c3d4-48f8-b3ca-a367d055a594
+
 	column Column1
 		dataType: int64
 		isHidden

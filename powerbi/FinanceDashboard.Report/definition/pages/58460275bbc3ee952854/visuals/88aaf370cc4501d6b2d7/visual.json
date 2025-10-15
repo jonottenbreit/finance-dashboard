@@ -7,7 +7,7 @@
     "z": 11000,
     "height": 125.66457923516991,
     "width": 227.67464943783725,
-    "tabOrder": 11000
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -53,23 +53,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "10539468e28947a3c8ec",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Trans_amount_month"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

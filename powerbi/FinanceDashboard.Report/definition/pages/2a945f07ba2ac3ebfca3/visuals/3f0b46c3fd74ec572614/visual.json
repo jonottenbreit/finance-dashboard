@@ -7,7 +7,7 @@
     "z": 1000,
     "height": 411.57703970860024,
     "width": 283.69417379914228,
-    "tabOrder": 3000
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "slicer",
@@ -128,23 +128,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "603d8bc20c217304a459",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "month_dim"
-              }
-            },
-            "Property": "month"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

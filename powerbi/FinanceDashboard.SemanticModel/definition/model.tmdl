@@ -44,6 +44,8 @@ ref table Cashflows
 ref table YearTable
 ref table DivFlowsYear
 ref table account_dim
+ref table CombinedFlows
+ref table TypeDim
 
 ref cultureInfo en-US
 

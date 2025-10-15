@@ -4,7 +4,7 @@
   "position": {
     "x": 654.141835631508,
     "y": 627.72755723308615,
-    "z": 1,
+    "z": 1000,
     "height": 85.457959524306276,
     "width": 284.34193805360087,
     "tabOrder": 2000
@@ -154,23 +154,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "a0d11ec9092979d0338d",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "month_dim"
-              }
-            },
-            "Property": "month"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

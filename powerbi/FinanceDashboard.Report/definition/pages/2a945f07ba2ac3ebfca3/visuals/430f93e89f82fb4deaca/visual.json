@@ -6,8 +6,7 @@
     "y": 431.5335868187579,
     "z": 3000,
     "height": 288.77059569074777,
-    "width": 569.42965779467681,
-    "tabOrder": 1000
+    "width": 569.42965779467681
   },
   "visual": {
     "visualType": "pivotTable",
@@ -329,76 +328,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "7c6b007c44d2b6e6414a",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "size"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "d7a662774bd026231ed2",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "style"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "c636a42108bb8cadc31b",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "security_dim"
-              }
-            },
-            "Property": "symbol"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "4c7b8f6de143e03525ab",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Total Value"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "559c4e4e60668eb8a661",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "% of Portfolio"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

@@ -339,23 +339,24 @@ def ensure_v_dividend_flows_by_year(con):
       JOIN pv         ON pv.year = y.year
       JOIN acct_yield a ON a.account_id = pv.account_id
     )
-
     SELECT
       d.year,
       d.account_id,
       d.account_name,
       d.acct_group,
       d.tax_bucket,
+      d.portfolio_value,                                  -- NEW
+      d.div_yield_w            AS dividend_yield_weighted,-- NEW
       (d.portfolio_value * COALESCE(d.div_yield_w,0.0)) AS dividends_gross,
       (d.portfolio_value * COALESCE(d.div_yield_w,0.0)
         * (1.0 - ( (1.0 - COALESCE(d.q_ratio,0.0)) * d.eff_ord_rate
-                   + COALESCE(d.q_ratio,0.0) * d.qd_rate ))) AS dividends_net_by_year,
+                  + COALESCE(d.q_ratio,0.0) * d.qd_rate ))) AS dividends_net_by_year,  -- <- KEEP
       (d.portfolio_value * COALESCE(d.div_yield_w,0.0)
         * (1.0 - ( (1.0 - COALESCE(d.q_ratio,0.0)) * (SELECT tax_work FROM params)
-                   + COALESCE(d.q_ratio,0.0) * 0.15 ))) AS dividends_net_working,
+                  + COALESCE(d.q_ratio,0.0) * 0.15 ))) AS dividends_net_working,
       (d.portfolio_value * COALESCE(d.div_yield_w,0.0)
         * (1.0 - ( (1.0 - COALESCE(d.q_ratio,0.0)) * (SELECT tax_ret FROM params)
-                   + COALESCE(d.q_ratio,0.0) * 0.15 ))) AS dividends_net_retirement
+                  + COALESCE(d.q_ratio,0.0) * 0.15 ))) AS dividends_net_retirement
     FROM divs d
     ORDER BY d.year, d.account_name;
     """)
@@ -514,7 +515,14 @@ if __name__ == "__main__":
 
     # Optional export for Power BI
     div_by_year = con.execute("""
-        SELECT year, account_name, acct_group, tax_bucket, dividends_net_by_year
+        SELECT
+          year,
+          account_name,
+          acct_group,
+          tax_bucket,
+          portfolio_value,                 -- NEW
+          dividend_yield_weighted,         -- NEW
+          dividends_net_by_year            -- <- KEEP
         FROM v_dividend_flows_by_year
         ORDER BY year, account_name
     """).fetchdf()

@@ -1,34 +1,33 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
-  "name": "07804dee829cbcaa57cc",
+  "name": "6d7f05b7dd36d1c765b0",
   "position": {
-    "x": 355.81586783756615,
-    "y": 627.72755723308615,
-    "z": 6000,
-    "height": 85.457959524306276,
-    "width": 284.34193805360087,
-    "tabOrder": 5000
+    "x": 700.347394540943,
+    "y": 317.61786600496282,
+    "z": 1001,
+    "height": 119.10669975186104,
+    "width": 309.67741935483872,
+    "tabOrder": 1001
   },
   "visual": {
-    "visualType": "slicer",
+    "visualType": "card",
     "query": {
       "queryState": {
         "Values": {
           "projections": [
             {
               "field": {
-                "Column": {
+                "Measure": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "month_dim"
+                      "Entity": "Measures_Main"
                     }
                   },
-                  "Property": "Quarter Year (Sortable)"
+                  "Property": "Avg Withdrawal Rate (Weighted)"
                 }
               },
-              "queryRef": "month_dim.Quarter Year (Sortable)",
-              "nativeQueryRef": "Quarter Year (Sortable)",
-              "active": true
+              "queryRef": "Measures_Main.Avg Withdrawal Rate (Weighted)",
+              "nativeQueryRef": "Avg Withdrawal Rate (Weighted)"
             }
           ]
         }
@@ -37,58 +36,41 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "month_dim"
+                    "Entity": "Measures_Main"
                   }
                 },
-                "Property": "Quarter Year (Sortable)"
+                "Property": "Avg Withdrawal Rate (Weighted)"
               }
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": true
       }
     },
     "objects": {
-      "data": [
+      "categoryLabels": [
         {
           "properties": {
-            "endDate": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "datetime'2026-11-21T00:00:00'"
-                }
-              }
-            },
-            "mode": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "false"
                 }
               }
             }
           }
         }
-      ],
-      "general": [
+      ]
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
         {
           "properties": {
-            "orientation": {
-              "expr": {
-                "Literal": {
-                  "Value": "1D"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "selection": [
-        {
-          "properties": {
-            "selectAllCheckboxEnabled": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -98,13 +80,20 @@
           }
         }
       ],
-      "header": [
+      "title": [
         {
           "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Quarter'"
+                  "Value": "'Avg. Withdrawal Rate (Retirement)'"
                 }
               }
             }
@@ -113,5 +102,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "02211cbbbc4516373c38",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Avg Withdrawal Rate (Weighted)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
