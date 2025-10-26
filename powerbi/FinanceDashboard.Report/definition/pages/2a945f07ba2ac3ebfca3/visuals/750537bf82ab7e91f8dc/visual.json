@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
-  "name": "4d0172e3e51e71ed0600",
+  "name": "750537bf82ab7e91f8dc",
   "position": {
-    "x": 56.693349327550813,
-    "y": 245.67118041938687,
-    "z": 6000,
-    "height": 83.150245680407863,
-    "width": 283.46674663775406,
-    "tabOrder": 5000
+    "x": 235.12767809195785,
+    "y": 339.7974186619262,
+    "z": 4001,
+    "height": 78.881543617947145,
+    "width": 200.23776456863507,
+    "tabOrder": 4001
   },
   "visual": {
     "visualType": "slicer",
@@ -20,15 +20,16 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "category_dim"
+                      "Entity": "security_dim"
                     }
                   },
-                  "Property": "parent_category"
+                  "Property": "region"
                 }
               },
-              "queryRef": "category_dim.parent_category",
-              "nativeQueryRef": "parent_category",
-              "active": true
+              "queryRef": "security_dim.region",
+              "nativeQueryRef": "Region",
+              "active": true,
+              "displayName": "Region"
             }
           ]
         }
@@ -48,6 +49,11 @@
           }
         }
       ],
+      "general": [
+        {
+          "properties": {}
+        }
+      ],
       "selection": [
         {
           "properties": {
@@ -61,25 +67,13 @@
           }
         }
       ],
-      "general": [
-        {
-          "properties": {}
-        }
-      ],
       "header": [
         {
           "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Budget Category'"
+                  "Value": "'Region'"
                 }
               }
             }
@@ -107,15 +101,15 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "eaa41e6911c2500e2c62",
+        "name": "346efab4e800a78aff00",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "category_dim"
+                "Entity": "security_dim"
               }
             },
-            "Property": "parent_category"
+            "Property": "region"
           }
         },
         "type": "Categorical"

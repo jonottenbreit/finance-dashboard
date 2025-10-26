@@ -214,6 +214,39 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "0932a34c80e5775d81f5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "calendar_dim"
+              }
+            },
+            "Property": "yyyymm"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b85d6a260d93c152cea4",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "transactions_with_category"
+                  }
+                },
+                "Property": "amount"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

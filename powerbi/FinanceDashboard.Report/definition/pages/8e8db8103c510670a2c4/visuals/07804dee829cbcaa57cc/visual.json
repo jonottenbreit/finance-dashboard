@@ -113,5 +113,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7358a4451cd0371786c7",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "month_dim"
+              }
+            },
+            "Property": "Quarter Year (Sortable)"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

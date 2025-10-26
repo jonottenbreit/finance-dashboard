@@ -23,11 +23,11 @@
                       "Entity": "Measures_Main"
                     }
                   },
-                  "Property": "Avg Withdrawal Rate (Weighted)"
+                  "Property": "Initial Withdrawal Rate"
                 }
               },
-              "queryRef": "Measures_Main.Avg Withdrawal Rate (Weighted)",
-              "nativeQueryRef": "Avg Withdrawal Rate (Weighted)"
+              "queryRef": "Measures_Main.Initial Withdrawal Rate",
+              "nativeQueryRef": "Initial Withdrawal Rate"
             }
           ]
         }
@@ -42,7 +42,7 @@
                     "Entity": "Measures_Main"
                   }
                 },
-                "Property": "Avg Withdrawal Rate (Weighted)"
+                "Property": "Initial Withdrawal Rate"
               }
             },
             "direction": "Descending"
@@ -93,7 +93,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Avg. Withdrawal Rate (Retirement)'"
+                  "Value": "'Initial Withdrawal Rate'"
                 }
               }
             }
@@ -106,7 +106,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "02211cbbbc4516373c38",
+        "name": "29c9814f0349d45d0b10",
         "field": {
           "Measure": {
             "Expression": {
@@ -114,7 +114,7 @@
                 "Entity": "Measures_Main"
               }
             },
-            "Property": "Avg Withdrawal Rate (Weighted)"
+            "Property": "Initial Withdrawal Rate"
           }
         },
         "type": "Advanced"

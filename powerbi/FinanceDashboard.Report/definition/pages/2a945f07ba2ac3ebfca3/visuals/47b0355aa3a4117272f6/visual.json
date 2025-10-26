@@ -23,11 +23,11 @@
                       "Entity": "Measures_Main"
                     }
                   },
-                  "Property": "Portfolio Value"
+                  "Property": "Portfolio Value (Latest)"
                 }
               },
-              "queryRef": "Measures_Main.Portfolio Value",
-              "nativeQueryRef": "Portfolio Value"
+              "queryRef": "Measures_Main.Portfolio Value (Latest)",
+              "nativeQueryRef": "Portfolio Value (Latest)"
             }
           ]
         }
@@ -42,7 +42,7 @@
                     "Entity": "Measures_Main"
                   }
                 },
-                "Property": "Portfolio Value"
+                "Property": "Portfolio Value (Latest)"
               }
             },
             "direction": "Descending"
@@ -52,5 +52,23 @@
       }
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "18d6eb64fdcdab6b9b04",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Portfolio Value (Latest)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

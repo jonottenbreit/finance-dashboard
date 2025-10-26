@@ -101,10 +101,7 @@ table Measures_Main
 
 	measure 'Portfolio Value' = ```
 			
-			CALCULATE(
-			  SUM(monthly_allocation[value]),
-			  ALLEXCEPT(monthly_allocation, monthly_allocation[month])
-			)
+			SUM ( monthly_allocation[value] )
 			
 			```
 		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
@@ -427,6 +424,60 @@ table Measures_Main
 	measure 'Net Worth (EOY)' = [End Balance (EOY)]
 		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: 8125eb16-c3d4-48f8-b3ca-a367d055a594
+
+	measure 'Initial Withdrawal Rate' = ```
+			
+			VAR YearsEligible =
+			    FILTER (
+			        VALUES ( YearTable[Year] ),
+			        CALCULATE ( [Outflows (Abs)] ) > 0
+			            && CALCULATE ( [Beg Balance] ) > 0
+			    )
+			VAR FirstYr = MINX ( YearsEligible, YearTable[Year] )
+			VAR OutflowFY = CALCULATE ( [Outflows (Abs)], YearTable[Year] = FirstYr )
+			VAR BegBalFY = CALCULATE ( [Beg Balance], YearTable[Year] = FirstYr )
+			RETURN
+			IF ( ISBLANK ( FirstYr ), BLANK (), DIVIDE ( OutflowFY, BegBalFY ) )
+			
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 538d9f18-cf57-442d-89bd-84a70781defa
+
+	measure 'Portfolio Value (Latest)' = ```
+			
+			VAR SelMonth =
+			    SELECTEDVALUE ( 'month_dim'[month] )          -- e.g. "2025-10"
+			VAR LatestMonth =
+			    CALCULATE ( MAX ( monthly_allocation[month] ), ALL ( monthly_allocation ) )
+			VAR TargetMonth = COALESCE ( SelMonth, LatestMonth )
+			
+			VAR MultiSelected =
+			    ISFILTERED ( 'month_dim'[month] ) && NOT HASONEVALUE ( 'month_dim'[month] )
+			
+			RETURN
+			IF (
+			    MultiSelected,
+			    -- If user multi-selects months, respect that context
+			    SUM ( monthly_allocation[value] ),
+			    -- Single month (or none): explicitly set the fact table to TargetMonth
+			    CALCULATE (
+			        SUM ( monthly_allocation[value] ),
+			        REMOVEFILTERS ( 'month_dim' ),
+			        KEEPFILTERS ( TREATAS ( { TargetMonth }, monthly_allocation[month] ) )
+			    )
+			)
+			
+			```
+		lineageTag: c16d3a25-dbcc-429b-a8f0-f9450f471adf
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Check Sum' =
+			
+			SUM ( monthly_allocation[value] )
+		lineageTag: cb8e582d-a7dd-4168-b447-d1134c8c90d8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column Column1
 		dataType: int64

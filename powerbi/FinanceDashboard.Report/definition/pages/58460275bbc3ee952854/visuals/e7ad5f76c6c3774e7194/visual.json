@@ -248,7 +248,7 @@
                   "identityValues": [
                     {
                       "Literal": {
-                        "Value": "'Kids'"
+                        "Value": "'Entertainment'"
                       }
                     }
                   ],
@@ -257,7 +257,7 @@
                       "identityValues": [
                         {
                           "Literal": {
-                            "Value": "'Kids Sports'"
+                            "Value": "'Entertainment'"
                           }
                         }
                       ],
@@ -269,23 +269,106 @@
                   "identityValues": [
                     {
                       "Literal": {
-                        "Value": "'Shopping'"
+                        "Value": "'Sports & Fitness'"
                       }
                     }
                   ],
-                  "isToggled": true,
                   "children": [
                     {
                       "identityValues": [
                         {
                           "Literal": {
-                            "Value": "'Shopping'"
+                            "Value": "'Endurance Sports'"
                           }
                         }
                       ],
                       "isToggled": true
                     }
                   ]
+                },
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Food'"
+                      }
+                    }
+                  ],
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Groceries'"
+                          }
+                        }
+                      ],
+                      "isToggled": true
+                    }
+                  ]
+                },
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Beauty & Clothes'"
+                      }
+                    }
+                  ],
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Clothing'"
+                          }
+                        }
+                      ],
+                      "children": [
+                        {
+                          "identityValues": [
+                            {
+                              "Literal": {
+                                "Value": "'Dicks Sporting Goods'"
+                              }
+                            }
+                          ],
+                          "isToggled": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Kids'"
+                      }
+                    }
+                  ],
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Kids Clothes'"
+                          }
+                        }
+                      ],
+                      "isToggled": true
+                    }
+                  ]
+                },
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "'Home'"
+                      }
+                    }
+                  ],
+                  "isToggled": true
                 }
               ]
             },
@@ -302,22 +385,11 @@
                   "identityValues": [
                     {
                       "Literal": {
-                        "Value": "'Automotive'"
+                        "Value": "'Home'"
                       }
                     }
                   ],
-                  "children": [
-                    {
-                      "identityValues": [
-                        {
-                          "Literal": {
-                            "Value": "'Gas'"
-                          }
-                        }
-                      ],
-                      "isToggled": true
-                    }
-                  ]
+                  "isToggled": true
                 }
               ]
             }
