@@ -94,20 +94,6 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Fixed'"
-                              }
-                            }
-                          ],
-                          [
-                            {
-                              "Literal": {
-                                "Value": "'Investing'"
-                              }
-                            }
-                          ],
-                          [
-                            {
-                              "Literal": {
                                 "Value": "'Discretionary'"
                               }
                             }
