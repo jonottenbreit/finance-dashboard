@@ -152,6 +152,17 @@ def main() -> None:
         df["amount_cents"] = df["amount"].apply(to_int_cents).astype("int64")
         df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
         df["merchant_norm"] = df["description"].astype(str).apply(normalize_merchant)
+
+        # Drop Chase 'ORIG CO' pending rows only if a clean match exists
+        if "description" in df.columns:
+            df["is_orig_co"] = df["description"].str.upper().str.contains("ORIG CO", na=False)
+            # Within each (account_id, date, amount_cents) group, if both pending and non-pending exist → drop the pending one
+            dup_mask = (
+                df.groupby(["account_id", "date", "amount_cents"])["is_orig_co"]
+                .transform(lambda g: g.sum() > 0 and not all(g))
+            )
+            df = df[~(df["is_orig_co"] & dup_mask)]
+
         df["dup_seq"] = compute_dup_seq(df)
         df["txn_id"] = df.apply(make_txn_id, axis=1)
 
@@ -185,8 +196,36 @@ def main() -> None:
         VALUES (s.txn_id, s.date, s.account_id, s.amount_cents, s.amount,
                 s.description, s.merchant_norm, s.category, s.memo, s.tags,
                 COALESCE(s.is_transfer, FALSE));
-        """)
+            """)
 
+            # After loading all files, drop ORIG CO pending rows that have a same-day settled match
+        con.execute("""
+        WITH annotated AS (
+            SELECT
+                txn_id,
+                date,
+                account_id,
+                amount_cents,
+                description,
+                CASE
+                    WHEN UPPER(description) LIKE '%ORIG CO%' THEN 1 ELSE 0
+                END AS is_orig_co
+            FROM transactions
+        ),
+        dupe_candidates AS (
+            SELECT DISTINCT p.txn_id
+            FROM annotated p
+            JOIN annotated s
+            ON s.account_id   = p.account_id
+            AND s.amount_cents = p.amount_cents
+            AND s.date         = p.date
+            AND s.is_orig_co   = 0          -- settled / clean row
+            WHERE p.is_orig_co = 1           -- pending ORIG CO row
+        )
+        DELETE FROM transactions
+        WHERE txn_id IN (SELECT txn_id FROM dupe_candidates);
+        """)
+        
     cnt = con.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
     print(f"Transactions MERGE complete. Table rows: {cnt} (processed {total_rows} staged rows across {len(csvs)} files)")
 

@@ -102,7 +102,7 @@
               },
               "queryRef": "transactions_with_category.date",
               "nativeQueryRef": "date",
-              "active": false
+              "active": true
             }
           ]
         },
@@ -243,7 +243,6 @@
                   }
                 }
               ],
-              "isToggled": true,
               "children": [
                 {
                   "identityValues": [
@@ -308,27 +307,28 @@
                       "isToggled": true
                     }
                   ]
-                }
-              ]
-            },
-            {
-              "identityValues": [
-                {
-                  "Literal": {
-                    "Value": "'Fixed'"
-                  }
-                }
-              ],
-              "children": [
+                },
                 {
                   "identityValues": [
                     {
                       "Literal": {
-                        "Value": "'Home'"
+                        "Value": "'Shopping'"
                       }
                     }
                   ],
-                  "isToggled": true
+                  "isToggled": true,
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "'Shopping'"
+                          }
+                        }
+                      ],
+                      "isToggled": true
+                    }
+                  ]
                 }
               ]
             },
@@ -340,6 +340,7 @@
                   }
                 }
               ],
+              "isToggled": true,
               "children": [
                 {
                   "identityValues": [
@@ -372,6 +373,40 @@
                           "isToggled": true
                         }
                       ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "null"
+                  }
+                }
+              ],
+              "isToggled": true,
+              "children": [
+                {
+                  "identityValues": [
+                    {
+                      "Literal": {
+                        "Value": "null"
+                      }
+                    }
+                  ],
+                  "isToggled": true,
+                  "children": [
+                    {
+                      "identityValues": [
+                        {
+                          "Literal": {
+                            "Value": "null"
+                          }
+                        }
+                      ],
+                      "isToggled": true
                     }
                   ]
                 }
