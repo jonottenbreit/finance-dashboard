@@ -243,6 +243,7 @@
                   }
                 }
               ],
+              "isToggled": true,
               "children": [
                 {
                   "identityValues": [
@@ -291,31 +292,11 @@
                   "identityValues": [
                     {
                       "Literal": {
-                        "Value": "'Beauty & Clothes'"
-                      }
-                    }
-                  ],
-                  "children": [
-                    {
-                      "identityValues": [
-                        {
-                          "Literal": {
-                            "Value": "'Skincare'"
-                          }
-                        }
-                      ],
-                      "isToggled": true
-                    }
-                  ]
-                },
-                {
-                  "identityValues": [
-                    {
-                      "Literal": {
                         "Value": "'Shopping'"
                       }
                     }
                   ],
+                  "isToggled": true,
                   "children": [
                     {
                       "identityValues": [
@@ -325,7 +306,19 @@
                           }
                         }
                       ],
-                      "isToggled": true
+                      "isToggled": true,
+                      "children": [
+                        {
+                          "identityValues": [
+                            {
+                              "Literal": {
+                                "Value": "'WWW COSTCO COM'"
+                              }
+                            }
+                          ],
+                          "isToggled": true
+                        }
+                      ]
                     }
                   ]
                 }
