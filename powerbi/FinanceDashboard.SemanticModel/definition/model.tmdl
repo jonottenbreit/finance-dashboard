@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["monthly_cashflow","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export","transactions_with_category","calendar_dim","budgets","ret_globals","ret_inflows","ret_outflows","ret_starting_balances","Cashflows","DivFlowsYear","account_dim"]
+annotation PBI_QueryOrder = ["monthly_cashflow","category_dim","monthly_actuals_by_category","month_dim","Measures_Main","monthly_net_worth","monthly_net_worth_by_group","monthly_allocation","allocation_vs_target","security_dim","positions_enriched_export","transactions_with_category","calendar_dim","budgets","ret_globals","ret_inflows","ret_outflows","ret_starting_balances","Cashflows","DivFlowsYear","account_dim","annual_tax_est"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
@@ -46,6 +46,7 @@ ref table DivFlowsYear
 ref table account_dim
 ref table CombinedFlows
 ref table TypeDim
+ref table annual_tax_est
 
 ref cultureInfo en-US
 

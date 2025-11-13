@@ -331,6 +331,19 @@
             "width": 234
           },
           "zIndex": 25
+        },
+        {
+          "location": {
+            "x": 5831.9844941070278,
+            "y": 509.01900698517863
+          },
+          "nodeIndex": "annual_tax_est",
+          "nodeLineageTag": "0623b350-c3b2-4896-937e-925262419743",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
         }
       ],
       "name": "All tables",

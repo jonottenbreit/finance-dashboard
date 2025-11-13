@@ -1,0 +1,32 @@
+table annual_tax_est
+	lineageTag: 0623b350-c3b2-4896-937e-925262419743
+
+	column metric
+		dataType: string
+		lineageTag: 76c5d679-0727-46db-ab81-80bae4819385
+		summarizeBy: none
+		sourceColumn: metric
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: int64
+		formatString: 0
+		lineageTag: 09276547-ace8-4fa1-970f-e5d2c6275846
+		summarizeBy: sum
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+	partition annual_tax_est = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\jo136\OneDrive\FinanceData\taxes\annual_tax_est.csv"),[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"metric", type text}, {"value", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

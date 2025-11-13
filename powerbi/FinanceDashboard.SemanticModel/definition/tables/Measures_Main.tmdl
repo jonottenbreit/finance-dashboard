@@ -479,6 +479,110 @@ table Measures_Main
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Est Annual Dividends' =
+			
+			SUMX (
+			    positions_enriched_export,
+			    positions_enriched_export[value] *
+			    RELATED ( security_dim[dividend_yield] )
+			)
+		lineageTag: 04f0e1b6-4e1b-446f-9d0f-af22b5e3062c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Est Annual Dividends (Taxable)' = ```
+			
+			CALCULATE (
+			    SUMX (
+			        positions_enriched_export,
+			        positions_enriched_export[value] *
+			        RELATED ( security_dim[dividend_yield] )
+			    ),
+			    positions_enriched_export[tax_bucket] = "Taxable"
+			)
+			
+			```
+		lineageTag: cf20bf44-051f-4460-afe8-cba75907f5b8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Est Annual Qualified Dividends (Taxable)' =
+			
+			CALCULATE (
+			    SUMX (
+			        positions_enriched_export,
+			        positions_enriched_export[value] *
+			        RELATED ( security_dim[dividend_yield] ) *
+			        RELATED ( security_dim[qualified_ratio] )
+			    ),
+			    positions_enriched_export[tax_bucket] = "Taxable"
+			)
+		lineageTag: 2fd646b7-11cf-451d-9ef9-d0b2ecf65610
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Est Annual Ordinary Dividends (Taxable)' =
+			
+			[Est Annual Dividends (Taxable)] - [Est Annual Qualified Dividends (Taxable)]
+		lineageTag: 012e4580-0e22-43f4-87d4-29ac64fa94ce
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'W2 Income' =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "w2_income"
+			)
+		formatString: 0
+		lineageTag: 68d155a0-dc80-4c9c-8f01-dd04bbea884e
+
+	measure Deductions =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "deductions"
+			)
+		formatString: 0
+		lineageTag: 31a2c315-2d06-46c6-9220-d3ccc1d4f326
+
+	measure 'Capital Gain' =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "capital_gain"
+			)
+		formatString: 0
+		lineageTag: b11ef7cb-44ab-421e-b76f-5524671204aa
+
+	measure 'W2 Federal Taxes Paid' =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "w2_taxes"
+			)
+		formatString: 0
+		lineageTag: 218f4531-43a5-45eb-991a-bdd3aabd4778
+
+	measure 'Estimated Payments YTD' =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "est_tax_payments"
+			)
+		formatString: 0
+		lineageTag: 03017e4d-2190-4584-a73b-e95f85d6f15c
+
+	measure AGI =
+			
+			[W2 Income] +
+			[Est Annual Ordinary Dividends (Taxable)] +
+			[Est Annual Qualified Dividends (Taxable)] +
+			[Capital Gain]
+		lineageTag: 921342c8-4cb8-4eba-ade9-cb807a6b7253
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column Column1
 		dataType: int64
 		isHidden

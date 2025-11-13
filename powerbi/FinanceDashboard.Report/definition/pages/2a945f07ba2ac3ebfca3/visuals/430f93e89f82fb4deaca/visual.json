@@ -397,6 +397,76 @@
             }
           ]
         }
+      },
+      {
+        "name": "823914d01336312db95e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "size"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "0e3bc791b97bf8fc945a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "style"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "016269fa9b66e7044e0e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "security_dim"
+              }
+            },
+            "Property": "symbol"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6d80c5d55202a247ec67",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Total Value"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "023d98f7de148968b970",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "% of Portfolio"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

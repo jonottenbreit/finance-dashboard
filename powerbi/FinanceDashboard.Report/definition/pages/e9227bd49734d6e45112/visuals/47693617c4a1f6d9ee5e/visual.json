@@ -1,0 +1,74 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "47693617c4a1f6d9ee5e",
+  "position": {
+    "x": 425.15381415526019,
+    "y": 0,
+    "z": 2,
+    "height": 209.33145811461284,
+    "width": 402.43567141413939,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Est Annual Qualified Dividends (Taxable)"
+                }
+              },
+              "queryRef": "Measures_Main.Est Annual Qualified Dividends (Taxable)",
+              "nativeQueryRef": "Est Annual Qualified Dividends (Taxable)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "Est Annual Qualified Dividends (Taxable)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "06141fa7f14167769788",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Est Annual Qualified Dividends (Taxable)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

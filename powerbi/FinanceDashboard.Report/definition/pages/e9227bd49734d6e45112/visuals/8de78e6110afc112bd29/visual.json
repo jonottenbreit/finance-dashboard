@@ -1,13 +1,13 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
-  "name": "05b641d6070b07dd6c18",
+  "name": "8de78e6110afc112bd29",
   "position": {
-    "x": 56.693349327550813,
-    "y": 88.819580613162941,
-    "z": 2000,
-    "height": 83.150245680407863,
-    "width": 283.46674663775406,
-    "tabOrder": 1000
+    "x": 827.58948556939959,
+    "y": 51.927183408276051,
+    "z": 1,
+    "height": 207.7087336331042,
+    "width": 402.43567141413939,
+    "tabOrder": 1
   },
   "visual": {
     "visualType": "slicer",
@@ -20,18 +20,35 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "category_dim"
+                      "Entity": "month_dim"
                     }
                   },
-                  "Property": "top_bucket"
+                  "Property": "yyyymm"
                 }
               },
-              "queryRef": "category_dim.top_bucket",
-              "nativeQueryRef": "top_bucket",
+              "queryRef": "month_dim.yyyymm",
+              "nativeQueryRef": "yyyymm",
               "active": true
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "month_dim"
+                  }
+                },
+                "Property": "yyyymm"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "objects": {
@@ -48,19 +65,6 @@
           }
         }
       ],
-      "selection": [
-        {
-          "properties": {
-            "selectAllCheckboxEnabled": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ],
       "general": [
         {
           "properties": {
@@ -69,8 +73,8 @@
                 "Version": 2,
                 "From": [
                   {
-                    "Name": "c",
-                    "Entity": "category_dim",
+                    "Name": "m",
+                    "Entity": "month_dim",
                     "Type": 0
                   }
                 ],
@@ -83,10 +87,10 @@
                             "Column": {
                               "Expression": {
                                 "SourceRef": {
-                                  "Source": "c"
+                                  "Source": "m"
                                 }
                               },
-                              "Property": "top_bucket"
+                              "Property": "yyyymm"
                             }
                           }
                         ],
@@ -94,7 +98,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Income'"
+                                "Value": "202510L"
                               }
                             }
                           ]
@@ -107,41 +111,6 @@
             }
           }
         }
-      ],
-      "header": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Discretionary?'"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
       ]
     },
     "drillFilterOtherVisuals": true
@@ -149,18 +118,18 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "9bd96fea89b9a1250b2c",
+        "name": "bd6a4f5b6f677ce6efbc",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "category_dim"
+                "Entity": "month_dim"
               }
             },
-            "Property": "top_bucket"
+            "Property": "yyyymm"
           }
         },
-        "type": "Categorical"
+        "type": "Advanced"
       }
     ]
   }
