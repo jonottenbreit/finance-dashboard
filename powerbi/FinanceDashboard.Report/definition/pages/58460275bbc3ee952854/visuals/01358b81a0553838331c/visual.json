@@ -7,7 +7,7 @@
     "z": 0,
     "height": 85.040023991326223,
     "width": 283.46674663775406,
-    "tabOrder": 11000
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "slicer",
@@ -113,23 +113,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "f6ce8062077856b900a4",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "calendar_dim"
-              }
-            },
-            "Property": "year_month"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

@@ -6,7 +6,8 @@
     "y": 37.049866831940236,
     "z": 0,
     "height": 255.23241595336606,
-    "width": 1084.0516591567698
+    "width": 1084.0516591567698,
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "lineChart",
@@ -120,20 +121,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "29924eb991a07c12ec99",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Net Worth (EOY)"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

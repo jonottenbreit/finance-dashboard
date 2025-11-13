@@ -1,0 +1,270 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "name": "92b3460b54c680b68c40",
+  "position": {
+    "x": 163.8951726323713,
+    "y": 196.34966226254383,
+    "z": 2001,
+    "height": 400.81294693263078,
+    "width": 196.34966226254383,
+    "tabOrder": 2001
+  },
+  "visual": {
+    "visualType": "multiRowCard",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "AGI"
+                }
+              },
+              "queryRef": "Measures_Main.AGI",
+              "nativeQueryRef": "AGI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Federal Ordinary Tax"
+                }
+              },
+              "queryRef": "Measures_Main.Federal Ordinary Tax",
+              "nativeQueryRef": "Federal Ordinary Tax"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Federal Qualified Tax"
+                }
+              },
+              "queryRef": "Measures_Main.Federal Qualified Tax",
+              "nativeQueryRef": "Federal Qualified Tax"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Projected Federal Tax"
+                }
+              },
+              "queryRef": "Measures_Main.Projected Federal Tax",
+              "nativeQueryRef": "Projected Federal Tax"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "W2 Federal Taxes Paid"
+                }
+              },
+              "queryRef": "Measures_Main.W2 Federal Taxes Paid",
+              "nativeQueryRef": "W2 Federal Taxes Paid"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Estimated Payments YTD"
+                }
+              },
+              "queryRef": "Measures_Main.Estimated Payments YTD",
+              "nativeQueryRef": "Estimated Payments YTD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Total Taxes Paid"
+                }
+              },
+              "queryRef": "Measures_Main.Total Taxes Paid",
+              "nativeQueryRef": "Total Taxes Paid"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measures_Main"
+                    }
+                  },
+                  "Property": "Remaining Federal Liability"
+                }
+              },
+              "queryRef": "Measures_Main.Remaining Federal Liability",
+              "nativeQueryRef": "Remaining Federal Liability"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measures_Main"
+                  }
+                },
+                "Property": "AGI"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "6ec7f2fe3bb92b5bc91e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "AGI"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d617f253ca04e0085060",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Federal Ordinary Tax"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1d06272916e6b8bda694",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Federal Qualified Tax"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1516607c91d84a2d0817",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Estimated Payments YTD"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "159185dd272451a1656e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Projected Federal Tax"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "08cf4f320736cdd0cc50",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "W2 Federal Taxes Paid"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5d65b21f00b464506689",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Remaining Federal Liability"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "4174f7b0607092ea0bed",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Total Taxes Paid"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

@@ -4,10 +4,10 @@
   "position": {
     "x": 700.347394540943,
     "y": 317.61786600496282,
-    "z": 1001,
+    "z": 2000,
     "height": 119.10669975186104,
     "width": 309.67741935483872,
-    "tabOrder": 1001
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "card",
@@ -102,23 +102,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "29c9814f0349d45d0b10",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Initial Withdrawal Rate"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -6,8 +6,7 @@
     "y": 317.20954726391278,
     "z": 1000,
     "height": 378.11378033858404,
-    "width": 540.52506853770728,
-    "tabOrder": 1000
+    "width": 540.52506853770728
   },
   "visual": {
     "visualType": "pivotTable",
@@ -94,51 +93,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "25cd1c2959707ebb9e32",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "YearTable"
-              }
-            },
-            "Property": "Year"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "09493983a6154bdda308",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "TypeDim"
-              }
-            },
-            "Property": "Type"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "690837a1500c2acc66e8",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Amount By Type"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

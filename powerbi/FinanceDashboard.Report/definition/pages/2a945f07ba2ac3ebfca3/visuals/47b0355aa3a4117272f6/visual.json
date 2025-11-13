@@ -7,7 +7,7 @@
     "z": 2000,
     "height": 254.29581381995655,
     "width": 302.803107785613,
-    "tabOrder": 4000
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "card",
@@ -52,23 +52,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "18d6eb64fdcdab6b9b04",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Portfolio Value (Latest)"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

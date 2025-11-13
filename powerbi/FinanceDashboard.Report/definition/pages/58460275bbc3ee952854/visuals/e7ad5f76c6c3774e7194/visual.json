@@ -6,7 +6,8 @@
     "y": 52.1442570227307,
     "z": 1000,
     "height": 329.33214961724656,
-    "width": 592.79786931104377
+    "width": 592.79786931104377,
+    "tabOrder": 12000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -407,108 +408,5 @@
       }
     ],
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "83d67a72ca069ec1c06d",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "top_bucket"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "6f749c1d5bfb1e64d843",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "parent_category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "53d7d4c88a611b274311",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "category_dim"
-                  }
-                },
-                "Hierarchy": "top_bucket Hierarchy"
-              }
-            },
-            "Level": "category"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "a3326f5e188147e98e71",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "description"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "0b69367bb4f9104a39cd",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "transactions_with_category"
-              }
-            },
-            "Property": "date"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "742050e169ffbfc7a80a",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Actual Amount"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

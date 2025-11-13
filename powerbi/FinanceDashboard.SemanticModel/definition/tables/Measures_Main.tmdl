@@ -546,22 +546,13 @@ table Measures_Main
 		formatString: 0
 		lineageTag: 31a2c315-2d06-46c6-9220-d3ccc1d4f326
 
-	measure 'Capital Gain' =
-			
-			CALCULATE (
-			    MAX ( annual_tax_est[value] ),
-			    annual_tax_est[metric] = "capital_gain"
-			)
-		formatString: 0
-		lineageTag: b11ef7cb-44ab-421e-b76f-5524671204aa
-
 	measure 'W2 Federal Taxes Paid' =
 			
 			CALCULATE (
 			    MAX ( annual_tax_est[value] ),
 			    annual_tax_est[metric] = "w2_taxes"
 			)
-		formatString: 0
+		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: 218f4531-43a5-45eb-991a-bdd3aabd4778
 
 	measure 'Estimated Payments YTD' =
@@ -570,7 +561,7 @@ table Measures_Main
 			    MAX ( annual_tax_est[value] ),
 			    annual_tax_est[metric] = "est_tax_payments"
 			)
-		formatString: 0
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
 		lineageTag: 03017e4d-2190-4584-a73b-e95f85d6f15c
 
 	measure AGI =
@@ -578,10 +569,123 @@ table Measures_Main
 			[W2 Income] +
 			[Est Annual Ordinary Dividends (Taxable)] +
 			[Est Annual Qualified Dividends (Taxable)] +
-			[Capital Gain]
+			[Loss Offset Ordinary]
+		formatString: \$#,0;(\$#,0);\$#,0
 		lineageTag: 921342c8-4cb8-4eba-ade9-cb807a6b7253
 
+	measure 'Loss Offset Ordinary' =
+			
+			CALCULATE (
+			    MAX ( annual_tax_est[value] ),
+			    annual_tax_est[metric] = "loss_offset_ordinary"
+			)
+		formatString: 0
+		lineageTag: 5da1fa3c-108d-4dee-969b-433096aadc6f
+
+	measure 'Ordinary Dividends (Taxable)' =
+			
+			[Est Annual Ordinary Dividends (Taxable)]
+		lineageTag: 8d1b39c6-bafb-42c2-807e-71fb7d0e2b6a
+
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Qualified Dividends (Taxable)' =
+			
+			[Est Annual Qualified Dividends (Taxable)]
+		lineageTag: 3b7cb50e-2ce4-4138-9bf1-3a6b5c2c6b37
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Ordinary Income Base' = ```
+			
+			[W2 Income] +
+			[Ordinary Dividends (Taxable)] +
+			[Loss Offset Ordinary] +   -- this is negative, so it reduces income
+			[Deductions]             -- also negative
+			
+			```
+		lineageTag: f931cb4b-de98-4ac5-aa9f-f8b589cf0220
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Federal Ordinary Tax' = ```
+			
+			VAR TI = [Ordinary Income Base]   -- taxable income after deductions (already a measure)
+			VAR Tax =
+			    SWITCH(
+			        TRUE(),
+			        TI <= 0,
+			            0,
+			
+			        TI <= 23850,
+			            TI * 0.10,
+			
+			        TI <= 96950,
+			            2385 + (TI - 23850) * 0.12,
+			
+			        TI <= 206700,
+			            11157 + (TI - 96950) * 0.22,
+			
+			        TI <= 394600,
+			            35302 + (TI - 206700) * 0.24,
+			
+			        TI <= 501050,
+			            80398 + (TI - 394600) * 0.32,
+			
+			        TI <= 751600,
+			            114462 + (TI - 501050) * 0.35,
+			
+			        -- top bracket
+			        191011 + (TI - 751600) * 0.37
+			    )
+			RETURN
+			    Tax
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: b7b00532-7006-4193-8ca2-6902ae063502
+
+	measure 'Qualified Effective Rate' = ```
+			
+			0.188   -- 15% + 3.8% NIIT for your income band
+			-- if taxable > 600,050 switch to 0.238
+			
+			```
+		lineageTag: 4c30dcfe-b557-4460-93d1-ee4f9b5423aa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Federal Qualified Tax' = ```
+			
+			[Qualified Dividends (Taxable)] * [Qualified Effective Rate]
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 04569d1c-be03-4b72-bbf7-34424bccdbaa
+
+	measure 'Projected Federal Tax' = ```
+			
+			[Federal Ordinary Tax] + [Federal Qualified Tax]
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: c02facbe-023b-4f82-b829-32830bb0865e
+
+	measure 'Remaining Federal Liability' = ```
+			
+			[Projected Federal Tax] -
+			(
+			    [W2 Federal Taxes Paid] +
+			    [Estimated Payments YTD]
+			)
+			
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 851e5fae-cecd-478c-bba1-b99bf6f6a1f6
+
+	measure 'Total Taxes Paid' = [W2 Federal Taxes Paid] + [Estimated Payments YTD]
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 8257941b-f74c-4b2f-a3f4-b7c62199cac3
 
 	column Column1
 		dataType: int64

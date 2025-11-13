@@ -6,8 +6,7 @@
     "y": 88.819580613162941,
     "z": 2000,
     "height": 83.150245680407863,
-    "width": 283.46674663775406,
-    "tabOrder": 1000
+    "width": 283.46674663775406
   },
   "visual": {
     "visualType": "slicer",
@@ -145,23 +144,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "9bd96fea89b9a1250b2c",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "category_dim"
-              }
-            },
-            "Property": "top_bucket"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

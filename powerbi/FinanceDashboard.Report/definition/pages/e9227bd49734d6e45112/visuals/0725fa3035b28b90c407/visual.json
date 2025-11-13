@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
   "name": "0725fa3035b28b90c407",
   "position": {
-    "x": 9.73634688905176,
-    "y": 0,
+    "x": 804.87134282827878,
+    "y": 308.31765148663908,
     "z": 0,
-    "height": 209.33145811461284,
-    "width": 402.43567141413939
+    "height": 105.47709129806073,
+    "width": 376.47207971000137
   },
   "visual": {
     "visualType": "card",
@@ -51,23 +51,5 @@
       }
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "55d612112bf4c233cabf",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "Measures_Main"
-              }
-            },
-            "Property": "Est Annual Ordinary Dividends (Taxable)"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -4,10 +4,10 @@
   "position": {
     "x": 827.58948556939959,
     "y": 51.927183408276051,
-    "z": 1,
+    "z": 1000,
     "height": 207.7087336331042,
     "width": 402.43567141413939,
-    "tabOrder": 1
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "slicer",
@@ -114,23 +114,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "bd6a4f5b6f677ce6efbc",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "month_dim"
-              }
-            },
-            "Property": "yyyymm"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }
