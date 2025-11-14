@@ -51,5 +51,23 @@
       }
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "0e43f79c6e67e8c22d89",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measures_Main"
+              }
+            },
+            "Property": "Est Annual Ordinary Dividends (Taxable)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

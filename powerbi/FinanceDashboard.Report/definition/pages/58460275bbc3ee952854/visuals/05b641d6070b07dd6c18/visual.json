@@ -93,7 +93,7 @@
                           [
                             {
                               "Literal": {
-                                "Value": "'Income'"
+                                "Value": "'Discretionary'"
                               }
                             }
                           ]
@@ -144,5 +144,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f8ae5c96e3b0783b219c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "category_dim"
+              }
+            },
+            "Property": "top_bucket"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

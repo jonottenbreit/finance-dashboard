@@ -71,6 +71,26 @@ table security_dim
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	column federal_taxable_ratio
+		dataType: double
+		lineageTag: 08174cd0-f04e-4e63-89a9-c2363ff82f3a
+		summarizeBy: none
+		sourceColumn: federal_taxable_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column state_taxable_ratio
+		dataType: double
+		lineageTag: 57ef50ea-0299-468a-9dcd-7ecae04a0239
+		summarizeBy: none
+		sourceColumn: state_taxable_ratio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	partition security_dim = m
 		mode: import
 		source =

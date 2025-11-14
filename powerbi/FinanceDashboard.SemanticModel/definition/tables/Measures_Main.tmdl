@@ -506,24 +506,38 @@ table Measures_Main
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Est Annual Qualified Dividends (Taxable)' =
+	measure 'Est Annual Qualified Dividends (Taxable)' = ```
 			
 			CALCULATE (
 			    SUMX (
 			        positions_enriched_export,
 			        positions_enriched_export[value] *
 			        RELATED ( security_dim[dividend_yield] ) *
-			        RELATED ( security_dim[qualified_ratio] )
+			        RELATED ( security_dim[qualified_ratio] ) *
+			        RELATED ( security_dim[federal_taxable_ratio] )
 			    ),
 			    positions_enriched_export[tax_bucket] = "Taxable"
 			)
+			
+			```
 		lineageTag: 2fd646b7-11cf-451d-9ef9-d0b2ecf65610
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure 'Est Annual Ordinary Dividends (Taxable)' =
+	measure 'Est Annual Ordinary Dividends (Taxable)' = ```
 			
-			[Est Annual Dividends (Taxable)] - [Est Annual Qualified Dividends (Taxable)]
+			CALCULATE (
+			    SUMX (
+			        positions_enriched_export,
+			        positions_enriched_export[value] *
+			        RELATED ( security_dim[dividend_yield] ) *
+			        RELATED ( security_dim[federal_taxable_ratio] )
+			    ),
+			    positions_enriched_export[tax_bucket] = "Taxable"
+			)
+			- [Est Annual Qualified Dividends (Taxable)]
+			
+			```
 		lineageTag: 012e4580-0e22-43f4-87d4-29ac64fa94ce
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}

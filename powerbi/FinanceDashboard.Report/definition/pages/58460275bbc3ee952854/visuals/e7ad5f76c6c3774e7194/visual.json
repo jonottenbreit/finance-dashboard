@@ -103,7 +103,7 @@
               },
               "queryRef": "transactions_with_category.date",
               "nativeQueryRef": "date",
-              "active": true
+              "active": false
             }
           ]
         },
@@ -341,7 +341,6 @@
                       }
                     }
                   ],
-                  "isToggled": true,
                   "children": [
                     {
                       "identityValues": [
@@ -402,6 +401,16 @@
                   ]
                 }
               ]
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'Fixed'"
+                  }
+                }
+              ],
+              "isToggled": true
             }
           ]
         }
