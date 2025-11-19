@@ -274,19 +274,7 @@
                       }
                     }
                   ],
-                  "isToggled": true,
-                  "children": [
-                    {
-                      "identityValues": [
-                        {
-                          "Literal": {
-                            "Value": "'Endurance Sports'"
-                          }
-                        }
-                      ],
-                      "isToggled": true
-                    }
-                  ]
+                  "isToggled": true
                 },
                 {
                   "identityValues": [
@@ -331,7 +319,6 @@
                   }
                 }
               ],
-              "isToggled": true,
               "children": [
                 {
                   "identityValues": [
@@ -401,16 +388,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "identityValues": [
-                {
-                  "Literal": {
-                    "Value": "'Fixed'"
-                  }
-                }
-              ],
-              "isToggled": true
             }
           ]
         }
