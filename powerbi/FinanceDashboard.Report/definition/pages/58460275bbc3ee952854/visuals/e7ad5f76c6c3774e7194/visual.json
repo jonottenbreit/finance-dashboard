@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.1.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "e7ad5f76c6c3774e7194",
   "position": {
     "x": 400.68744870098328,
@@ -328,6 +328,7 @@
                       }
                     }
                   ],
+                  "isToggled": true,
                   "children": [
                     {
                       "identityValues": [
